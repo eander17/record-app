@@ -19,10 +19,6 @@ function Dashboard() {
   const [editAlbum, setEditAlbum] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // // takes album from AlbumItem and passes it to AlbumForm
-  const handleEdit = (album) => {
-    navigate(`/edit/${album._id}`)
-  }
 
   const handleResetUpdate = (value) => {
     setEditAlbum(null)
@@ -88,8 +84,7 @@ function Dashboard() {
               <AlbumItem
                 key={album._id}
                 album={album}
-                handleEdit={handleEdit}
-                owned={true}
+                buttonValue={'owned'}
               />
             ))}
           </div>

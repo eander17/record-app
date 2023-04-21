@@ -59,7 +59,7 @@ function SearchResults() {
               <AlbumItem
                 key={album.discogsId}
                 album={album}
-                owned={false}
+                buttonValue={'add'}
               />
             ))}
           </div>

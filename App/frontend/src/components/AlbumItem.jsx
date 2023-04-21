@@ -1,34 +1,40 @@
 import { useDispatch } from 'react-redux'
-import { FaTimes, FaEdit, FaPlus } from 'react-icons/fa'
-import { deleteAlbum, createAlbum } from '../features/collection/collectionSlice'
+import {
+  deleteAlbum,
+  createAlbum,
+} from '../features/collection/collectionSlice'
 import { useNavigate } from 'react-router-dom'
+import CardButtons from './CardButtons'
 
-const AlbumItem = ({ album, handleEdit, owned }) => {
+const AlbumItem = ({ album, buttonValue }) => {
   const dispatch = useDispatch()
   const Navigate = useNavigate()
 
+  console.log(buttonValue)
 
+  const owned = buttonValue === 'owned'
 
-  const handleAdd = (album) => {
+  const handleDelete = () => {
+    dispatch(deleteAlbum(album._id))
+    Navigate('/')
+  }
+
+  const handleEdit = () => {
+    Navigate(`/edit/${album._id}`)
+  }
+  const handleAdd = () => {
     dispatch(createAlbum(album))
     Navigate('/')
   }
 
   return (
     <div className='album card'>
-      {owned ? (
-        <>
-          
-          <button className='close'>
-            <FaTimes onClick={() => dispatch(deleteAlbum(album._id))} />
-          </button>
-          <button className='edit'>
-            <FaEdit onClick={() => handleEdit(album)} />
-          </button>
-        </>
-      ) : (
-        <button className='add'><FaPlus onClick={() => handleAdd(album)} /> </button>
-      )}
+      <CardButtons
+        buttonValue={buttonValue}
+        handleAdd={handleAdd}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
 
       <img
         src={album.image}
@@ -38,7 +44,11 @@ const AlbumItem = ({ album, handleEdit, owned }) => {
       <div className='text-display'>{album.artist}</div>
       <div className='text-display'>{album.genre}</div>
       <div className='text-display'>{album.year}</div>
-      {owned ? <div>Date Created: {new Date(album.createdAt).toLocaleDateString('en-US')}</div> : null}
+      {owned ? (
+        <div>
+          Date Created: {new Date(album.createdAt).toLocaleDateString('en-US')}
+        </div>
+      ) : null}
     </div>
   )
 }
