@@ -17,10 +17,11 @@ connectDB() // connects to the database
 const app = express()
 
 app.use(express.json()) // allows us to use json data
-app.use(express.urlencoded({ extended: false })) // allows us to use url encoded data
+app.use(express.urlencoded({ extended: true })) // allows us to use url encoded data
 
 app.use('/api/collection', require('./routes/albumCollectionRoutes')) // routes for albums
 app.use('/api/users', require('./routes/userRoutes')) // routes for users
+app.use('/api/search' , require('./routes/discogRoutes')) // routes for discogs search
 
 // serve front end
 if (process.env.NODE_ENV === 'production') {

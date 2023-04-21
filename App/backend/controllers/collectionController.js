@@ -16,6 +16,8 @@ const getAlbums = asyncHandler(async (req, res) => {
 // @route   GET /api/albums/:id
 // @access  Public
 const getAlbum = asyncHandler(async (req, res) => {
+
+  console.log('hi from getAlbum')
   const album = await Album.findById(req.params.id)
 
   // if album exists, send it back
@@ -27,6 +29,7 @@ const getAlbum = asyncHandler(async (req, res) => {
   }
 })
 
+
 // @desc    Create an album
 // @route   POST /api/albums
 // @access  Private
@@ -35,10 +38,11 @@ const createAlbum = asyncHandler(async (req, res) => {
     !req.body.title ||
     !req.body.artist ||
     !req.body.genre ||
-    !req.body.year
+    !req.body.year ||
+    !req.body.discogsId
   ) {
     res.status(400)
-    throw new Error('Please fill out all fields')
+    throw new Error('Please fill out all fields create album')
   }
 
   // create the album
@@ -47,6 +51,8 @@ const createAlbum = asyncHandler(async (req, res) => {
     artist: req.body.artist,
     genre: req.body.genre,
     year: req.body.year,
+    image: req.body.image,
+    discogsAlbumId: req.body.discogsId,
     user: req.user.id, // this is the user id
   })
   // add the album to the user's collection

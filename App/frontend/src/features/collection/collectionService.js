@@ -39,6 +39,8 @@ const getAlbumById = async (albumId, token) => {
   return response.data
 }
 
+
+
 // Update user album
 const updateAlbum = async (albumId, albumData, token) => {
   const config = {

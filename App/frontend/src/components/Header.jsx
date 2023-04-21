@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import vinylImage from '../media/flaminRecord.jpeg' // Import the image using a relative
+import SearchBar from './SearchBar'
 
 function Header() {
   const navigate = useNavigate()
@@ -13,6 +14,10 @@ function Header() {
     dispatch(logout())
     dispatch(reset())
     navigate('/login')
+  }
+
+  const handleSearch = (query) => {
+    navigate(`/search/${query}`);
   }
 
   return (
@@ -33,6 +38,12 @@ function Header() {
         </div>
 
         <ul>
+        <li> 
+          <SearchBar 
+          placeholder={'Add a new album'} 
+          onSubmit={handleSearch} 
+          /> 
+        </li>
           {user ? (
             <li>
               <button

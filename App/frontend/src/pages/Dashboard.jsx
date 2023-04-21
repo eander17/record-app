@@ -5,6 +5,7 @@ import AlbumForm from '../components/AlbumForm'
 import { getCollection, reset } from '../features/collection/collectionSlice.js'
 import AlbumItem from '../components/AlbumItem'
 import Spinner from '../components/Spinner'
+import SearchBar from '../components/SearchBar'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -15,19 +16,18 @@ function Dashboard() {
     (state) => state.collection
   )
 
-
-  
-
-
   const [editAlbum, setEditAlbum] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // takes album from AlbumItem and passes it to AlbumForm
-  const handleEdit = (album) => setEditAlbum(album)
+  // // takes album from AlbumItem and passes it to AlbumForm
+  const handleEdit = (album) => {
+    navigate(`/edit/${album._id}`)
+  }
 
-  const handleResetUpdate = (value) =>{
+  const handleResetUpdate = (value) => {
     setEditAlbum(null)
-    value && dispatch(getCollection()) 
-  } 
+    value && dispatch(getCollection())
+  }
 
   useEffect(() => {
     if (isError) {
@@ -47,6 +47,18 @@ function Dashboard() {
     }
   }, [user, navigate, isError, message, dispatch])
 
+  const handleSearch = (query) => {
+    return collection.filter((album) => {
+      return (
+        album.title.toLowerCase().includes(query.toLowerCase()) ||
+        album.artist.toLowerCase().includes(query.toLowerCase()) ||
+        album.genre.toLowerCase().includes(query.toLowerCase())
+      )
+    })
+  }
+
+  const filteredCollection = handleSearch(searchQuery)
+
   if (isLoading) {
     return <Spinner />
   }
@@ -58,19 +70,26 @@ function Dashboard() {
         <p>Your Collection</p>
       </section>
 
-      <AlbumForm
+      {/* <AlbumForm
         albumData={editAlbum}
         onUpdate={handleResetUpdate}
+      /> */}
+
+      <SearchBar
+        placeholder={'Search Collection'}
+        onSubmit={handleSearch}
+        onChange={(query) => setSearchQuery(query)}
       />
 
       <section className='content'>
-        {collection.length > 0 ? (
+        {filteredCollection.length > 0 ? (
           <div className='collection'>
-            {collection.map((album) => (
+            {filteredCollection.map((album) => (
               <AlbumItem
                 key={album._id}
                 album={album}
                 handleEdit={handleEdit}
+                owned={true}
               />
             ))}
           </div>

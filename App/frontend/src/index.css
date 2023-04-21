@@ -36,9 +36,18 @@ h3 {
   margin-bottom: 10px;
 }
 
+.content {
+  width: 100%; 
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
 .container {
   width: 100%;
-  max-width: 960px;
+  height: auto; 
+  /* max-width: 960px; */
   margin: 0 auto;
   padding: 0 20px;
   text-align: center;
@@ -48,11 +57,13 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 20px 10px;
+  margin: 10px auto;
   border-bottom: 5px solid #6E7F99;
-  margin-bottom: 60px;
+  /* margin-bottom: 60px; */
   background-color: #5E5A80;
   width: 100%;
+  height: auto;
 }
 .logo {
   display: flex; 
@@ -63,6 +74,7 @@ h3 {
   font-size: 2rem;
   font-weight: 700;
 }
+
 
 
 .header ul {
@@ -88,10 +100,41 @@ h3 {
   margin-right: 5px;
 }
 
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+}
+
+.search-bar input[type="search"] {
+  flex-grow: 1;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;  
+}
+
+.search-bar button[type="submit"] {
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 1px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+
 .heading {
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 50px;
+  margin: 60px 0;
   padding: 0 20px;
 }
 
@@ -107,8 +150,6 @@ h3 {
   width: 50px; 
   height: 50px;
   margin: 0 auto;
-  margin-top: 15px; 
-
 }
 
 .collection {

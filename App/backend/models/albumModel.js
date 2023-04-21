@@ -8,6 +8,10 @@ const albumSchema = mongoose.Schema({
         required: true, 
         ref: 'User'
     },
+    discogsAlbumId: {
+        type: Number,
+        required: true, 
+    }, 
     title: {
         type: String,
         required: [true, 'Please add album title']
@@ -25,7 +29,11 @@ const albumSchema = mongoose.Schema({
         type: Number,
         required: [true, 'Please add release year']
 
-    }    
+    }, 
+    image: {
+        type: String,   // url to image
+        required: false, 
+    }, 
 }, {
     timestamps: true, 
 })

@@ -6,7 +6,6 @@ import { FaUser } from 'react-icons/fa'
 import { register, reset } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
 
-
 function Register() {
   const [formData, setFormData] = useState({
     name: '',
@@ -25,17 +24,16 @@ function Register() {
   )
 
   useEffect(() => {
-    if(isError) {
+    if (isError) {
       toast.error(message)
     }
 
-    if(isSuccess || user) {
+    if (isSuccess || user) {
       navigate('/')
     }
 
     // reset the state
     dispatch(reset())
-
   }, [user, isError, isSuccess, message, navigate, dispatch])
 
   const onChange = (e) => {
@@ -47,9 +45,13 @@ function Register() {
 
   const onSubmit = (e) => {
     e.preventDefault()
+    const emptyFields =
+      name === '' || email === '' || password === '' || password2 === ''
 
     if (password !== password2) {
       toast.error('Passwords do not match')
+    } else if (emptyFields) {
+      toast.error('Please fill in all fields')
     } else {
       const userData = {
         name,
@@ -61,7 +63,7 @@ function Register() {
     }
   }
 
-  if(isLoading) {
+  if (isLoading) {
     return <Spinner />
   }
 

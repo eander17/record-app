@@ -3,6 +3,7 @@ import collectionService from './collectionService'
 
 const initialState = {
   collection: [],
+  album: null, 
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -16,6 +17,7 @@ export const createAlbum = createAsyncThunk(
   async (albumData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
+      console.log(albumData)
       return await collectionService.createAlbum(albumData, token)
     } catch (error) {
       const message =
@@ -54,6 +56,7 @@ export const getAlbumById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
+      console.log(`hello from slice ${id}`)
       return await collectionService.getAlbumById(id, token)
     } catch (error) {
       const message =
@@ -66,6 +69,7 @@ export const getAlbumById = createAsyncThunk(
     }
   }
 )
+
 
 // update user Album
 export const updateAlbum = createAsyncThunk(
@@ -154,8 +158,6 @@ export const collectionSlice = createSlice({
           return album
         })
         state.isSuccess = true
-
-
       })
       .addCase(updateAlbum.rejected, (state, action) => {
         state.isLoading = false
@@ -174,6 +176,19 @@ export const collectionSlice = createSlice({
         )
       })
       .addCase(deleteAlbum.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(getAlbumById.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getAlbumById.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.album = action.payload
+      })
+      .addCase(getAlbumById.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload
