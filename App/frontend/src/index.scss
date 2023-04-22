@@ -7,6 +7,9 @@ $fa-edit: #ff9800;
 $fa-delete: #dc3545;
 $fa-prev: #fff;
 $fa-next: #fff;
+$bg-secondary: #5E5A80; 
+$bg-primary: #202142; 
+$fa-save: #007bff;
 
 
 * {
@@ -18,7 +21,7 @@ $fa-next: #fff;
 body {
   font-family: 'Poppins', sans-serif;
   height: 100vh;
-  background-color: #202142;
+  background-color: $bg-primary;
 }
 
 a {
@@ -70,7 +73,7 @@ h3 {
   margin: 10px auto;
   border-bottom: 5px solid #6E7F99;
   /* margin-bottom: 60px; */
-  background-color: #5E5A80;
+  background-color: $bg-secondary;
   width: 100%;
   height: auto;
 }
@@ -191,6 +194,7 @@ h3 {
 
 .form-group {
   margin-bottom: 10px;
+  margin-top: 20px; 
 }
 
 .form-group input,
@@ -209,6 +213,51 @@ h3 {
   display: block;
   margin: 0 0 5px 3px;
 }
+
+.custom-field-group {
+  width: 100%; 
+
+}
+
+.custom-field {
+  display: flex; 
+  align-items: center;
+  flex-direction: row;
+  // border: none;
+}
+
+.custom-field input {
+  flex-grow: 1; 
+  border: 1px solid #e6e6e6;; 
+  // border-radius: 0;
+  padding: 10px; 
+  width: 100%; 
+}
+
+.custom-field label {
+  text-align: right;
+}
+.key  {
+  border-radius: 10px 0 0 5px; 
+  background-color: $bg-secondary;
+  color: #fff;
+  padding: 10px;
+  min-width: 15%; 
+  
+
+  
+}
+.value  {
+  border-radius: 0 10px 5px 0; 
+}
+
+.del-cust {
+  background: #fff; 
+  padding: 10px; 
+  border-radius: 1px;
+  margin-bottom: 10px; 
+}
+
 
 .btn-group {
   display: flex;
@@ -238,6 +287,11 @@ h3 {
   justify-content: center;
 }
 
+.fa {
+  font-size: larger; 
+  margin: 0 5px;
+}
+
 .plus-btn {
   color: $fa-plus;
 }
@@ -250,6 +304,13 @@ h3 {
   color: $fa-delete;
 }
 
+.save-btn {
+  color: #fff;
+  font-weight: 700;
+  font-size: xx-large;
+
+}
+
 .prev-btn {
   color: $fa-prev;
 }
@@ -258,8 +319,24 @@ h3 {
   color: $fa-next;
 }
 
-.fa {
-  font-size: larger; 
+
+
+.edit-submit {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: $bg-secondary;
+  color: #fff; 
+  border: 1px solid #000;
+  
+  width: 70%;
+  height: auto;
+  padding: 10px;
+  margin-left: 50px;
+  text-align: center;
 }
 
 .pagination button {

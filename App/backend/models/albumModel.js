@@ -34,6 +34,10 @@ const albumSchema = mongoose.Schema({
         type: String,   // url to image
         required: false, 
     }, 
+    customFields: {
+        type: Map, // allows for any key/value pair
+        of: mongoose.Schema.Types.Mixed, // allows for any type of value
+    }
 }, {
     timestamps: true, 
 })

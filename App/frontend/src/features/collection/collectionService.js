@@ -42,14 +42,16 @@ const getAlbumById = async (albumId, token) => {
 
 
 // Update user album
-const updateAlbum = async (albumId, albumData, token) => {
+const updateAlbum = async (id, album, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   }
+  console.log(`hello from service ${JSON.stringify(album)}`)
+  console.log(`hello from service ${id}`)
 
-  const response = await axios.put(API_URL + albumId, albumData, config)
+  const response = await axios.put(API_URL + id, album, config)
   return response.data // return updated album
 }
 

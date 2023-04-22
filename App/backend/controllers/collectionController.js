@@ -65,6 +65,8 @@ const createAlbum = asyncHandler(async (req, res) => {
 const updateAlbum = asyncHandler(async (req, res) => {
   const album = await Album.findById(req.params.id)
 
+  console.log(`hi from updateAlbum, album: ${req.body}`)
+
   if (!album) {
     res.status(400)
     throw new Error('Album not found')
