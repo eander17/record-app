@@ -1,8 +1,6 @@
-import { useEffect, useRef } from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FaTimes } from 'react-icons/fa'
-
 import { toast } from 'react-toastify'
 import socket from '../../socket'
 
@@ -17,16 +15,25 @@ useEffect(() => {
   collectionRef.current = collection
 }, [collection])
 
+const CloseButton = ({ closeToast }) => (
+  <i className='fas fa-times' onClick={closeToast}></i>
+)
+
   useEffect(() => {
     const options = {
       autoClose: 3000, // 3 seconds
       toastId: 'customFieldUpdate',
-      closeButton: FaTimes,
+      closeButton: <CloseButton />,
       type: toast.TYPE.INFO,
       position: toast.POSITION.TOP_RIGHT,
       pauseOnHover: true,
       draggable: true,
+      onOpen: () => {
+        console.log('POP THAT TOAST')
+      }
     }
+
+ 
 
 
      const handleCustomFieldUpdate = (data) => {
