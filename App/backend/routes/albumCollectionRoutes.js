@@ -16,5 +16,4 @@ router.route('/').get(protect, getAlbums).post(protect, createAlbum)
 router.route('/:id').get(protect, getAlbum).put(protect, updateAlbum).delete(protect, deleteAlbum)
 
 
-
 module.exports = router

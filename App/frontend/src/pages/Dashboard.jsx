@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import AlbumForm from '../components/AlbumForm'
+// import AlbumForm from '../components/AlbumForm'
 import { getCollection, reset } from '../features/collection/collectionSlice.js'
 import AlbumItem from '../components/AlbumItem'
 import Spinner from '../components/Spinner'
 import SearchBar from '../components/SearchBar'
+
+
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -16,19 +18,19 @@ function Dashboard() {
     (state) => state.collection
   )
 
-  const [editAlbum, setEditAlbum] = useState(null)
+  // const [editAlbum, setEditAlbum] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
-
-  const handleResetUpdate = (value) => {
-    setEditAlbum(null)
-    value && dispatch(getCollection())
-  }
+  // const handleResetUpdate = (value) => {
+  //   setEditAlbum(null)
+  //   value && dispatch(getCollection())
+  // }
 
   useEffect(() => {
     if (isError) {
       console.log(message)
     }
+
 
     // if user is not logged in, redirect to login page
     if (!user) {
@@ -42,6 +44,8 @@ function Dashboard() {
       dispatch(reset())
     }
   }, [user, navigate, isError, message, dispatch])
+
+
 
   const handleSearch = (query) => {
     return collection.filter((album) => {
@@ -61,15 +65,11 @@ function Dashboard() {
 
   return (
     <>
+
       <section className='heading'>
         <h1>Welcome {user && user.name}</h1>
         <p>Your Collection</p>
       </section>
-
-      {/* <AlbumForm
-        albumData={editAlbum}
-        onUpdate={handleResetUpdate}
-      /> */}
 
       <SearchBar
         placeholder={'Search Collection'}

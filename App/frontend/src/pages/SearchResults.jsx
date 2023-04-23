@@ -28,7 +28,6 @@ function SearchResults() {
     if (!user) {
       navigate('/login')
     } else {
-      console.log(`from searchResults useEffect: ${query}, ${currentPage}`)
       dispatch(searchAlbums({query, currentPage}))
     }
 

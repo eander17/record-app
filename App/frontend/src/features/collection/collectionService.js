@@ -48,8 +48,6 @@ const updateAlbum = async (id, album, token) => {
       Authorization: `Bearer ${token}`,
     },
   }
-  console.log(`hello from service ${JSON.stringify(album)}`)
-  console.log(`hello from service ${id}`)
 
   const response = await axios.put(API_URL + id, album, config)
   return response.data // return updated album

@@ -1,8 +1,9 @@
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   deleteAlbum,
   createAlbum,
 } from '../features/collection/collectionSlice'
+import { joinAlbumRoom } from '../socket'
 import { useNavigate } from 'react-router-dom'
 import CardButtons from './CardButtons'
 
@@ -10,9 +11,10 @@ const AlbumItem = ({ album, buttonValue }) => {
   const dispatch = useDispatch()
   const Navigate = useNavigate()
 
+  const { user } = useSelector((state) => state.auth)
+
   const owned = buttonValue === 'owned'
   const edit = buttonValue === 'edit'
-
 
   const handleDelete = () => {
     dispatch(deleteAlbum(album._id))
@@ -20,10 +22,24 @@ const AlbumItem = ({ album, buttonValue }) => {
   }
 
   const handleEdit = () => {
-    Navigate(`/edit/${album._id}`)
+    try {
+      Navigate(`/edit/${album._id}`)
+    } catch {
+      console.log('error')
+    }
   }
   const handleAdd = () => {
+    // const room = album.discogsId
     dispatch(createAlbum(album))
+
+    console.log(
+      `hi from albumItem album.discogsId: ${album.discogsId} album.user: ${user._id}`
+    )
+
+    joinAlbumRoom({
+      discogId: album.discogsId,
+      user: user,
+    })
     Navigate('/')
   }
 
@@ -54,9 +70,9 @@ const AlbumItem = ({ album, buttonValue }) => {
           ) : null}
         </section>
         {edit ? (
-          Object.keys(album.customFields).length > 0 ? (
+          album.customFields && Object.keys(album.customFields).length > 0 ? (
             <section className='custom-fields'>
-              <div className="text-display custom-fields">Custom Fields:</div>
+              <div className='text-display custom-fields'>Custom Fields: </div>
               {Object.keys(album.customFields).map((key, index) => {
                 return (
                   <div

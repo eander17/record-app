@@ -16,7 +16,6 @@ export const searchAlbums = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const { query, currentPage } = data
-      console.log(`from search slice thunk: ${query}, ${currentPage}`)
       return await searchService.searchAlbums(query, currentPage)
     } catch (error) {
       const message =

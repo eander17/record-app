@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import {  useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { updateAlbum } from '../features/collection/collectionSlice'
+import { emitCustomFieldUpdate } from  '../socket'
 
 function CustomFieldForm({ album }) {
   const [customKey, setCustomKey] = useState('')
@@ -23,8 +24,15 @@ function CustomFieldForm({ album }) {
     // Add the new customField to the album.customFields array
     const updAlbum = { ...album, customFields: updCustomFields }
 
-    console.log(`updAlbum: ${JSON.stringify(updAlbum)}`)
     dispatch(updateAlbum(updAlbum))
+
+    
+    emitCustomFieldUpdate({       
+      discogId: updAlbum.discogsAlbumId,
+      user: updAlbum.user,
+      key: customKey,
+      value: customValue,
+    })
 
     // Reset the form
     setCustomKey('')

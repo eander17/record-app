@@ -24,7 +24,7 @@ const CustomFieldEdit = ({ fields, onDelete, onChange }) => {
             <button className='del-cust'>
               <FaTimes
                 className='fa del-btn'
-                onClick={(e) => onDelete(e, key)}
+                onClick={(e) => onDelete(key)}
               />
             </button>
           </div>

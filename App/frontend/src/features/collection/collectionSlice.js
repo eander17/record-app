@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import collectionService from './collectionService'
 
+
+
 const initialState = {
   collection: [],
   album: {
@@ -19,7 +21,6 @@ export const createAlbum = createAsyncThunk(
   async (albumData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      console.log(albumData)
       return await collectionService.createAlbum(albumData, token)
     } catch (error) {
       const message =

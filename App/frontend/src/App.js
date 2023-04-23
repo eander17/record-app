@@ -7,11 +7,14 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import SearchResults from './pages/SearchResults'
 import AlbumDetails from './pages/AlbumDetails'
+import CustomFieldUpdateListener from './components/listeners/CustomFieldUpdateListener'
 
-function App() {
+
+const App = () =>  {
   return (
     <>
       <Router>
+
           <Header />
         <div className='content'>
 
@@ -40,6 +43,9 @@ function App() {
         </div>
       </Router>
       <ToastContainer />
+      <CustomFieldUpdateListener />
+
+
     </>
   )
 }

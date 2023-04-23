@@ -17,7 +17,6 @@ const getAlbums = asyncHandler(async (req, res) => {
 // @access  Public
 const getAlbum = asyncHandler(async (req, res) => {
 
-  console.log('hi from getAlbum')
   const album = await Album.findById(req.params.id)
 
   // if album exists, send it back

@@ -98,6 +98,7 @@ function AlbumDetails() {
           </button>
         </section>
 
+            
         <section className='custom-fields'>
           {showCustomFields && <CustomFieldForm album={album} />}
         </section>
