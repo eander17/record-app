@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+// import withNavigationContext from '../context/withNavigationContext'
 import { useSelector, useDispatch } from 'react-redux'
-// import AlbumForm from '../components/AlbumForm'
 import { getCollection, reset } from '../features/collection/collectionSlice.js'
 import AlbumItem from '../components/AlbumItem'
 import Spinner from '../components/Spinner'
@@ -9,7 +9,7 @@ import SearchBar from '../components/SearchBar'
 
 
 
-function Dashboard() {
+const Dashboard = () =>  {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -65,7 +65,6 @@ function Dashboard() {
 
   return (
     <>
-
       <section className='heading'>
         <h1>Welcome {user && user.name}</h1>
         <p>Your Collection</p>
@@ -96,4 +95,5 @@ function Dashboard() {
   )
 }
 
+// export default withNavigationContext(Dashboard)
 export default Dashboard

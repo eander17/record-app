@@ -1,19 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import collectionService from './collectionService'
 
-
-
 const initialState = {
   collection: [],
   album: {
-    customFields: {}, 
-  }, 
+    customFields: {},
+  },
+  customKey: '',
+  customValue: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
-  isEdit: false, 
+  isEdit: false,
   message: '',
 }
+
+
 
 // Create new Album
 export const createAlbum = createAsyncThunk(
@@ -72,14 +74,17 @@ export const getAlbumById = createAsyncThunk(
   }
 )
 
-
 // update user Album
 export const updateAlbum = createAsyncThunk(
   'collection/update',
   async (album, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await collectionService.updateAlbum(album._id, album, token)
+      return await collectionService.updateAlbum(
+        album._id,
+        album,
+        token
+      )
     } catch (error) {
       const message =
         (error.response &&
@@ -116,6 +121,10 @@ export const collectionSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => initialState,
+    setCustomValues: (state, action) => {
+      state.customKey = action.payload.customKey
+      state.customValue = action.payload.customValue
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -153,7 +162,7 @@ export const collectionSlice = createSlice({
         state.isLoading = false
         state.isEdit = false // set to false to allow user to create new album
         state.collection = state.collection.map((album) => {
-          if(album._id === action.payload.id) {
+          if (album._id === action.payload.id) {
             return action.payload
           }
           return album
@@ -172,7 +181,7 @@ export const collectionSlice = createSlice({
       })
       .addCase(deleteAlbum.fulfilled, (state, action) => {
         state.isLoading = false
-        state.isSuccess = true        
+        state.isSuccess = true
         state.collection = state.collection.filter(
           (album) => album._id !== action.payload.id
         )
@@ -198,6 +207,6 @@ export const collectionSlice = createSlice({
   },
 })
 
-export const { reset } = collectionSlice.actions
+export const { reset, setCustomValues } = collectionSlice.actions
 
 export default collectionSlice.reducer

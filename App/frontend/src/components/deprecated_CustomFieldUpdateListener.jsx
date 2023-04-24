@@ -4,15 +4,18 @@ import { toast } from 'react-toastify'
 import socket from '../socket'
 import { updateAlbum } from '../features/collection/collectionSlice'
 
-const CustomFieldUpdateListener = () =>  {
+const CustomFieldUpdateListener = () => {
   const dispatch = useDispatch()
-  const collection = useSelector((state) => state.collection.collection)
+  const collection = useSelector(
+    (state) => state.collection.collection
+  )
 
   useEffect(() => {
-
     // listen for customFieldUpdate events
     socket.on('customFieldUpdate', (data) => {
-      console.log(`received update for custom field ${data.key} with value ${data.value}`)
+      console.log(
+        `received update for custom field ${data.key} with value ${data.value}`
+      )
       console.log(`data.discogsAlbumId: ${data.discogsAlbumId}`)
 
       console.log(`collection: ${collection}`)
@@ -21,17 +24,24 @@ const CustomFieldUpdateListener = () =>  {
       )
       console.log(`albumToUpdate: ${albumToUpdate}`)
 
-      if(albumToUpdate) {
+      if (albumToUpdate) {
         //prompt user to add the custom field to their album
         toast.dark(
           `Another user added a custom field (${data.key}: ${data.value}) to this album. Add it to your album?`,
           {
             autoClose: false,
-            closeOnClick: false,
             draggable: false,
-            hideProgressBar: true, 
             closeButton: true,
+            closeOnClick: false,
             position: 'top-center',
+            hideProgressBar: true,
+            
+            
+            
+            
+            
+            
+              
             onOpen: () => {
               // when user clicks the "add" button, update the album with the new custom field
               toast.info(
@@ -39,7 +49,9 @@ const CustomFieldUpdateListener = () =>  {
                   className='toast-btn'
                   onClick={() => {
                     // create a new obj with customKey and customValue
-                    const customField = { [data.key]: data.value }
+                    const customField = {
+                      [data.key]: data.value,
+                    }
                     // create a new Map object and add the customField obj to it
                     const updCustomFields = {
                       ...albumToUpdate.customFields,
@@ -57,11 +69,9 @@ const CustomFieldUpdateListener = () =>  {
                   Add
                 </button>
               )
-            }
-            
+            },
           }
         )
-  
       }
     })
 
@@ -69,7 +79,7 @@ const CustomFieldUpdateListener = () =>  {
       socket.disconnect()
     }
   }, [collection, dispatch])
-  return null; 
+  return null
 }
 
 export default CustomFieldUpdateListener

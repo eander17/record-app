@@ -1,16 +1,30 @@
-import {  useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateAlbum } from '../features/collection/collectionSlice'
-import { emitCustomFieldUpdate } from  '../socket'
+import {setCustomFields} from '../features/collection/fieldsSlice'
+import { emitCustomFieldUpdate } from '../socket'
 
 function CustomFieldForm({ album }) {
-  const [customKey, setCustomKey] = useState('')
-  const [customValue, setCustomValue] = useState('')
   const dispatch = useDispatch()
+
+  const customKey  = useSelector(
+    (state) => state.fields.customKey
+  )
+  const  customValue  = useSelector(
+    (state) => state.fields.customValue
+  )
+  // const [customKey, setCustomKey] = useState('')
+  // const [customValue, setCustomValue] = useState(valueFromRedux)
+
+  const handleChange = () => {
+    dispatch(setCustomFields({ customKey, customValue }))
+  }
+
 
   const handleAddCustomField = (e) => {
     e.preventDefault()
 
+    console.log(`in handleAddCustomField`)
     console.log(`customKey: ${customKey}`)
     console.log(`customValue: ${customValue}`)
 
@@ -26,17 +40,16 @@ function CustomFieldForm({ album }) {
 
     dispatch(updateAlbum(updAlbum))
 
-    
-    emitCustomFieldUpdate({       
+    emitCustomFieldUpdate({
       discogId: updAlbum.discogsAlbumId,
       user: updAlbum.user,
       key: customKey,
       value: customValue,
     })
 
-    // Reset the form
-    setCustomKey('')
-    setCustomValue('')
+    // // Reset the form
+    // setCustomKey('')
+    // setCustomValue('')
   }
 
   return (
@@ -48,7 +61,7 @@ function CustomFieldForm({ album }) {
           id='customKey'
           value={customKey}
           placeholder='Enter Custom Key'
-          onChange={(e) => setCustomKey(e.target.value)}
+          onChange={handleChange}
         />
         <input
           type='text'
@@ -56,7 +69,7 @@ function CustomFieldForm({ album }) {
           id='customValue'
           value={customValue}
           placeholder='Enter Custom Value'
-          onChange={(e) => setCustomValue(e.target.value)}
+          onChange={handleChange}
         />
         <button
           type='submit'

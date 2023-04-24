@@ -5,7 +5,7 @@ import { updateAlbum } from '../features/collection/collectionSlice'
 import AlbumFormDefaults from './AlbumFormDefaults'
 import CustomFieldEdit from './CustomFieldEdit'
 
-function CustomFieldForm({ album }) {
+function AlbumEdit({ album }) {
   const dispatch = useDispatch()
 
   const [title, setTitle] = useState(album.title)
@@ -16,27 +16,26 @@ function CustomFieldForm({ album }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
 
     const updAlbum = {
-      ...album, 
+      ...album,
       title,
       artist,
       genre,
       year,
-      customFields
+      customFields,
     }
 
     dispatch(updateAlbum(updAlbum))
-    
   }
 
-  const handleDelete = (e, key) => {
-    e.preventDefault()
-    setCustomFields((prev) => 
-    Object.fromEntries(Object.entries(prev).filter(([k, v]) => k !== key))
-  )
-    console.log(e)
+  const handleDelete = (key) => {
+    // e.preventDefault()
+    setCustomFields((prev) =>
+      Object.fromEntries(
+        Object.entries(prev).filter(([k]) => k !== key)
+      )
+    )
   }
 
   const handleFieldChange = (e, key) => {
@@ -73,12 +72,13 @@ function CustomFieldForm({ album }) {
             />
           )}
         </section>
-        <button className="edit-submit" >
-          <FaSave className="fa save-btn" />Save Changes
+        <button className='edit-submit'>
+          <FaSave className='fa save-btn' />
+          Save Changes
         </button>
       </form>
     </section>
   )
 }
 
-export default CustomFieldForm
+export default AlbumEdit

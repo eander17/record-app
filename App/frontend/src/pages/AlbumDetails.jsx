@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { FaPlus, FaEdit, FaTimes } from 'react-icons/fa'
 import { getAlbumById, reset } from '../features/collection/collectionSlice'
-import Spinner from '../components/Spinner'
 import CustomFieldForm from '../components/CustomFieldForm'
 import AlbumItem from '../components/AlbumItem'
 import AlbumEdit from '../components/AlbumEdit'
@@ -14,9 +13,10 @@ function AlbumDetails() {
 
   const { id } = useParams()
   const { user } = useSelector((state) => state.auth)
-  const { album, isLoading, isError, message } = useSelector(
+  const { album, isError, message } = useSelector(
     (state) => state.collection
   )
+  const hasValue = useSelector((state) => state.fields)
 
   const [showCustomFields, setShowCustomFields] = useState(false)
   const [showEditFields, setShowEditFields] = useState(false)
@@ -41,17 +41,17 @@ function AlbumDetails() {
     } else {
       dispatch(getAlbumById(id))
     }
+
+    hasValue && setShowCustomFields(true)
+
     // triggered when component unmounts
     return () => {
-      dispatch(reset())
+     dispatch(reset())
     }
-  }, [dispatch, id, navigate, user, isError, message])
+  }, [dispatch, id, navigate, user, isError, message, hasValue])
 
   if (!album) {
     return <h1>Album not found</h1>
-  }
-  if (isLoading) {
-    return <Spinner />
   }
 
   return (
