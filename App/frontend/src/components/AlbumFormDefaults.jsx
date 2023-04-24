@@ -1,14 +1,14 @@
 
-const AlbumFormDefaults = ({ 
-  title,
-  setTitle,
-  artist,
-  setArtist,
-  genre,
-  setGenre,
-  year,
-  setYear,
- }) => {
+const AlbumFormDefaults = ({fields, onChange}) => {
+
+  /*  // FIXME: list of things to fix in this component:
+   *    // ! 1. TypeError: can't convert undefined to object - line: 65
+   *    // ! 2. props, it's ugly having all these state variables passed in
+   */
+
+  const {title, artist, genre, year } = fields
+
+  console.log(`title: ${title}`)
 
   // only allow numbers to be entered into year field
   // this might be problematic.
@@ -17,7 +17,7 @@ const AlbumFormDefaults = ({
     const yearRegex = /^[0-9\b]+$/
 
     if (value === '' || yearRegex.test(value)) {
-      setYear(value)
+      onChange(e, 'year')
     }
   }
 
@@ -30,7 +30,7 @@ const AlbumFormDefaults = ({
         id='title'
         value={title}
         placeholder='Enter Album Title'
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => onChange(e, 'title')}
       />
       <input
         type='text'
@@ -38,7 +38,7 @@ const AlbumFormDefaults = ({
         id='artist'
         value={artist}
         placeholder='Enter Artist Name'
-        onChange={(e) => setArtist(e.target.value)}
+        onChange={(e) => onChange(e, 'artist')}
       />
       <input
         type='text'
@@ -46,7 +46,7 @@ const AlbumFormDefaults = ({
         id='genre'
         placeholder='Enter Genre'
         value={genre}
-        onChange={(e) => setGenre(e.target.value)}
+        onChange={(e) => onChange(e, 'genre')}
       />
       <input
         type='text'

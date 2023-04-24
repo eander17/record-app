@@ -1,6 +1,21 @@
+import { useSelector } from 'react-redux'
 import { FaTimes } from 'react-icons/fa'
 
-const CustomFieldEdit = ({ fields, onDelete, onChange }) => {
+//ANCHOR - CustomFieldEdit: 
+  //? displays custom fields for editing on AlbumeDetails page. 
+  //? called from AlbumEdit component.
+  // TODO: 
+    // todo make fields prop a state variable?
+
+/// Component CustomFieldEdit
+const CustomFieldEdit = ({ onDelete, onChange, fields }) => {
+
+  //info - fields is for user's fields, not emitter fields. 
+  //info - fields is an object of key-value pairs.
+
+  // const { fields } = useSelector((state) => state.collection.album)
+
+  if(!fields || Object.values(fields).length === 0) return null 
 
 
   return (
@@ -14,8 +29,8 @@ const CustomFieldEdit = ({ fields, onDelete, onChange }) => {
             <label className='key' htmlFor={key}>{key}</label>
             <input
               type='text'
-              id={value}
-              name={value}
+              id={key}
+              name={key}
               value={value}
               placeholder='Edit value'
               className='value'
@@ -24,7 +39,7 @@ const CustomFieldEdit = ({ fields, onDelete, onChange }) => {
             <button className='del-cust'>
               <FaTimes
                 className='fa del-btn'
-                onClick={(e) => onDelete(key)}
+                onClick={(e) => onDelete(e, key)}
               />
             </button>
           </div>

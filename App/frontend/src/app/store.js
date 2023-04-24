@@ -1,14 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit'
+
+/// REDUCERS /// 
 import authReducer from '../features/auth/authSlice'
 import collectionReducer from '../features/collection/collectionSlice'
 import searchResultsReducer from '../features/search/searchSlice'
-import socketReducer from '../features/socket/socketSlice'
+import custFieldSliceReducer from '../features/custFields/fieldSlice'
+import dummySliceReducer from '../features/dummyState/dummySlice'
 
-export const store = configureStore({
+const store =  configureStore({
   reducer: {
     auth: authReducer,
     collection: collectionReducer,
     search: searchResultsReducer,
-    socket: socketReducer, 
-  },
+    custFields: custFieldSliceReducer,
+    dummy: dummySliceReducer,
+  } 
 })
+
+export default store

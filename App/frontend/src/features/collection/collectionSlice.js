@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import collectionService from './collectionService'
 
+// TODO: separate custom fields from album object. 
 const initialState = {
   collection: [],
   album: {
     customFields: {},
   },
-  customKey: '',
-  customValue: '',
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -120,11 +119,13 @@ export const collectionSlice = createSlice({
   name: 'collection',
   initialState,
   reducers: {
-    reset: (state) => initialState,
-    setCustomValues: (state, action) => {
-      state.customKey = action.payload.customKey
-      state.customValue = action.payload.customValue
-    },
+    reset: (state) => initialState, 
+    setAlbum: (state, action) => {
+      return {
+        ...state,
+        album: action.payload,
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -207,6 +208,6 @@ export const collectionSlice = createSlice({
   },
 })
 
-export const { reset, setCustomValues } = collectionSlice.actions
+export const { reset } = collectionSlice.actions
 
 export default collectionSlice.reducer

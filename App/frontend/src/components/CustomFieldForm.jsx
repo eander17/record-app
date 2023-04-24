@@ -1,25 +1,21 @@
-import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateAlbum } from '../features/collection/collectionSlice'
-import {setCustomFields} from '../features/collection/fieldsSlice'
+import { updateAlbum } from '../features/collection/collectionSlice' 
+import {resetFields, setCustomFields} from '../features/custFields/fieldSlice'
 import { emitCustomFieldUpdate } from '../socket'
 
-function CustomFieldForm({ album }) {
+function CustomFieldForm() {
   const dispatch = useDispatch()
 
-  const customKey  = useSelector(
-    (state) => state.fields.customKey
+  const { album } = useSelector((state) => state.collection)
+
+  // FIXME: Something here is causing breakage. 
+  const { customKey, customValue } = useSelector(
+    (state) => state.fields
   )
-  const  customValue  = useSelector(
-    (state) => state.fields.customValue
-  )
-  // const [customKey, setCustomKey] = useState('')
-  // const [customValue, setCustomValue] = useState(valueFromRedux)
 
   const handleChange = () => {
     dispatch(setCustomFields({ customKey, customValue }))
   }
-
 
   const handleAddCustomField = (e) => {
     e.preventDefault()
@@ -28,7 +24,11 @@ function CustomFieldForm({ album }) {
     console.log(`customKey: ${customKey}`)
     console.log(`customValue: ${customValue}`)
 
-    // TODO: check if customKey already exists in album.customFields
+    // check if customKey already exists in album.customFields
+    if (customKey in album.customFields) {
+      console.log(`customKey already exists`)
+      return
+    }
 
     // Create a new object with the customKey and customValue
     const customField = { [customKey]: customValue }
@@ -47,9 +47,7 @@ function CustomFieldForm({ album }) {
       value: customValue,
     })
 
-    // // Reset the form
-    // setCustomKey('')
-    // setCustomValue('')
+    dispatch(resetFields())
   }
 
   return (

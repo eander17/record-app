@@ -37,6 +37,7 @@ const albumSchema = mongoose.Schema({
     customFields: {
         type: Map, // allows for any key/value pair
         of: mongoose.Schema.Types.Mixed, // allows for any type of value
+        required: false,
     }
 }, {
     timestamps: true, 

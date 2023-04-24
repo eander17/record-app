@@ -1,50 +1,88 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import { FaSave } from 'react-icons/fa'
-import { updateAlbum } from '../features/collection/collectionSlice'
+import {
+  updateAlbum,
+} from '../features/collection/collectionSlice'
 import AlbumFormDefaults from './AlbumFormDefaults'
 import CustomFieldEdit from './CustomFieldEdit'
 
-function AlbumEdit({ album }) {
+// ANCHOR - AlbumEdit - Component
+//? details:
+// allows user to edit an album object.
+//! manipulates the album object
+//? actions:
+// 1. delete custom field
+// 2. update album object
+//? Called in:
+// 1. AlbumDetails.jsx
+//? Children:
+// 1. AlbumFormDefaults.jsx
+// 2. CustomFieldEdit.jsx
+//? States:
+// 1. collection:
+// a. album: title, artist, genre, year, customFields
+function AlbumEdit() {
   const dispatch = useDispatch()
 
-  const [title, setTitle] = useState(album.title)
-  const [artist, setArtist] = useState(album.artist)
-  const [genre, setGenre] = useState(album.genre)
-  const [year, setYear] = useState(album.year)
-  const [customFields, setCustomFields] = useState(album.customFields)
+  const { album } = useSelector((state) => state.collection)
+
+  console.log(`album: ${JSON.stringify(album)}}`)
+
+  // set to true if album has customFields
+  const anyCustomFields =
+    album.customFields && Object.values(album.customFields).length > 0
+
+  const [data, setData] = useState({
+    title: album.title,
+    artist: album.artist,
+    genre: album.genre,
+    year: album.year,
+    ...(anyCustomFields ? { customFields: album.customFields } : {}),
+  })
+
+  console.log(`data: ${JSON.stringify(data)}`)
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const updAlbum = {
-      ...album,
-      title,
-      artist,
-      genre,
-      year,
-      customFields,
+    // if any of the required fields are empty, return
+    if (emptyFields()) {
+      console.error('cannot submit empty fields')
+      toast.error('Cannot submit empty fields')
+      return
     }
 
-    dispatch(updateAlbum(updAlbum))
+    dispatch(updateAlbum({ ...album, ...data }))
   }
 
-  const handleDelete = (key) => {
-    // e.preventDefault()
-    setCustomFields((prev) =>
-      Object.fromEntries(
-        Object.entries(prev).filter(([k]) => k !== key)
-      )
+  const handleDelete = (e, key) => {
+    e.preventDefault()
+    // filter out customField to be deleted.
+    const newCustomFields = Object.fromEntries(
+      Object.entries(data.customFields).filter(([k]) => k !== key)
     )
+    // update albumData state with new customFields object
+    setData({ ...data, customFields: newCustomFields })
   }
 
-  const handleFieldChange = (e, key) => {
+  const handleChange = (e, key) => {
+    console.log(
+      `hi from handleChange key: ${key} e.target.value: ${e.target.value}`
+    )
     const { value } = e.target
-
-    setCustomFields((prev) => ({
+    // update albumData state with new value
+    setData((prev) => ({
       ...prev,
       [key]: value,
     }))
+  }
+
+  const emptyFields = () => {
+    return Object.values(data).some(
+      (value) => value === '' || value === null
+    )
   }
 
   return (
@@ -55,20 +93,17 @@ function AlbumEdit({ album }) {
       >
         <section className='form-group'>
           <AlbumFormDefaults
-            title={title}
-            setTitle={setTitle}
-            artist={artist}
-            setArtist={setArtist}
-            genre={genre}
-            setGenre={setGenre}
-            year={year}
-            setYear={setYear}
+            onChange={handleChange}
+            fields={data}
           />
-          {Object.keys(customFields).length > 0 && (
+          {/*  // FIXME: I think this is where the problem is.
+           *     //! controls whether to place customFields forms for editing
+           */}
+          {anyCustomFields && (
             <CustomFieldEdit
-              fields={customFields}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               onDelete={handleDelete}
+              fields={data.customFields}
             />
           )}
         </section>

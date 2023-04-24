@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+/// IMPORT PAGES
 import Header from './components/Header'
 import Dashboard from './pages/Dashboard'
 import Register from './pages/Register'
@@ -17,31 +18,31 @@ const App = () => {
   return (
     <>
       <Router>
-      <CustomFieldUpdateListener />
+        <CustomFieldUpdateListener />
         <Header />
         <div className='content'>
-            <Routes>
-              <Route
-                path='/'
-                element={<Dashboard />}
-              />
-              <Route
-                path='/login'
-                element={<Login />}
-              />
-              <Route
-                path='/register'
-                element={<Register />}
-              />
-              <Route
-                path='/search/:query'
-                element={<SearchResults />}
-              />
-              <Route
-                path='/edit/:id'
-                element={<AlbumDetails />}
-              />
-            </Routes>
+          <Routes>
+            <Route
+              path='/'
+              element={<Dashboard />}
+            />
+            <Route
+              path='/login'
+              element={<Login />}
+            />
+            <Route
+              path='/register'
+              element={<Register />}
+            />
+            <Route
+              path='/search/:query'
+              element={<SearchResults />}
+            />
+            <Route
+              path='/edit/:id'
+              element={<AlbumDetails />}
+            />
+          </Routes>
         </div>
       </Router>
       <ToastContainer

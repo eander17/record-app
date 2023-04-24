@@ -51,6 +51,7 @@ const createAlbum = asyncHandler(async (req, res) => {
     genre: req.body.genre,
     year: req.body.year,
     image: req.body.image,
+    customFields: {},
     discogsAlbumId: req.body.discogsId,
     user: req.user.id, // this is the user id
   })
@@ -63,8 +64,6 @@ const createAlbum = asyncHandler(async (req, res) => {
 // @access  Private
 const updateAlbum = asyncHandler(async (req, res) => {
   const album = await Album.findById(req.params.id)
-
-  console.log(`hi from updateAlbum, album: ${req.body}`)
 
   if (!album) {
     res.status(400)

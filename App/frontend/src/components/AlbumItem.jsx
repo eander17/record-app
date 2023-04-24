@@ -1,48 +1,71 @@
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+//! Functions
 import {
   deleteAlbum,
   createAlbum,
 } from '../features/collection/collectionSlice'
 import { joinAlbumRoom } from '../socket'
-import { useNavigate } from 'react-router-dom'
+//! Components
 import CardButtons from './CardButtons'
 
+//ANCHOR - AlbumItem: displays album information
+  //? details: 
+    //! does not change data. 
+  //? action: 
+    // 1. displays album information.
+    // 2. dispatches add, and delete. 
+    // 3. navigates to album details page.
+    // 4. emits joinAlbumRoom event. 
+  // info: Called by: 
+    // 1. Dashboard (root page)
+    // 2. AlbumDetails (album details page)
+    // 3. SearchResults (lists results from discogs query)    
 const AlbumItem = ({ album, buttonValue }) => {
   const dispatch = useDispatch()
-  const Navigate = useNavigate()
+  const navigate = useNavigate()
 
   const { user } = useSelector((state) => state.auth)
+  // const { album } = useSelector((state) => state.collection)
+  //! pretty sure discogsId is wrong, and should be discogsAlbumId. I'm just following what I previously had in here. 
+  const { title, artist, genre, year, customFields, image,  _id, discogsId } = album
 
+  // REVIEW - is this the best way to handle this?
   const owned = buttonValue === 'owned'
   const edit = buttonValue === 'edit'
 
+  /// handleDelete: deletes album from user's collection
   const handleDelete = () => {
-    dispatch(deleteAlbum(album._id))
-    Navigate('/')
+    dispatch(deleteAlbum(_id)) // id === album's id
+    navigate('/')
   }
 
+  /// handleEdit: navigates to albumDetails page
   const handleEdit = () => {
     try {
-      Navigate(`/edit/${album._id}`)
+      navigate(`/edit/${_id}`) // navigate to user's album details page. 
     } catch {
       console.log('error')
     }
   }
+  /// handleAdd: add album to user's collection
   const handleAdd = () => {
-    // const room = album.discogsId
+    //? creating album. It won't be changed, so no need to pass destructured vars. 
     dispatch(createAlbum(album))
 
     console.log(
-      `hi from albumItem album.discogsId: ${album.discogsId} album.user: ${user._id}`
+      `hi from albumItem album.discogsId: ${discogsId} album.user: ${user}`
     )
 
+    /// joinAlbumRoom: join the socket room for this album
     joinAlbumRoom({
-      discogId: album.discogsId,
+      discogId: discogsId,
       user: user,
     })
-    Navigate('/')
+    navigate('/')
   }
 
+  // REVIEW - Can I clean this up? 
   return (
     <div className='album card'>
       <CardButtons
@@ -54,14 +77,14 @@ const AlbumItem = ({ album, buttonValue }) => {
 
       <section className='album-data'>
         <img
-          src={album.image}
-          alt={album.title}
+          src={image}
+          alt={title}
         />
         <section className='default-fields'>
-          <div className='text-display'>{album.title}</div>
-          <div className='text-display'>{album.artist}</div>
-          <div className='text-display'>{album.genre}</div>
-          <div className='text-display'>{album.year}</div>
+          <div className='text-display'>{title}</div>
+          <div className='text-display'>{artist}</div>
+          <div className='text-display'>{genre}</div>
+          <div className='text-display'>{year}</div>
           {owned ? (
             <div>
               Date Created:{' '}
@@ -70,16 +93,17 @@ const AlbumItem = ({ album, buttonValue }) => {
           ) : null}
         </section>
         {edit ? (
-          album.customFields && Object.keys(album.customFields).length > 0 ? (
+          //info: if fields exist and has length>0, map over them and display them
+          customFields && Object.keys(customFields).length > 0 ? (
             <section className='custom-fields'>
               <div className='text-display custom-fields'>Custom Fields: </div>
-              {Object.keys(album.customFields).map((key, index) => {
+              {Object.keys(customFields).map((key, index) => {
                 return (
                   <div
                     key={index}
                     className='text-display'
                   >
-                    {key}: {album.customFields[key]}
+                    {key}: {customFields[key]}
                   </div>
                 )
               })}

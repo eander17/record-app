@@ -1,3 +1,8 @@
+// TODO: 
+  // 1. clean out comments
+  // 2. clean out unused code
+  // 3. maybe figure out a slice? 
+
 import {io}  from 'socket.io-client'
 
 const socket = io('http://localhost:5000')
