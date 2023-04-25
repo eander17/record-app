@@ -23,7 +23,7 @@ import CustomFieldEdit from './CustomFieldEdit'
 //? States:
 // 1. collection:
 // a. album: title, artist, genre, year, customFields
-function AlbumEdit() {
+function AlbumEdit({ notifyParent }) {
   const dispatch = useDispatch()
 
   const { album } = useSelector((state) => state.collection)
@@ -54,6 +54,7 @@ function AlbumEdit() {
       return
     }
 
+    notifyParent() // notify parent to close modal
     dispatch(updateAlbum({ ...album, ...data }))
   }
 
@@ -67,7 +68,7 @@ function AlbumEdit() {
     setData({ ...data, customFields: newCustomFields })
   }
 
-  const handleChange = (e, key) => {
+  const handleDefaultsChange = (e, key) => {
     console.log(
       `hi from handleChange key: ${key} e.target.value: ${e.target.value}`
     )
@@ -76,6 +77,21 @@ function AlbumEdit() {
     setData((prev) => ({
       ...prev,
       [key]: value,
+    }))
+  }
+
+  const handleCustomChange = (e, key) => {
+    console.log(
+      `hi from handleChange key: ${key} e.target.value: ${e.target.value}`
+    )
+    const { value } = e.target
+    // update albumData state with new value
+    setData((prev) => ({
+      ...prev,
+      customFields: {
+        ...prev.customFields,
+        [key]: value,
+      },
     }))
   }
 
@@ -93,7 +109,7 @@ function AlbumEdit() {
       >
         <section className='form-group'>
           <AlbumFormDefaults
-            onChange={handleChange}
+            onChange={handleDefaultsChange}
             fields={data}
           />
           {/*  // FIXME: I think this is where the problem is.
@@ -101,7 +117,7 @@ function AlbumEdit() {
            */}
           {anyCustomFields && (
             <CustomFieldEdit
-              onChange={handleChange}
+              onChange={handleCustomChange}
               onDelete={handleDelete}
               fields={data.customFields}
             />

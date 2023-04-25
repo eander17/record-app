@@ -170,22 +170,6 @@ h3 {
   gap: 10px;
 }
 
-/* .album {
-  background-color: #f4f4f4;
-  margin: 10px 0;
-  padding: 20px 0 10px;
-  position: relative;
-}
-
-.album .close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  cursor: pointer;
-  border: none;
-  background: none;
-} */
-
 .form,
 .content {
   width: 70%;
@@ -302,6 +286,22 @@ h3 {
 
 .del-btn {
   color: $fa-delete;
+}
+
+.del-toast {
+  padding-left: 30px;
+  margin-left: 10px;
+  border-radius: 5px;
+}
+
+.del-toast:hover {
+  color: $fa-delete;
+  transform: scale(0.98);
+}
+
+.Toastify__toast-body {
+  margin-top: 20px; 
+  padding: 10px;
 }
 
 .save-btn {

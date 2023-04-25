@@ -17,8 +17,8 @@ export const fieldSlice = createSlice({
       const { customKey, customValue } = action.payload
       return {
         ...state,
-        customKey,
-        customValue,
+        customKey: customKey || state.customKey,
+        customValue: customValue || state.customValue,
         hasValue: true,
       }
     },

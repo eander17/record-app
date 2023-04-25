@@ -8,7 +8,6 @@ const AlbumFormDefaults = ({fields, onChange}) => {
 
   const {title, artist, genre, year } = fields
 
-  console.log(`title: ${title}`)
 
   // only allow numbers to be entered into year field
   // this might be problematic.

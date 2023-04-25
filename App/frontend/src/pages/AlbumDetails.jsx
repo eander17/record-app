@@ -14,7 +14,7 @@ function AlbumDetails() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { id } = useParams()
+  const { id } = useParams()  //! need to do because store doesn't have album yet. 
   const { user } = useSelector((state) => state.auth)
   const { album, isError, message } = useSelector(
     (state) => state.collection
@@ -25,25 +25,22 @@ function AlbumDetails() {
   // ? useRef to store hasValue in a mutable variable that doesn't cause component to re-render
   const hasValueRef = useRef(hasValue)
   useEffect(() => {
-    console.log('hasValue changed:', hasValue)
     hasValueRef.current = hasValue
   }, [hasValue])
 
   console.log('hasValueRef.current:', hasValueRef.current)
 
-  // ? state variables to control form visibility
+  // ? BOOL: state variables to control form visibility
   const [showCustomFields, setShowCustomFields] = useState(false)
   const [showEditFields, setShowEditFields] = useState(false)
 
   /// handleAddCustomField: toggles the add custom field form
-  const handleAddCustomField = (e) => {
-    e.preventDefault()
+  const handleAddCustomField = () => {
     setShowCustomFields(!showCustomFields)
   }
 
   /// handleEditAlbum: toggles the edit form
-  const handleEditAlbum = (e) => {
-    e.preventDefault()
+  const handleEditAlbum = () => {
     setShowEditFields(!showEditFields)
   }
 
@@ -140,11 +137,11 @@ function AlbumDetails() {
           * 
           */}
         <section className='custom-fields'>
-          {showCustomFields && <CustomFieldForm />}
+          {showCustomFields && <CustomFieldForm notifyParent={handleAddCustomField} />}
         </section>
 
         <section className='edit-fields'>
-          {showEditFields && <AlbumEdit />}
+          {showEditFields && <AlbumEdit notifyParent={handleEditAlbum} />}
         </section>
       </section>
     </>

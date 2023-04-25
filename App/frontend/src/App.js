@@ -46,11 +46,16 @@ const App = () => {
         </div>
       </Router>
       <ToastContainer
+        className='toast-container'
         position='top-right'
         pauseOnFocusLoss={true}
         pauseOnHover={true}
         draggable={true}
-        autoClose={true}
+        autoClose={6000}
+        newestOnTop={true}
+        limit={3}
+        closeButton={false}
+        closeOnClick={true}
       />
     </>
   )

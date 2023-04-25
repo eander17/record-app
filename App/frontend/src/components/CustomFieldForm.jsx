@@ -1,32 +1,38 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { updateAlbum } from '../features/collection/collectionSlice' 
+import { toast  } from 'react-toastify'
 import {resetFields, setCustomFields} from '../features/custFields/fieldSlice'
 import { emitCustomFieldUpdate } from '../socket'
 
-function CustomFieldForm() {
+function CustomFieldForm({ notifyParent }) {
   const dispatch = useDispatch()
 
   const { album } = useSelector((state) => state.collection)
 
-  // FIXME: Something here is causing breakage. 
   const { customKey, customValue } = useSelector(
-    (state) => state.fields
+    (state) => state.custFields
   )
 
-  const handleChange = () => {
-    dispatch(setCustomFields({ customKey, customValue }))
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    dispatch(setCustomFields({ [name]: value }))
   }
 
-  const handleAddCustomField = (e) => {
+  /// FUNCTION: handleAddCustomField - adds a custom field to the album
+  const handleAdd = (e) => {
+    console.log(`in handleAddCustomField value of e: ${e}`)
     e.preventDefault()
-
-    console.log(`in handleAddCustomField`)
-    console.log(`customKey: ${customKey}`)
-    console.log(`customValue: ${customValue}`)
 
     // check if customKey already exists in album.customFields
     if (customKey in album.customFields) {
       console.log(`customKey already exists`)
+      toast.error(`Custom key already exists`)
+      return
+    }
+    // check if customKey or customValue is empty
+    if(!customKey || !customValue) {
+      console.log(`customKey or customValue is empty`)
+      toast.error(`cannot submit empty fields`)
       return
     }
 
@@ -46,12 +52,12 @@ function CustomFieldForm() {
       key: customKey,
       value: customValue,
     })
-
+    notifyParent()
     dispatch(resetFields())
   }
 
   return (
-    <form onSubmit={handleAddCustomField}>
+    <form onSubmit={(e) => handleAdd(e)}>
       <div className='form-group'>
         <input
           type='text'

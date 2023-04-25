@@ -38,15 +38,6 @@ app.use('/api/collection', require('./routes/albumCollectionRoutes')) // routes 
 app.use('/api/users', require('./routes/userRoutes')) // routes for users
 app.use('/api/search', require('./routes/discogRoutes')) // routes for discogs search
 
-// // serve front end
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, '../frontend/build')))
-//   app.get('*', (req, res) =>
-//     res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'))
-//   )
-// } else {
-//   app.get('/', (req, res) => res.send('please set to production'))
-// }
 
 console.log(
   `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
@@ -98,7 +89,7 @@ io.on('connection', (socket) => {
         console.log(
           `sending update to ${userId} params: ${room}, ${key}, ${value}`
         )
-        // io.to(userId).emit('notifyCustomFieldUpdate', { room, key, value })
+
         io
           .to(userId)
           .emit('notifyCustomFieldUpdate', { discogId: room, key: key, value: value })
@@ -111,9 +102,5 @@ io.on('connection', (socket) => {
     console.log(`user disconnected: ${reason}`)
   })
 })
-
-// setInterval(() => {
-//   //io.to('customFieldUpdate').emit('customFieldUpdate', { key: 'deez', value: 'nuts' })
-// })
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`))

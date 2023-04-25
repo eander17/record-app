@@ -6,64 +6,103 @@ import { toast } from 'react-toastify'
 import socket from '../../socket'
 import { setCustomFields } from '../../features/custFields/fieldSlice'
 
+const closeButton = ({ closeToast, onClick }) => {
+  const handleClick = async (e) => {
+    e.stopPropagation()
+    onClick && (await onClick())
+    closeToast()
+  }
+  return (
+    <button
+      className='fa close del-toast'
+      onClick={(e) => handleClick(e)}
+    >
+      <FaTimes />
+    </button>
+  )
+}
+
 const CustomFieldUpdateListener = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { collection } = useSelector((state) => state.collection)
 
-  // useRef to store the collection object in a mutable variable
-  const collectionRef = useRef(collection)
-  useEffect(() => {
-    collectionRef.current = collection
-  }, [collection])
+
+
+  const handleToastClick = useCallback((data) => {
+    const { id, key, value } = data
+    console.log('CLICK THAT TOAST')
+    if (key && value) {
+      dispatch(setCustomFields({ customKey: key, customValue: value }))
+    }
+    if (navigate && id) {
+      console.log(`navigate is true`)
+      navigate(`/edit/${id}`)
+    }
+  }, [dispatch, navigate])
+
+  const toastProps = useRef({
+    closeOnClick: true,
+    icon: false,
+    closeButton: closeButton, 
+    type: toast.TYPE.INFO,
+    position: toast.POSITION.TOP_RIGHT,
+    pauseOnHover: true,
+    pauseOnFocusLoss: true,
+    draggable: true,
+    onClick: handleToastClick,
+    onClose: () => {
+      // TODO: Implement close logic
+      console.log('CLOSE THAT TOAST')
+    },
+    onOpen: () => {
+      // TODO: Implement open logic
+      console.log(`POP THAT TOAST`)
+    },
+
+  })
+
+  //! trying something out
+  // // useRef to store the collection object in a mutable variable
+  // const collectionRef = useRef(collection)
+  // useEffect(() => {
+  //   collectionRef.current = collection
+  // }, [collection])
 
   /// Function Definition: notify
-    // @param : userId === id
-    // @param : customKey === key
-    // @param :  customValue === value
+  // @param : userId === id
+  // @param : customKey === key
+  // @param :  customValue === value
   const notify = useCallback(
     (data) => {
-      const { id, key, value } = data
+      const { id, title, artist, key, value } = data
       const toastId = id
-      const toastProps = {
-        toastId,
-        autoClose: false, // ! change this
-        closeOnClick: false, // ! Change This
-        closeButton: FaTimes,
-        type: toast.TYPE.INFO,
-        position: toast.POSITION.TOP_RIGHT,
-        pauseOnHover: true,
-        pauseOnFocusLoss: true,
-        draggable: true,
-        onClose: () => {
-          // TODO: Implement close logic
-          console.log('CLOSE THAT TOAST')
-        },
-        onOpen: () => {
-          // TODO: Implement open logic
-          console.log(`POP THAT TOAST ${toastId}`)
-        },
-        onClick: () => {
-          console.log('CLICK THAT TOAST')
-          console.log(`confirm is true`)
-          dispatch(
-            setCustomFields({ customKey: key, customValue: value })
-          )
-          if (navigate) {
-            console.log(`navigate is true`)
-            navigate(`/edit/${id}`)
-          }
-        },
-      }
-      toast(`toast`, toastProps)
+      const message = `New custom field 
+      
+      Add ${key}: ${value} to 
+      ${title} by 
+      ${artist}?`;
+
+
+      toast(
+        message,
+        {
+          ...toastProps.current,
+          toastId,
+          onRender: (node) => {
+            node.querySelector('.Toastify__toast-body').innerHTML = message;
+          },
+          onClick:() =>  handleToastClick({ id, key, value }),
+        }
+      )
     },
-    [dispatch, navigate]
+    [handleToastClick, toastProps]
   )
 
-  /// useEffect: 
+  /// useEffect:
   useEffect(() => {
-    // ? handleCustomFieldUpdate: 
-      // handles socket logic for custom field updates, controls toast notifications
+    // ? handleCustomFieldUpdate:
+    // handles socket logic for custom field updates, controls toast notifications
     const handleCustomFieldUpdate = (data) => {
       const { discogId, key, value } = data
       console.log(
@@ -72,15 +111,15 @@ const CustomFieldUpdateListener = () => {
 
       // if collection ref doesnt exist or is empty, return
       if (
-        !collectionRef.current ||
-        collectionRef.current.length === 0
+        !collection ||
+        collection.length === 0
       ) {
-        console.log(`collectionRef is empty`)
+        console.log(`collection is empty`)
         return
       }
 
       // find currentUser album in collectionRef
-      const currUserAlbum = collectionRef.current.find(
+      const currUserAlbum = collection.find(
         (album) => album.discogsAlbumId === discogId
       )
       console.log(
@@ -88,7 +127,14 @@ const CustomFieldUpdateListener = () => {
       )
 
       // calls notify function ONLY if current user's album exists
-      currUserAlbum && notify({ id: currUserAlbum._id, key, value })
+      currUserAlbum &&
+        notify({
+          id: currUserAlbum._id,
+          title: currUserAlbum.title,
+          artist: currUserAlbum.artist,
+          key,
+          value,
+        })
     }
 
     socket.on('notifyCustomFieldUpdate', handleCustomFieldUpdate)
@@ -98,7 +144,7 @@ const CustomFieldUpdateListener = () => {
       // remove listener
       socket.off('notifyCustomFieldUpdate', 'handleCustomFieldUpdate')
     }
-  }, [dispatch, navigate, notify])
+  }, [collection, notify])
 
   return null // component does not render anything, so return null
 }
