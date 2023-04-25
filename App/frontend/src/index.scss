@@ -118,6 +118,21 @@ h3 {
   background-color: #fff;
 }
 
+.header-bar {
+  width: 70%; 
+  margin-left: auto;
+  
+}
+
+.dash-search-bar {
+  width: 50%; 
+  /* align search bar to right */
+  // margin-left: auto; 
+  /* align search bar to center */
+  margin: 0 auto;
+  
+}
+
 .search-bar input[type="search"] {
   flex-grow: 1;
   border: none;
@@ -435,9 +450,19 @@ h3 {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+  .logout-text {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
   .form {
     width: 90%;
+  }
+
+  .header-title {
+    display: none;
   }
 
   .heading h1 {

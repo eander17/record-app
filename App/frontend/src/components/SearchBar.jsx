@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 
-const SearchBar = ({ placeholder, onSubmit, onChange }) => {
+const SearchBar = ({ placeholder, onSubmit, onChange, className }) => {
   const [query, setQuery] = useState('')
 
   const handleSubmit = (e) => {
@@ -17,7 +17,7 @@ const SearchBar = ({ placeholder, onSubmit, onChange }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={className}>
       <div className='search-bar'>
         <input
           type='search'

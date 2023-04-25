@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-// import withNavigationContext from '../context/withNavigationContext'
 import { useSelector, useDispatch } from 'react-redux'
-import { getCollection, reset } from '../features/collection/collectionSlice.js'
+import {
+  getCollection,
+  reset,
+} from '../features/collection/collectionSlice.js'
 import AlbumItem from '../components/AlbumItem'
 import Spinner from '../components/Spinner'
 import SearchBar from '../components/SearchBar'
 
-
-
-const Dashboard = () =>  {
+const Dashboard = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -21,16 +21,10 @@ const Dashboard = () =>  {
   // const [editAlbum, setEditAlbum] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // const handleResetUpdate = (value) => {
-  //   setEditAlbum(null)
-  //   value && dispatch(getCollection())
-  // }
-
   useEffect(() => {
     if (isError) {
       console.log(message)
     }
-
 
     // if user is not logged in, redirect to login page
     if (!user) {
@@ -44,8 +38,6 @@ const Dashboard = () =>  {
       dispatch(reset())
     }
   }, [user, navigate, isError, message, dispatch])
-
-
 
   const handleSearch = (query) => {
     return collection.filter((album) => {
@@ -74,6 +66,7 @@ const Dashboard = () =>  {
         placeholder={'Search Collection'}
         onSubmit={handleSearch}
         onChange={(query) => setSearchQuery(query)}
+        className='dash-search-bar'
       />
 
       <section className='content'>
@@ -95,5 +88,4 @@ const Dashboard = () =>  {
   )
 }
 
-// export default withNavigationContext(Dashboard)
 export default Dashboard

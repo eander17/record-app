@@ -13,6 +13,7 @@ import Login from './pages/Login'
 import SearchResults from './pages/SearchResults'
 import AlbumDetails from './pages/AlbumDetails'
 import CustomFieldUpdateListener from './components/listeners/CustomFieldUpdateListener'
+import NotFoundPage from './pages/NotFoundPage'
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
               path='/edit/:id'
               element={<AlbumDetails />}
             />
+            <Route path='*' element={<NotFoundPage />} />
           </Routes>
         </div>
       </Router>

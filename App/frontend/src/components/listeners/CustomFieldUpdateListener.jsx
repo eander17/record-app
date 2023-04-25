@@ -62,13 +62,6 @@ const CustomFieldUpdateListener = () => {
 
   })
 
-  //! trying something out
-  // // useRef to store the collection object in a mutable variable
-  // const collectionRef = useRef(collection)
-  // useEffect(() => {
-  //   collectionRef.current = collection
-  // }, [collection])
-
   /// Function Definition: notify
   // @param : userId === id
   // @param : customKey === key
@@ -121,9 +114,6 @@ const CustomFieldUpdateListener = () => {
       // find currentUser album in collectionRef
       const currUserAlbum = collection.find(
         (album) => album.discogsAlbumId === discogId
-      )
-      console.log(
-        `from CustomFieldUpdateListener, updAlbum: ${currUserAlbum}`
       )
 
       // calls notify function ONLY if current user's album exists

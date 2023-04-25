@@ -17,6 +17,7 @@ function CardButtons({ buttonValue, handleAdd, handleEdit, handleDelete }) {
     )
   }
 
+
   if (buttonValue === 'owned') {
       return (
         <>
@@ -29,6 +30,8 @@ function CardButtons({ buttonValue, handleAdd, handleEdit, handleDelete }) {
         </>
       )
   }
+
+  return null;
 }
 
 export default CardButtons

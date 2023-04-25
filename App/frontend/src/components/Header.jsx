@@ -17,40 +17,48 @@ function Header() {
   }
 
   const handleSearch = (query) => {
-    navigate(`/search/${query}`);
+    navigate(`/search/${query}`)
   }
 
   return (
     <header className='header'>
       <div className='container'>
         <div className='logo'>
-          <img
-            src={vinylImage}
-            className='headerImg'
-            alt='Vinyl Record Icon'
-          />
+          <Link to='/'>
+            <img
+              src={vinylImage}
+              className='headerImg'
+              alt='Flamin Record Icon'
+            />
+          </Link>
           <Link
             to='/'
             style={{ marginLeft: '8px' }}
+            className='header-title'
           >
-            Record App
+            <span className='app-title'> Record App</span>
           </Link>
         </div>
 
         <ul>
-        <li> 
-          <SearchBar 
-          placeholder={'Add a new album'} 
-          onSubmit={handleSearch} 
-          /> 
-        </li>
+          {user && (
+            <li>
+              <SearchBar
+                placeholder={'Add a new album'}
+                onSubmit={handleSearch}
+                className='header-bar'
+              />
+            </li>
+          )}
+
           {user ? (
             <li>
               <button
                 className='btn'
                 onClick={onLogout}
               >
-                <FaSignOutAlt /> Log out
+                <FaSignOutAlt />
+                <span className='logout-text'>Log out</span>
               </button>
             </li>
           ) : (
