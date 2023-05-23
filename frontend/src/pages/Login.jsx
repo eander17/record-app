@@ -69,7 +69,8 @@ const Login = () => {
         <form onSubmit={onSubmit}>
           <div className='mt-6 '>
             <input
-              type='text'
+              required
+              type='email'
               className=''
               id='email'
               name='email'
@@ -80,6 +81,7 @@ const Login = () => {
           </div>
           <div className='mb-4 mt-2'>
             <input
+              required
               type='password'
               className=' '
               id='password'

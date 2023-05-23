@@ -25,18 +25,15 @@ function CustomFieldForm({ notifyParent }) {
 
   /// FUNCTION: handleAddCustomField - adds a custom field to the album
   const handleAdd = (e) => {
-    console.log(`in handleAddCustomField value of e: ${e}`)
     e.preventDefault()
 
     // check if customKey already exists in album.customFields
     if (customKey in album.customFields) {
-      console.log(`customKey already exists`)
       toast.error(`Custom key already exists`)
       return
     }
     // check if customKey or customValue is empty
     if (!customKey || !customValue) {
-      console.log(`customKey or customValue is empty`)
       toast.error(`cannot submit empty fields`)
       return
     }

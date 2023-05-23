@@ -1,0 +1,11 @@
+**/.env
+vite.config.js
+.eslintrc.cjs
+.vite
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/test
+**/tests
+**/tmp

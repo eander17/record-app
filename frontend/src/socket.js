@@ -1,7 +1,8 @@
+/** @format */
+
 // TODO:
 // [ ] figure out a slice
-// [ ] 
-
+// [ ]
 
 import { io } from 'socket.io-client'
 
@@ -11,7 +12,7 @@ const socket = io('http://localhost:5000', {
 })
 
 socket.on('connect', () => {
-  console.log(`socket connected: ${socket.id}`)
+  console.log(`socket connected`)
 
   // Get the user's data from the local storage
   const userData = JSON.parse(localStorage.getItem('userData'))
@@ -28,9 +29,7 @@ socket.on('connect', () => {
 /// SECTION emitters
 
 const joinAlbumRoom = ({ discogId, user }) => {
-  console.log(
-    `emitting joinAlbumRoom event with data: ${discogId}, ${user._id}`
-  )
+  console.log('emitting joinAlbumRoom event')
   socket.emit('joinAlbumRoom', { room: discogId, id: user._id })
 
   // Save the user's data in the local storage
@@ -41,9 +40,7 @@ const joinAlbumRoom = ({ discogId, user }) => {
 }
 
 const emitCustomFieldUpdate = ({ discogId, user, key, value }) => {
-  console.log(
-    `emitting customFieldUpdate event with data: ${discogId}, ${user}, ${key}, ${value}`
-  )
+  console.log('emitting customFieldUpdate event')
   socket.emit('emitCustomFieldUpdate', {
     room: discogId,
     id: user,
@@ -70,9 +67,6 @@ socket.on('reconnect', () => {
   }
 })
 
-
 export { joinAlbumRoom, emitCustomFieldUpdate }
 
 export default socket
-
-

@@ -19,7 +19,6 @@ const PORT = process.env.PORT || 5000; // Port number
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
-const colors = require("colors");
 
 /// Middleware Section ///
 
@@ -46,7 +45,7 @@ app.use(errorHandler);
 /// Socket IO Section ///
 // add a socket.io connection listener
 io.on("connection", (socket) => {
-  console.log("client connected: ", socket.id);
+  console.log("client connected: ");
 
   //* joinAlbumRoom - Listens for a user to join a room
   //? room === discogsId
@@ -54,7 +53,6 @@ io.on("connection", (socket) => {
   //? join room listener
   socket.on("joinAlbumRoom", (data) => {
     const { room, id } = data;
-    console.log(`user ${id} joined room ${room}`);
     socket.join(room);
     socket.join(id);
 
@@ -71,26 +69,14 @@ io.on("connection", (socket) => {
   socket.on("emitCustomFieldUpdate", (data) => {
     const { room, id, key, value } = data;
 
-    console.log(
-      `in room ${room} received update from ${id} for custom field ${key} with value ${value}`
-    );
-
     const albumUsers = albumUserMap.get(room) || new Set(); // get the set of users in the room
 
     //? if the user is the only one in the room, don't send the update
-    if (albumUsers.size === 1 && albumUsers.has(id)) {
-      console.log("user is the only one in the room, not sending update");
-      return;
-    }
+    if (albumUsers.size === 1 && albumUsers.has(id)) return;
 
     //? emit the updated custom field data to all connected clients in the room
     albumUsers.forEach((userId) => {
       if (userId !== id) {
-        console.log(`userId: ${userId} id: ${id}`);
-        console.log(
-          `sending update to ${userId} params: ${room}, ${key}, ${value}`
-        );
-
         io.to(userId).emit("notifyCustomFieldUpdate", {
           discogId: room,
           key: key,
@@ -102,7 +88,7 @@ io.on("connection", (socket) => {
 
   // disconnect listener
   socket.on("disconnect", (reason) => {
-    console.log(`user disconnected: ${reason}`);
+    console.log(`user disconnected`);
   });
 });
 

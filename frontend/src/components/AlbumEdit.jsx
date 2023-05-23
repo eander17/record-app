@@ -28,8 +28,6 @@ function AlbumEdit({ notifyParent }) {
 
   const { album } = useSelector((state) => state.collection)
 
-  console.log(`album: ${JSON.stringify(album)}}`)
-
   // set to true if album has customFields
   const anyCustomFields =
     album.customFields && Object.values(album.customFields).length > 0
@@ -42,14 +40,11 @@ function AlbumEdit({ notifyParent }) {
     ...(anyCustomFields ? { customFields: album.customFields } : {}),
   })
 
-  console.log(`data: ${JSON.stringify(data)}`)
-
   const handleSubmit = (e) => {
     e.preventDefault()
 
     // if any of the required fields are empty, return
     if (emptyFields()) {
-      console.error('cannot submit empty fields')
       toast.error('Cannot submit empty fields')
       return
     }
@@ -69,9 +64,6 @@ function AlbumEdit({ notifyParent }) {
   }
 
   const handleDefaultsChange = (e, key) => {
-    console.log(
-      `hi from handleChange key: ${key} e.target.value: ${e.target.value}`
-    )
     const { value } = e.target
     // update albumData state with new value
     setData((prev) => ({
@@ -81,9 +73,6 @@ function AlbumEdit({ notifyParent }) {
   }
 
   const handleCustomChange = (e, key) => {
-    console.log(
-      `hi from handleChange key: ${key} e.target.value: ${e.target.value}`
-    )
     const { value } = e.target
     // update albumData state with new value
     setData((prev) => ({

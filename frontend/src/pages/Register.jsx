@@ -97,7 +97,7 @@ const Register = () => {
           />
           <input
             required
-            type='text'
+            type='email'
             className='my-1'
             id='email'
             name='email'

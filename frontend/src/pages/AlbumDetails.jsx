@@ -46,7 +46,7 @@ function AlbumDetails() {
 
   useEffect(() => {
     if (isError) {
-      console.log(message)
+      console.error(message)
     }
     // if user is not logged in, redirect to login page
     if (!user) {

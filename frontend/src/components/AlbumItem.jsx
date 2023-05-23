@@ -42,17 +42,13 @@ const AlbumItem = ({ album, buttonValue }) => {
     try {
       navigate(`/edit/${_id}`) // navigate to user's album details page.
     } catch {
-      console.log('error')
+      console.error('error')
     }
   }
   /// handleAdd: add album to user's collection
   const handleAdd = () => {
     //? creating album. It won't be changed, so no need to pass destructured vars.
     dispatch(createAlbum(album))
-
-    console.log(
-      `hi from albumItem album.discogsId: ${discogsId} album.user: ${user}`
-    )
 
     /// joinAlbumRoom: join the socket room for this album
     joinAlbumRoom({
