@@ -95,9 +95,9 @@ io.on("connection", (socket) => {
 /// Serve Application ///
 // serve front end
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "./build")));
+  app.use(express.static(path.join(__dirname, "./dist")));
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "./build", "index.html"))
+    res.sendFile(path.resolve(__dirname, "./dist", "index.html"))
   );
 } else {
   app.get("/", (req, res) => res.send("please set to production"));

@@ -13,10 +13,10 @@
 body {
   font-family: 'Poppins', sans-serif;
   height: 100vh;
-  @apply bg-white dark:bg-midnight-blue;
+  /* @apply bg-white dark:bg-midnight-blue; */
 }
 
-@layer components {
+/* @layer components {
   h1 {
     @apply capitalize text-4xl mb-4 font-bold underline decoration-2
          text-jewel decoration-void hover:cursor-default
@@ -47,4 +47,4 @@ body {
   .tooltip {
     @apply absolute w-auto p-1.5 m-2 min-w-max rounded-md shadow-md text-stark bg-jewel text-xs font-bold transition-all duration-200 scale-0;
   }
-}
+} */

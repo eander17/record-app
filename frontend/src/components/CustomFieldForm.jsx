@@ -58,11 +58,17 @@ function CustomFieldForm({ notifyParent }) {
     dispatch(resetFields())
   }
 
+  const handleCancel = (e) => {
+    e.preventDefault()
+    dispatch(resetFields())
+    notifyParent() // ? notify parent to re-render
+  }
+
   return (
     <form onSubmit={(e) => handleAdd(e)}>
-      <div className='mb-1 mt-2 flex flex-col '>
+      <div className='input-group input-group-md input-group-vertical my-2'>
         <input
-          className='mb-1 mt-2 rounded-lg border border-solid border-gray-500 text-sm py-1.5 px-2 pl-3'
+          className='input input-bordered input-md'
           type='text'
           name='customKey'
           id='customKey'
@@ -71,7 +77,7 @@ function CustomFieldForm({ notifyParent }) {
           onChange={handleChange}
         />
         <input
-          className='mb-1 mt-2 rounded-lg border border-solid border-gray-500 text-sm py-1.5 px-2 pl-3'
+          className='input input-bordered input-md my-2'
           type='text'
           name='customValue'
           id='customValue'
@@ -79,12 +85,20 @@ function CustomFieldForm({ notifyParent }) {
           placeholder='Enter Custom Value'
           onChange={handleChange}
         />
-        <button
-          className='text-sm px-1 py-1 btn mb-1 mt-2'
-          type='submit'
-        >
-          Add Custom Field
-        </button>
+        <div className=' my-2'>
+          <button
+            className='btn btn-primary mx-2'
+            type='submit'
+          >
+            Create Field
+          </button>
+          <button
+            className='btn hover:bg-fa-delete mx-2'
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </form>
   )

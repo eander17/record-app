@@ -14,37 +14,35 @@ const CustomFieldEdit = ({ onDelete, onChange, fields }) => {
 
   return (
     <section className='mb-4 flex flex-col justify-center items-center'>
-      <h3 className='dark:text-stark text-fuschia-custom text-sm underline dark:decoration-fuschia-custom decoration-jewel mt-4'>
-        Custom Fields
-      </h3>
+      <h3 className='underline mt-4 mb-1'>Custom Fields</h3>
       {Object.entries(fields).map(([key, value], index) => {
         return (
-          <form
+          <div
             key={index}
-            className='flex flex-row my-2 '
+            className='form-control '
           >
             <label
-              className='bg-void text-stark rounded-md p-2 pr-4 text-xs '
+              className='input-group input-group-md rounded-xl'
               htmlFor={key}
             >
-              {key}:
-            </label>
-            <input
-              type='text'
-              id={key}
-              name={key}
-              value={value}
-              placeholder='Edit value'
-              className='rounded-sm'
-              onChange={(e) => onChange(e, key)}
-            />
-            <button className='btn p-2.5 rounded-md pl-3 text-fa-delete hover:text-fa-delete hover:border-fa-delete border-solid border border-void'>
-              <FaTimes
-                className='text-md'
-                onClick={(e) => onDelete(e, key)}
+              <span>{key}:</span>
+              <input
+                type='text'
+                id={key}
+                name={key}
+                value={value}
+                placeholder='Edit value'
+                className='input input-bordered input-md'
+                onChange={(e) => onChange(e, key)}
               />
-            </button>
-          </form>
+              <button className='btn btn-md btn-square text-fa-delete hover:text-fa-delete hover:border-fa-delete border-solid border'>
+                <FaTimes
+                  className='text-xl'
+                  onClick={(e) => onDelete(e, key)}
+                />
+              </button>
+            </label>
+          </div>
         )
       })}
     </section>

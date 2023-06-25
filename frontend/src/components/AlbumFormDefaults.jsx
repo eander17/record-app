@@ -15,48 +15,60 @@ const AlbumFormDefaults = ({ fields, onChange }) => {
   }
 
   return (
-    <section className='flex flex-col my-1 mx-1 max-w-[40%] items-start justify-center'>
-      <input
-        className='my-1 rounded-md py-2 px-5 text-sm font-medium border border-solid border-slate-400'
-        required
-        type='text'
-        name='title'
-        id='title'
-        value={title}
-        placeholder='Enter Album Title'
-        onChange={(e) => onChange(e, 'title')}
-      />
-      <input
-        className='my-1 rounded-md py-2 px-5 text-sm font-medium border border-solid border-slate-400'
-        required
-        type='text'
-        name='artist'
-        id='artist'
-        value={artist}
-        placeholder='Enter Artist Name'
-        onChange={(e) => onChange(e, 'artist')}
-      />
-      <input
-        className='my-1  rounded-md py-2 px-5 text-sm font-medium border border-solid border-slate-400'
-        required
-        type='text'
-        name='genre'
-        id='genre'
-        placeholder='Enter Genre'
-        value={genre}
-        onChange={(e) => onChange(e, 'genre')}
-      />
-      <input
-        className='my-1  rounded-md py-2 px-5 text-sm font-medium border border-solid border-slate-400'
-        required
-        type='text'
-        name='year'
-        id='year'
-        placeholder='Enter Release Year'
-        value={year}
-        onChange={handleYearChange}
-      />
-    </section>
+    <div className='input-group input-group-md input-group-vertical'>
+      <div className='input-group my-1'>
+        <span>Title</span>
+        <input
+          className='input input-bordered input-md'
+          required
+          type='text'
+          name='title'
+          id='title'
+          value={title}
+          placeholder='Enter Album Title'
+          onChange={(e) => onChange(e, 'title')}
+        />
+      </div>
+      <div className='input-group my-1'>
+        <span>Artist</span>
+        <input
+          className='input input-bordered input-md'
+          required
+          type='text'
+          name='artist'
+          id='artist'
+          value={artist}
+          placeholder='Enter Artist Name'
+          onChange={(e) => onChange(e, 'artist')}
+        />
+      </div>
+      <div className='input-group my-1'>
+        <span>Genre</span>
+        <input
+          className='input input-bordered input-md'
+          required
+          type='text'
+          name='genre'
+          id='genre'
+          placeholder='Enter Genre'
+          value={genre}
+          onChange={(e) => onChange(e, 'genre')}
+        />
+      </div>
+      <div className='input-group my-1'>
+        <span>Year</span>
+        <input
+          className='input input-bordered input-md'
+          required
+          type='text'
+          name='year'
+          id='year'
+          placeholder='Enter Release Year'
+          value={year}
+          onChange={handleYearChange}
+        />
+      </div>
+    </div>
   )
 }
 

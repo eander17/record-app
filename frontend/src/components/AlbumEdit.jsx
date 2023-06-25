@@ -84,6 +84,11 @@ function AlbumEdit({ notifyParent }) {
     }))
   }
 
+  const handleCancel = (e) => {
+    e.preventDefault()
+    notifyParent()
+  }
+
   const emptyFields = () => {
     return Object.values(data).some(
       (value) => value === '' || value === null
@@ -95,9 +100,9 @@ function AlbumEdit({ notifyParent }) {
       <form
         action=''
         onSubmit={handleSubmit}
-        className='flex flex-col items-center justify-center'
+        className='input-group-vertical py-4'
       >
-        <section className='mb-2 mt-2'>
+        <section>
           <AlbumFormDefaults
             onChange={handleDefaultsChange}
             fields={data}
@@ -110,10 +115,20 @@ function AlbumEdit({ notifyParent }) {
             />
           )}
         </section>
-        <button className='flex flex-row items-center btn px-4  '>
-          <FaSave className='text-fa-save' />
-          <span className='px-2 py-1'>Save</span>
-        </button>
+        <div className='flex flex-row justify-center my-2'>
+          <button
+            className='btn btn-primary mx-2'
+            type='submit'
+          >
+            Save
+          </button>
+          <button
+            className='btn hover:bg-fa-delete mx-2'
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </section>
   )
