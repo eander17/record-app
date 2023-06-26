@@ -75,7 +75,7 @@ const Register = () => {
       <section className='flex flex-col mt-12'>
         <h1 className='flex flex-row justify-center align-center mr-6'>
           <FaUser className='mt-1.5' />
-          <span className='px-1 text-midnight_blue'>Register</span>
+          <span className='px-1'>Register</span>
         </h1>
         <h3 className=''>Please Create an Account</h3>
       </section>

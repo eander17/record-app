@@ -8,6 +8,7 @@ import {
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useEffect, useState } from 'react'
+import { Theme } from 'daisyui'
 /// IMPORT PAGES
 import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
@@ -21,16 +22,13 @@ import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
   return (
-    <div className='min-h-screen min-w-[100%]'>
+    <div className='min-h-screen'>
       <Router>
         <ThemeSetter />
         <CustomFieldUpdateListener />
-        <div className='  divide-y-2 divide-void dark:divide-stark'>
+        <div className='  divide-y-2'>
           <Navbar />
-          <div
-            className='
-          font-inter text-center py-0 my-0 mx-auto'
-          >
+          <div className=''>
             <Routes>
               <Route
                 path='/'

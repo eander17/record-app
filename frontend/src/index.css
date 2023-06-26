@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+
 * {
   margin: 0;
   padding: 0;
@@ -11,10 +13,12 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'inter', sans-serif;
   height: 100vh;
-  /* @apply bg-white dark:bg-midnight-blue; */
+  @apply bg-white dark:bg-midnight-blue; 
 }
+
+*/
 
 /* @layer components {
   h1 {

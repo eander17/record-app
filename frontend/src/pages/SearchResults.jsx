@@ -48,12 +48,8 @@ function SearchResults() {
   return (
     <>
       <section className=''>
-        <h1 className='text-xl font-bold my-6 px-2'>
-          Search Results
-        </h1>
-        <p className='text-md mb-6 font-medium text-secondary'>
-          {query}
-        </p>
+        <h1 className='text-xl my-6 px-2'>Search Results</h1>
+        <p className='text-md mb-6'>{query}</p>
       </section>
       <section className='flex flex-col md:flex-row items-center justify-center'>
         {searchResults.length > 0 ? (
@@ -67,9 +63,7 @@ function SearchResults() {
             ))}
           </div>
         ) : (
-          <h3 className='text-lg font-medium text-secondary my-6'>
-            No results found
-          </h3>
+          <h3 className='text-lg  my-6'>No results found</h3>
         )}
       </section>
       <PageNav setPage={setPage} />

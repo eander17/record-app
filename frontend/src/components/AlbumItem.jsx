@@ -60,7 +60,7 @@ const AlbumItem = ({ album, buttonValue }) => {
 
   return (
     <div
-      className=' relative min-w-[25%] max-w-full   bg-stark dark:bg-void dark:text-stark text-forest border border-solid border-void drop-shadow-xl
+      className=' relative min-w-[25%] max-w-full border border-solid drop-shadow-xl
      rounded-xl px-4 py-3 mx-4 my-3 mt-12'
     >
       <div className='ml-3 pl-1 pb-1'>
@@ -74,7 +74,7 @@ const AlbumItem = ({ album, buttonValue }) => {
       <div className='min-w-full flex flex-row items-start'>
         <div className='flex flex-col'>
           <img
-            className='pb-2 apect-square  h-full '
+            className='pb-2  h-full '
             src={image}
             alt={title}
           />

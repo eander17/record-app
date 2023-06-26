@@ -58,7 +58,7 @@ const Login = () => {
   return (
     <>
       <section className='flex flex-col justify-center  my-4 mx-0 py-0 px-1'>
-        <h1 className='mr-6 flex flex-row justify-center align-center text-4xl mb-8 mt-12 font-bold text-secondary dark:text-fuschia-custom'>
+        <h1 className='mr-6 flex flex-row justify-center align-center text-4xl mb-8 mt-12'>
           <FaSignInAlt className='mt-1.5' />{' '}
           <span className='pl-2'>Login</span>
         </h1>

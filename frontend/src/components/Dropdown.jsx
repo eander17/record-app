@@ -10,87 +10,114 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { logout, reset } from '../features/auth/authSlice'
 import ThemeButton from './ThemeButton'
+import { themeChange } from 'theme-change'
 
 const Dropdown = ({ user }) => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef(null)
-
-  // logs user out, resets state, and navigates to login page
-  const onLogout = () => {
-    setIsOpen(!isOpen)
-    dispatch(logout())
-    dispatch(reset())
-    navigate('/login')
-  }
-
-  // navigates to path and closes dropdown
-  const navigator = (path) => {
-    setIsOpen(!isOpen)
-    navigate(path)
-  }
-
   useEffect(() => {
-    // listens for clicks outside of dropdown and closes it
-    const handleOutsideClick = (e) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target)
-      ) {
-        setIsOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleOutsideClick)
-
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
-    }
+    themeChange(false)
   }, [])
 
   return (
-    <div
-      className='relative'
-      ref={dropdownRef}
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className='block h-8 w-24 overflow-hidden'
+    <div className='dropdown drowpdown-end mx-4 mb-4'>
+      <label
+        tabIndex={0}
+        className='btn m-1'
       >
-        <FaBars className='text-void dark:text-jewel h-full w-full  ' />
-      </button>
-      {isOpen && (
-        <div className='absolute mr-2 right-0 min-w-max py-1 mt-2 bg-white border border-gray-300 rounded-lg shadow-xl '>
-          {user ? (
-            <button
-              onClick={onLogout}
-              className='flex justify-start items-center justify-items-stretch px-2 py-1 text-void hover:bg-jewel hover:text-stark font-medium'
-            >
-              <FaSignOutAlt className=' mb-1' />
-              <span className='px-2 text-sm'>Sign Out</span>
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={() => navigator('/login')}
-                className='flex justify-start items-center justify-items-stretch px-2 py-1 text-void hover:bg-jewel hover:text-stark font-medium'
-              >
-                <FaSignInAlt className=' mb-1' />
-                <span className='px-2 text-sm'>Sign In</span>
-              </button>
-              <button
-                onClick={() => navigator('/register')}
-                className='flex justify-start items-center justify-items-stretch px-2 py-1 text-void hover:bg-jewel hover:text-stark font-medium'
-              >
-                <FaUser className='  mb-1' />
-                <span className='px-2 text-sm'>Register</span>
-              </button>
-            </>
-          )}
-          <ThemeButton />
-        </div>
-      )}
+        Themes
+      </label>
+      <ul
+        tabIndex={0}
+        className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'
+      >
+        <li>
+          <button
+            data-set-theme='cupcake'
+            data-act-class='ACTIVECLASS'
+          >
+            light
+          </button>
+        </li>
+        <li>
+          <button
+            data-set-theme='dark'
+            data-act-class='ACTIVECLASS'
+          >
+            dark
+          </button>
+        </li>
+        <li>
+          <button
+            data-set-theme='coffee'
+            data-act-class='ACTIVECLASS'
+          >
+            coffee
+          </button>
+        </li>
+        <li>
+          <button
+            data-set-theme='dracula'
+            data-act-class='ACTIVECLASS'
+          >
+            dracula
+          </button>
+        </li>
+        <li>
+          <button
+            data-set-theme='luxury'
+            data-act-class='ACTIVECLASS'
+          >
+            luxury
+          </button>
+        </li>{' '}
+        <li>
+          <button
+            data-set-theme='retro'
+            data-act-class='ACTIVECLASS'
+          >
+            retro
+          </button>
+        </li>{' '}
+        <li>
+          <button
+            data-set-theme='business'
+            data-act-class='ACTIVECLASS'
+          >
+            business
+          </button>
+        </li>{' '}
+        <li>
+          <button
+            data-set-theme='halloween'
+            data-act-class='ACTIVECLASS'
+          >
+            halloween
+          </button>
+        </li>
+        <li>
+          <button
+            data-set-theme='aqua'
+            data-act-class='ACTIVECLASS'
+          >
+            aqua
+          </button>
+        </li>{' '}
+        <li>
+          <button
+            data-set-theme='cyberpunk'
+            data-act-class='ACTIVECLASS'
+          >
+            cyberpunk
+          </button>
+        </li>{' '}
+        <li>
+          <button
+            data-set-theme='night'
+            data-act-class='ACTIVECLASS'
+          >
+            night
+          </button>
+        </li>
+      </ul>
     </div>
   )
 }
