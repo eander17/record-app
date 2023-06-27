@@ -72,8 +72,55 @@ const searchAlbums = asyncHandler(async (req, res) => {
 
   //! want to return albums, and request page data.
   //* SUCCESS: return the albums and the page number
-  return res.status(200).json({ albums, page });
+  return res.status(200).json({ albumData, page });
 });
+
+// gets specific album and returns tracklist
+const searchAlbumById = asyncHandler(async (id) => {
+  if (!id) {
+    return null;
+  }
+
+  const url = "https://api.discogs.com/releases/";
+
+  const { data } = await axios.get(`${url}${id}`, {
+    headers: {
+      Authorization: `Discogs key=${process.env.DISCOGS_API_KEY}, secret=${process.env.DISCOGS_SECRET}`,
+    },
+  });
+
+  if (data.message || !data) {
+    return null; // return null if no album is found
+  }
+
+  return data;
+});
+
+const getTrackList = asyncHandler(async (id) => {
+  const album = searchAlbumById(id);
+
+  if (!album || album.tracklist.length === 0) {
+    return []; // return empty array if no album is found
+  }
+
+  const tracklist = album.tracklist.map((track) => {
+    return {
+      position: track.position,
+      trackTitle: track.title,
+      duration: track.duration,
+    };
+  });
+  return tracklist;
+});
+
+// returns runtime in seconds. Expects tracklist to be in the format of "mm:ss"
+const getRuntime = (trackList) => {
+  const runtime = trackList.reduce((acc, track) => {
+    const [min, sec] = track.duration.split(":").trim().replace(/\s+/g, ""); // remove potential whitespace
+    return acc + parseInt(min) * 60 + parseInt(sec);
+  }, 0);
+  return runtime;
+};
 
 /// HELPER FUNCTIONS ///
 
@@ -121,9 +168,6 @@ const requestDiscogsData = async (params) => {
   return data;
 };
 
-//td not sure yet, but needs to be implemented eventually.
-const buildTrackList = (masterId) => {};
-
 // processes album data from the Discogs API
 const processAlbumData = (data, query) => {
   return data.buildAlbumList(data).filterAlbums(data, query);
@@ -135,12 +179,21 @@ const buildAlbumList = (data) => {
     const [artist, title] = album.title.split(" - ");
     const cleanedTitle = cleanString(title, " ");
     const cleanedArtist = cleanString(artist, " ");
+
+    const trackList = getTrackList(album.id);
+    let runtime = 0;
+    if (trackList.length !== 0) {
+      runtime = getRuntime(trackList.duration); // runtime in seconds
+    }
+
     return {
       title: cleanedTitle,
       artist: cleanedArtist,
       genre: album.genre[0],
       style: album.style, // subgenre
       year: album.year,
+      trackList: trackList,
+      runtime: runtime,
       image: album.cover_image,
       thumb: album.thumb,
       format: album.format,

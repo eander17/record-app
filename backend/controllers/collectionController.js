@@ -20,7 +20,7 @@ const getAlbums = asyncHandler(async (req, res) => {
 // @route   GET /api/albums/:id
 // @access  Public
 const getAlbum = asyncHandler(async (req, res) => {
-  const album = await Album.findById(req.params.id);
+  const album = await Album.findById(req.params.id); // uses the id from the url
 
   // if album exists, send it back
   if (album) {
@@ -40,10 +40,11 @@ const createAlbum = asyncHandler(async (req, res) => {
     !req.body.artist ||
     !req.body.genre ||
     !req.body.year ||
-    !req.body.discogsId
+    !req.body.discogsId ||
+    !req.body.masterId
   ) {
     res.status(400);
-    throw new Error("Please fill out all fields create album");
+    throw new Error("missing required fields");
   }
 
   // create the album
@@ -51,10 +52,17 @@ const createAlbum = asyncHandler(async (req, res) => {
     title: req.body.title,
     artist: req.body.artist,
     genre: req.body.genre,
+    style: req.body.style,
+    format: req.body.format,
+    dateAdded: Date.now(),
     year: req.body.year,
     image: req.body.image,
-    customFields: {},
-    discogsAlbumId: req.body.discogsId,
+    thumb: req.body.thumb,
+    customFields: {}, // td - replace/remove?
+    discogsId: req.body.discogsId,
+    masterId: req.body.masterId,
+    trackList: req.body.trackList,
+    runtime: req.body.runtime,
     user: req.user.id, // this is the user id
   });
   // add the album to the user's collection
@@ -72,21 +80,9 @@ const updateAlbum = asyncHandler(async (req, res) => {
     throw new Error("Album not found");
   }
 
-  // verify user exists and is authorized
-  //validateUser(album, await User.findById(req.user), res)
-
   const user = await User.findById(req.user.id);
-  // verify user exists
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
-
-  // verify user is authorized
-  if (album.user.toString() !== user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
+  // verify user exists and is the owner of the album
+  validateUser(album, user, res);
 
   const updatedAlbum = await Album.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // return the updated album
@@ -106,25 +102,13 @@ const deleteAlbum = asyncHandler(async (req, res) => {
     throw new Error("Album not found");
   }
 
-  // // verify user exists and is authorized
-  // validateUser(album, await Album.findById(req.user), res)
-
   const user = await User.findById(req.user.id);
-  // verify user exists
-  if (!user) {
-    res.status(401);
-    throw new Error("User not found");
-  }
 
-  // verify user is authorized
-  if (album.user.toString() !== user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
-  }
+  validateUser(album, user, res);
 
   await album.deleteOne(); // delete the album
 
-  res.status(200).json({ id: req.params.id });
+  res.status(200).json({ id: req.params.id }); // id of deleted album
 });
 
 /// HELPER FUNCTIONS ///
