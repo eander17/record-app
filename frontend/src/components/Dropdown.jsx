@@ -1,15 +1,6 @@
 /** @format */
-import {
-  FaSignInAlt,
-  FaSignOutAlt,
-  FaUser,
-  FaBars,
-} from 'react-icons/fa'
-import { useState, useRef, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { logout, reset } from '../features/auth/authSlice'
-import ThemeButton from './ThemeButton'
+
+import { useEffect } from 'react'
 import { themeChange } from 'theme-change'
 
 const Dropdown = ({ user }) => {

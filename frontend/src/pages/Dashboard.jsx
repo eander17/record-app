@@ -76,7 +76,7 @@ const Dashboard = () => {
               <AlbumItem
                 key={album._id}
                 album={album}
-                buttonValue={'owned'}
+                page={'onDash'}
               />
             ))}
           </div>

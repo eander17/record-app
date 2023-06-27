@@ -28,11 +28,10 @@ const Navbar = () => {
     return (
       <div className='navbar bg-base-100'>
         <NavLogo />
-
         <div className='flex-none gap-2'>
           <div className='form-control'>
             <SearchBar
-              handleSearch={handleSearch}
+              onSubmit={handleSearch}
               placeholder={'Add a New Album'}
             />
           </div>
@@ -87,6 +86,7 @@ const Navbar = () => {
   }
 }
 
+// Navbar logo component for DRYness.
 const NavLogo = () => {
   return (
     <div className='flex-1'>
@@ -107,33 +107,3 @@ const NavLogo = () => {
 }
 
 export default Navbar
-
-// <header className='h-[100%] py-2 flex '>
-//   {/* // class name was container */}
-//   <div className=' flex flex-col sm:flex-row justify-between items-center w-full h-auto my-0 text-center'>
-//     {/* class name was logo */}
-//     <div className='flex items-center justify-start text-start font-lg font-bold py-1'>
-//       <Link to='/'>
-//         <img
-//           src={vinylImage}
-//           alt={`flamin' record icon`}
-//           className='md:w-16 md:h-16 w-12 h-12 sm:ml-3 ml-0 rounded-full'
-//         />
-//       </Link>
-//       <h3 className='ml-2 pt-3 text-2xl font-bold cursor-default underline  decoration-2 underline-offset-2'>
-//         Vinyl Collector
-//       </h3>
-//     </div>
-//     <div className='flex items-center'>
-//       {user && (
-//         <SearchBar
-//           placeholder={'Add a New Album'}
-//           onSubmit={handleSearch}
-//         />
-//       )}
-//     </div>
-//   </div>
-//   <div className='mt-4'>
-//     <DropdownMenu />
-//   </div>
-// </header>

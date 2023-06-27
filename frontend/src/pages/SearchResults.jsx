@@ -47,26 +47,32 @@ function SearchResults() {
 
   return (
     <>
-      <section className=''>
-        <h1 className='text-xl my-6 px-2'>Search Results</h1>
-        <p className='text-md mb-6'>{query}</p>
+      <section className='join join-vertical flex flex-col text-center items-center mt-12'>
+        <div className='prose prose-xl text-center'>
+          <h1 className='join-item '>Search Results</h1>
+          <h3 className='join-item'>{query}</h3>
+        </div>
+        <section className='join-item'>
+          {searchResults.length > 0 ? (
+            <>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                {searchResults.map((album) => (
+                  <AlbumItem
+                    key={album.discogsId}
+                    album={album}
+                    page={'onSearch'}
+                  />
+                ))}
+              </div>
+              <PageNav setPage={setPage} />
+            </>
+          ) : (
+            <h3 className='prose prose-xl text-center mt-8 mb-8'>
+              No results found
+            </h3>
+          )}
+        </section>
       </section>
-      <section className='flex flex-col md:flex-row items-center justify-center'>
-        {searchResults.length > 0 ? (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-            {searchResults.map((album) => (
-              <AlbumItem
-                key={album.discogsId}
-                album={album}
-                buttonValue={'add'}
-              />
-            ))}
-          </div>
-        ) : (
-          <h3 className='text-lg  my-6'>No results found</h3>
-        )}
-      </section>
-      <PageNav setPage={setPage} />
     </>
   )
 }

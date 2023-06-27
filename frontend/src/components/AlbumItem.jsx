@@ -1,21 +1,24 @@
 /** @format */
 
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 //! Functions
 import {
   deleteAlbum,
   createAlbum,
+  getCollection,
+  reset,
 } from '../features/collection/collectionSlice'
-import { joinAlbumRoom } from '../socket'
-//! Components
-import CardButtons from './CardButtons'
 
-const AlbumItem = ({ album, buttonValue }) => {
+// import { joinAlbumRoom } from '../socket'
+//! Components
+
+const AlbumItem = ({ album, page }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { user } = useSelector((state) => state.auth)
   const {
     title,
     artist,
@@ -27,16 +30,6 @@ const AlbumItem = ({ album, buttonValue }) => {
     discogsId,
   } = album
 
-  // REVIEW - is this the best way to handle this?
-  const owned = buttonValue === 'owned'
-  const edit = buttonValue === 'edit'
-
-  /// handleDelete: deletes album from user's collection
-  const handleDelete = () => {
-    dispatch(deleteAlbum(_id)) // id === album's id
-    navigate('/')
-  }
-
   /// handleEdit: navigates to albumDetails page
   const handleEdit = () => {
     try {
@@ -45,73 +38,134 @@ const AlbumItem = ({ album, buttonValue }) => {
       console.error('error')
     }
   }
-  /// handleAdd: add album to user's collection
-  const handleAdd = () => {
-    //? creating album. It won't be changed, so no need to pass destructured vars.
-    dispatch(createAlbum(album))
 
-    /// joinAlbumRoom: join the socket room for this album
-    joinAlbumRoom({
-      discogId: discogsId,
-      user: user,
-    })
-    navigate('/')
+  if (page === 'onDash') {
+    return (
+      <>
+        <div
+          className='card bg-primary shadow-xl my-12 md:mx-8 mx-4'
+          onClick={handleEdit}
+        >
+          <figure className=''>
+            <img
+              src={image}
+              alt={title}
+              className='h-full w-full'
+            />
+          </figure>
+          <div className='card-body justify-between text-justify'>
+            <h2 className='card-title text-primary-content'>
+              {title}
+            </h2>
+            <p className='text-primary-content'>{artist}</p>
+            <p className='text-primary-content'>{genre}</p>
+            <p className='text-primary-content'>{year}</p>
+            <p className='text-primary-content'>
+              Date Added:
+              {new Date(album.createdAt).toLocaleDateString('en-US')}
+            </p>
+          </div>
+        </div>
+      </>
+    )
   }
 
-  return (
-    <div
-      className=' relative min-w-[25%] max-w-full border border-solid drop-shadow-xl
-     rounded-xl px-4 py-3 mx-4 my-3 mt-12'
-    >
-      <div className='ml-3 pl-1 pb-1'>
-        <CardButtons
-          buttonValue={buttonValue}
-          handleAdd={handleAdd}
-          handleEdit={handleEdit}
-          handleDelete={handleDelete}
-        />
-      </div>
-      <div className='min-w-full flex flex-row items-start'>
-        <div className='flex flex-col'>
-          <img
-            className='pb-2  h-full '
-            src={image}
-            alt={title}
-          />
-          {(owned || edit) && (
-            <span className='text-xs italic'>
-              Date Added:{' '}
-              {new Date(album.createdAt).toLocaleDateString('en-US')}
-            </span>
-          )}
-        </div>
-        <div className='mx-2 w-2/6 text-center flex flex-col flex-wrap flex-initial text-sm font-medium'>
-          <span className='py-1  underline'>{title}</span>
-          <span className='py-1'>{artist}</span>
-          <span className='py-1'>{genre}</span>
-          <span className='py-1'>{year}</span>
-        </div>
-        {edit
-          ? //info: if custom fields exist and has length>0, map over them and display them
-            customFields &&
-            Object.keys(customFields).length > 0 && (
-              <section className='mx-1 w-2/6 text-center flex flex-col flex-initial'>
-                <div className='text-sm font-semibold'>
-                  Custom Fields:{' '}
+  if (page === 'onSearch') {
+    const user = useSelector((state) => state.user)
+    const { collection, isError, message } = useSelector(
+      (state) => state.collection
+    )
+
+    useEffect(() => {
+      if (isError) console.log(message)
+
+      dispatch(getCollection())
+
+      return () => {
+        dispatch(reset())
+      }
+    }, [dispatch, isError, message])
+
+    const match = collection.find(
+      (ownedAlbum) => ownedAlbum.discogsAlbumId === discogsId
+    )
+
+    const trimmedTitle = title
+      .trim()
+      .replace(/\t/g, ' ')
+      .replace(/[^\S\r\n]+/g, ' ')
+    const trimmedArtist = artist
+      .trim()
+      .replace(/\t/g, ' ')
+      .replace(/[^\S\r\n]+/g, ' ')
+    const trimmedGenre = genre
+      .trim()
+      .replace(/\t/g, ' ')
+      .replace(/[^\S\r\n]+/g, ' ')
+
+    /// handleAdd: add album to user's collection
+    const handleAdd = () => {
+      const trimmedAlbum = {
+        ...album,
+        title: trimmedTitle,
+        artist: trimmedArtist,
+        genre: trimmedGenre,
+      }
+
+      //? creating album. It won't be changed, so no need to pass destructured vars.
+      dispatch(createAlbum(trimmedAlbum))
+      toast.success('Album added to your collection!')
+      // /// joinAlbumRoom: join the socket room for this album
+      // joinAlbumRoom({
+      //   discogId: discogsId,
+      //   user: user,
+      // })
+      // navigate('/')
+    }
+
+    return (
+      <>
+        <div className='card bg-primary shadow-xl my-12 md:mx-8 mx-4'>
+          <figure className=''>
+            <img
+              src={image}
+              alt={trimmedTitle}
+              className='h-full w-full'
+            />
+          </figure>
+          <div className='card-body justify-between text-justify '>
+            <h2 className='card-title text-primary-content'>
+              {trimmedTitle}
+            </h2>
+            <p className='text-primary-content'>{trimmedArtist}</p>
+            <p className='text-primary-content'>{trimmedGenre}</p>
+            <p className='text-primary-content'>{year}</p>
+            <div className='card-actions justify-end'>
+              {match ? (
+                <div className='badge badge-secondary badge-lg text-secondary-content gap-2'>
+                  In Collection
                 </div>
-                {Object.keys(customFields).map((key, index) => {
-                  return (
-                    <div key={index}>
-                      {key}: {customFields[key]}
-                    </div>
-                  )
-                })}
-              </section>
-            )
-          : null}
-      </div>
-    </div>
-  )
+              ) : (
+                <button
+                  onClick={handleAdd}
+                  className='btn btn-square btn-success'
+                >
+                  Add
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
 }
 
 export default AlbumItem
+
+// <button
+//   onClick={handleAdd}
+//   className='btn btn-square btn-success'
+// >
+//   Add
+// </button>
