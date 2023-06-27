@@ -152,13 +152,36 @@ function AlbumDetails() {
     return <h1>Album not found</h1>
   }
 
+  return (
+    <>
+      <div className='hero min-h-screen bg-base-200'>
+        <div className='hero-content flex-col lg:flex-row'>
+          <img
+            src={image}
+            alt={title}
+          />
+          <div>
+            <h1 className='text-5xl font-bold'>{title}</h1>
+            <p className='py-6'>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Explicabo adipisci vero, mollitia similique ducimus ad
+              dicta quis repellendus error nostrum recusandae,
+              perferendis ratione ipsa ea molestiae quas esse eligendi
+              blanditiis.
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+
   if (!showEditFields) {
     return (
-      <div className='mt-4 mx-8 md:mt-24 md:mx-48'>
-        <div className='card card-compact card-side bg-primary shadow-xl max-w-fit max-h-fit'>
-          <div className='card-body flex-row  max-w-fit'>
+      <div className='mx-8 mt-4 md:mx-48 md:mt-24'>
+        <div className='card card-side card-compact max-h-fit max-w-fit bg-primary shadow-xl'>
+          <div className='card-body max-w-fit  flex-row'>
             <div className='flex flex-col justify-start'>
-              <figure className='shrink-0 grow max-w-fit max-h-lg'>
+              <figure className='max-h-lg max-w-fit shrink-0 grow'>
                 <img
                   src={image}
                   alt={title}
@@ -166,7 +189,7 @@ function AlbumDetails() {
                 />
               </figure>
               <div className='flex flex-col'>
-                <h2 className='prose card-title text-primary-content '>
+                <h2 className='card-title prose text-primary-content '>
                   {title}
                 </h2>
                 <p className='text-primary-content'>{artist}</p>
@@ -185,7 +208,7 @@ function AlbumDetails() {
                 <div className='flex flex-col'>
                   <table className='table'>
                     <thead className='items-center'>
-                      <tr className='prose text-accent text-center'>
+                      <tr className='prose text-center text-accent'>
                         <th>Custom Fields</th>
                       </tr>
                     </thead>
@@ -205,7 +228,7 @@ function AlbumDetails() {
                   </table>
                 </div>
               )}
-              <div className='card-actions justify-end items-end place-items-end'>
+              <div className='card-actions place-items-end items-end justify-end'>
                 <button
                   className='btn '
                   onClick={() => setShowEditFields(true)}
@@ -213,7 +236,7 @@ function AlbumDetails() {
                   edit album
                 </button>
                 <button
-                  className='btn btn-error'
+                  className='btn-error btn'
                   onClick={handleDelete}
                 >
                   delete album
@@ -228,17 +251,17 @@ function AlbumDetails() {
 
   if (showEditFields) {
     return (
-      <div className='mt-4 mx-8 md:mt-24 md:mx-48 flex-none '>
-        <div className='card card-compact card-side bg-primary shadow-xl max-w-fit max-h-fit min-w-fit items-start'>
-          <figure className='shrink-0 grow max-w-fit max-h-lg '>
+      <div className='mx-8 mt-4 flex-none md:mx-48 md:mt-24  '>
+        <div className='card-compact card card-side max-h-fit min-w-fit max-w-fit items-start bg-primary shadow-xl'>
+          <figure className='max-h-lg max-w-fit shrink-0 grow '>
             <img
               src={image}
               alt={title}
               className=' object-content'
             />
           </figure>
-          <div className='card-body  flex-row items-start max-w-fit'>
-            <table className='table prose text-primary-content'>
+          <div className='card-body  max-w-fit flex-row items-start'>
+            <table className='prose table text-primary-content'>
               <tbody>
                 <tr className='text-primary-content'>
                   <th>Album Title</th>
@@ -251,7 +274,7 @@ function AlbumDetails() {
                       type='text'
                       value={data.title}
                       placeholder='Album Title'
-                      className='input input-ghost w-full'
+                      className='input-ghost input w-full'
                     />
                   </td>
                 </tr>
@@ -266,7 +289,7 @@ function AlbumDetails() {
                       type='text'
                       value={data.artist}
                       placeholder='artist'
-                      className='input input-ghost w-full'
+                      className='input-ghost input w-full'
                     />
                   </td>
                 </tr>
@@ -281,7 +304,7 @@ function AlbumDetails() {
                       type='text'
                       value={data.genre}
                       placeholder='genre'
-                      className='input input-ghost w-full'
+                      className='input-ghost input w-full'
                     />
                   </td>
                 </tr>
@@ -294,7 +317,7 @@ function AlbumDetails() {
                       type='text'
                       value={data.year}
                       placeholder='Enter Year'
-                      className='input input-ghost w-full'
+                      className='input-ghost input w-full'
                     />
                   </td>
                 </tr>
@@ -302,11 +325,11 @@ function AlbumDetails() {
             </table>
 
             {anyCustomFields && (
-              <div className='grow mt-4'>
-                <h4 className='prose card-title text-primary-content font-bold ml-6'>
+              <div className='mt-4 grow'>
+                <h4 className='card-title prose ml-6 font-bold text-primary-content'>
                   Custom Fields:
                 </h4>
-                <table className='table prose text-primary-content'>
+                <table className='prose table text-primary-content'>
                   <tbody>
                     {customData.map((field, index) => {
                       return (
@@ -320,7 +343,7 @@ function AlbumDetails() {
                               name='key'
                               value={field.key}
                               placeholder='Edit Key'
-                              className='input input-ghost w-full'
+                              className='input-ghost input w-full'
                               onChange={(e) =>
                                 handleCustomChange(e, index)
                               }
@@ -332,7 +355,7 @@ function AlbumDetails() {
                               name='value'
                               value={field.value}
                               placeholder='Edit Value'
-                              className='input input-ghost w-full'
+                              className='input-ghost input w-full'
                               onChange={(e) =>
                                 handleCustomChange(e, index)
                               }
@@ -345,7 +368,7 @@ function AlbumDetails() {
                 </table>
               </div>
             )}
-            <div className='card-actions self-end ml-1'>
+            <div className='card-actions ml-1 self-end'>
               <button
                 className='btn '
                 onClick={handleSave}
@@ -353,7 +376,7 @@ function AlbumDetails() {
                 Save Changes
               </button>
               <button
-                className='btn btn-secondary hover:bg-fa-delete hover:text-black px-10'
+                className='btn-secondary btn px-10 hover:bg-fa-delete hover:text-black'
                 onClick={handleCancelEdit}
               >
                 Cancel

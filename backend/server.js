@@ -40,6 +40,8 @@ app.use("/api/collection", require("./routes/albumCollectionRoutes")); // routes
 app.use("/api/users", require("./routes/userRoutes")); // routes for users
 app.use("/api/search", require("./routes/discogRoutes")); // routes for discogs search
 
+// register the error handler middleware.
+//!!! This must be registered last !!!
 app.use(errorHandler);
 
 /// Socket IO Section ///
