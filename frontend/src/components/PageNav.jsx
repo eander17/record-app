@@ -4,48 +4,36 @@ import {
   FaChevronCircleLeft,
   FaChevronCircleRight,
 } from 'react-icons/fa'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setLocalPage } from '../features/search/searchSlice'
 
-function PageNav({ setPage }) {
-  const { page } = useSelector((state) => state.search)
+function PageNav() {
+  const dispatch = useDispatch()
+  const { localPage } = useSelector((state) => state.search)
 
   return (
     <div className='mt-4 flex flex-row justify-center'>
-      <button className='px-1 py-2  text-medium'>
-        {/* if beyond page 1, show left arrow */}
-        {Number(page) > 1 ? (
-          <FaChevronCircleLeft
-            className='fa prev-btn'
-            onClick={() => setPage(page - 1)}
+      <div className='flex flex-row justify-between'>
+        <button className='text-medium px-1  py-2'>
+          {/* if beyond page 1, show left arrow */}
+          {Number(localPage) > 1 ? (
+            <FaChevronCircleLeft
+              className='fa prev-btn'
+              onClick={() =>
+                dispatch(setLocalPage(Number(localPage) - 1))
+              }
+            />
+          ) : null}
+        </button>
+        <button className='text-medium cursor-pointer px-1 py-2 text-center'>
+          <FaChevronCircleRight
+            className='text-lg'
+            onClick={() =>
+              dispatch(setLocalPage(Number(localPage) + 1))
+            }
           />
-        ) : null}
-      </button>
-      <button
-        className='px-1 py-2 text-medium text-center cursor-pointer'
-        onClick={() => setPage(Number(page))}
-      >
-        {page}
-      </button>
-      {/* show next 3 page numbers, clickable buttons */}
-      <button
-        className='px-1 py-2  text-medium text-center cursor-pointer'
-        onClick={() => setPage(Number(page) + 1)}
-      >
-        {Number(page) + 1}
-      </button>
-      <button
-        className='px-1 py-2 text-medium text-center cursor-pointer'
-        onClick={() => setPage(Number(page) + 2)}
-      >
-        {Number(page) + 2}
-      </button>
-      {/* just select next page */}
-      <button className='px-1 py-2 text-medium text-center cursor-pointer'>
-        <FaChevronCircleRight
-          className='text-lg'
-          onClick={() => setPage(Number(page) + 1)}
-        />
-      </button>
+        </button>
+      </div>
     </div>
   )
 }

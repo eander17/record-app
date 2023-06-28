@@ -4,7 +4,7 @@ const express = require("express");
 const app = express(); // express app
 const server = require("http").createServer(app);
 
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5174";
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:3000";
 
 const io = require("socket.io")(server, {
   cors: {

@@ -9,6 +9,10 @@ import {
   deleteAlbum,
   updateAlbum,
 } from '../features/collection/collectionSlice'
+import {
+  MainAlbumDetails,
+  AdditionalFields,
+} from '../components/AlbumDetailsComponents/MainAlbumDetails'
 
 function AlbumDetails() {
   const navigate = useNavigate()
@@ -60,7 +64,6 @@ function AlbumDetails() {
     }
   }, [album, anyCustomFields])
 
-  console.log(customData)
   /// handleAddCustomField: toggles the add custom field form
   const handleAddCustomField = () => {
     console.log('Clicked Add Custom Field')
@@ -154,24 +157,8 @@ function AlbumDetails() {
 
   return (
     <>
-      <div className='hero min-h-screen bg-base-200'>
-        <div className='hero-content flex-col lg:flex-row'>
-          <img
-            src={image}
-            alt={title}
-          />
-          <div>
-            <h1 className='text-5xl font-bold'>{title}</h1>
-            <p className='py-6'>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Explicabo adipisci vero, mollitia similique ducimus ad
-              dicta quis repellendus error nostrum recusandae,
-              perferendis ratione ipsa ea molestiae quas esse eligendi
-              blanditiis.
-            </p>
-          </div>
-        </div>
-      </div>
+      <MainAlbumDetails album={album} />
+      <AdditionalFields album={album} />
     </>
   )
 

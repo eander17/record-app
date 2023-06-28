@@ -7,6 +7,7 @@ import { logout, reset } from '../features/auth/authSlice'
 import vinylImage from '../media/flaminRecord.jpeg'
 import SearchBar from './SearchBar'
 import DropdownMenu from './Dropdown'
+import { setQueryReducer } from '../features/search/searchSlice'
 
 const Navbar = () => {
   const navigate = useNavigate()
@@ -21,6 +22,7 @@ const Navbar = () => {
   }
 
   const handleSearch = (query) => {
+    dispatch(setQueryReducer(query))
     navigate(`/search/${query}`)
   }
 
@@ -35,18 +37,18 @@ const Navbar = () => {
               placeholder={'Add a New Album'}
             />
           </div>
-          <div className='dropdown dropdown-end'>
+          <div className='dropdown-end dropdown'>
             <label
               tabIndex={0}
-              className='btn btn-ghost btn-circle avatar'
+              className='btn-ghost btn-circle avatar btn'
             >
-              <div className='w-10 text-center rounded-full'>
-                <FaUser className='text-3xl mt-1 ml-1' />
+              <div className='w-10 rounded-full text-center'>
+                <FaUser className='ml-1 mt-1 text-3xl' />
               </div>
             </label>
             <ul
               tabIndex={0}
-              className='mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52'
+              className='dropdown-content menu rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow'
             >
               <li>
                 <Link to='/profile'>Profile</Link>
@@ -92,7 +94,7 @@ const NavLogo = () => {
     <div className='flex-1'>
       <Link
         to='/'
-        className='md:w-16 md:h-16 w-12 h-12 sm:ml-3 ml-0 rounded-full'
+        className='ml-0 h-12 w-12 rounded-full sm:ml-3 md:h-16 md:w-16'
       >
         <img
           src={vinylImage}

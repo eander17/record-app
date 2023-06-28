@@ -57,10 +57,10 @@ const Login = () => {
 
   return (
     <>
-      <section className='my-4 mx-0 py-0 px-1'>
-        <section className='join join-vertical text-center items-center flex flex-col'>
+      <section className='mx-0 my-4 px-1 py-0'>
+        <section className='join-vertical join flex flex-col items-center text-center'>
           <div className='prose prose-xl text-center'>
-            <h1 className='join-item mr-6 flex flex-row   mb-8 mt-12'>
+            <h1 className='join-item mb-8 mr-6 mt-12   flex flex-row'>
               <FaSignInAlt className='mt-1.5' />{' '}
               <span className='pl-2'>Login</span>
             </h1>
@@ -72,7 +72,7 @@ const Login = () => {
               <input
                 required
                 type='email'
-                className='input input-bordered input-accent join-item w-full'
+                className='input-bordered input-accent input join-item w-full'
                 id='email'
                 name='email'
                 value={email}
@@ -84,7 +84,7 @@ const Login = () => {
               <input
                 required
                 type='password'
-                className='input input-bordered input-accent join-item w-full'
+                className='input-bordered input-accent input join-item w-full'
                 id='password'
                 name='password'
                 value={password}
@@ -94,11 +94,11 @@ const Login = () => {
             </div>
             <button
               type='submit'
-              className='btn join-item btn-block btn-primary'
+              className='btn-primary btn-block join-item btn'
             >
               Submit
             </button>
-            <span classname='join-item'>
+            <span className='join-item'>
               Not logged in? Click here to{' '}
               <Link
                 to='/register'

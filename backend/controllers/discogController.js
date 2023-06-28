@@ -10,33 +10,42 @@ const discogs = require("disconnect").Client;
 const searchAlbums = asyncHandler(async (req, res) => {
   const { query, page } = req.query;
 
-  if (!query) {
+  // check if query exists
+  if (!query || !page) {
     return res.status(400).json({ message: "Invalid query" });
   }
 
+  const discogUrl = "https://api.discogs.com/database/search";
   const perPage = 10;
   const resultTarget = 15; // number of results to return
-  const discogUrl = "https://api.discogs.com/database/search";
-  const albumData = [];
-  const albums = [];
+  let albumData = []; // will hold album objects
   let currentPage = page; // current page of results
   let totalPages = 0; // total number of pages of results
-  let totalResults = 0;
-  // check if query exists and is valid
+  let totalResults = 0; // total number of results from request
 
   const encodedQuery = encodeQuery(query);
   const cleanedQuery = cleanString(query, " ");
 
+  const key = process.env.DISCOGS_API_KEY;
+  const secret = process.env.DISCOGS_SECRET;
+
   // request data from discogs api until we have enough results or we run out of results
   do {
-    const data = requestDiscogsData({
-      query: encodedQuery,
-      type: "master",
-      format: "album",
-      perPage: perPage,
-      page: page,
-      url: discogUrl,
-    });
+    const { data } = await axios.get(
+      "https://api.discogs.com/database/search",
+      {
+        params: {
+          q: encodedQuery,
+          type: "master",
+          format: "album",
+          per_page: perPage,
+          page: currentPage,
+        },
+        headers: {
+          Authorization: `Discogs key=${key}, secret=${secret}`,
+        },
+      }
+    );
 
     //? check for errors on the first run through the loop else check for end of results.
     if (currentPage === page) {
@@ -53,6 +62,7 @@ const searchAlbums = asyncHandler(async (req, res) => {
       totalResults = data.pagination.items;
     } else {
       if (data.results.length === 0) {
+        console.log("No more results");
         break; // no more results
       }
     }
@@ -67,21 +77,44 @@ const searchAlbums = asyncHandler(async (req, res) => {
     currentPage++; // increment page number
   } while (
     albumData.length < resultTarget &&
-    (currentPage <= totalPages || totalPages !== 0)
+    (currentPage <= totalPages || (totalPages === 0 && currentPage === 1))
   );
 
-  //! want to return albums, and request page data.
-  //* SUCCESS: return the albums and the page number
-  return res.status(200).json({ albumData, page });
+  // get tracklist and runtime and add to albums in albumData
+  await Promise.all(
+    albumData.map(async (album) => {
+      const tracklist = await getTrackList(album.masterId);
+      const runtime = getRuntime(tracklist);
+
+      album.trackList.push(tracklist);
+      album.runtime = runtime;
+
+      return;
+    })
+  )
+    .then(() => {
+      console.log("all promises resolved successfully");
+      //* SUCCESS: return the albums and the page data
+      return res
+        .status(200)
+        .json({ albumData, currentPage, totalPages, totalResults });
+    })
+    .catch((err) => {
+      console.log(`error: ${err}`);
+      return res.status(500).json({ message: "something went wrong here" });
+    });
+
+  // console.log(`escaped the loop`);
+  // console.log(`albumdata: ${JSON.stringify(albumData)}`);
 });
 
 // gets specific album and returns tracklist
-const searchAlbumById = asyncHandler(async (id) => {
+const searchAlbumById = async (id) => {
   if (!id) {
     return null;
   }
 
-  const url = "https://api.discogs.com/releases/";
+  const url = "https://api.discogs.com/masters/";
 
   const { data } = await axios.get(`${url}${id}`, {
     headers: {
@@ -93,98 +126,33 @@ const searchAlbumById = asyncHandler(async (id) => {
     return null; // return null if no album is found
   }
 
-  return data;
-});
+  const album = {
+    title: data.title,
+    artist: data.artists[0].name,
+    genre: data.genres[0],
+    style: data.styles,
+    year: data.year,
+    tracklist: data.tracklist,
+  };
 
-const getTrackList = asyncHandler(async (id) => {
-  const album = searchAlbumById(id);
-
-  if (!album || album.tracklist.length === 0) {
-    return []; // return empty array if no album is found
-  }
-
-  const tracklist = album.tracklist.map((track) => {
-    return {
-      position: track.position,
-      trackTitle: track.title,
-      duration: track.duration,
-    };
-  });
-  return tracklist;
-});
-
-// returns runtime in seconds. Expects tracklist to be in the format of "mm:ss"
-const getRuntime = (trackList) => {
-  const runtime = trackList.reduce((acc, track) => {
-    const [min, sec] = track.duration.split(":").trim().replace(/\s+/g, ""); // remove potential whitespace
-    return acc + parseInt(min) * 60 + parseInt(sec);
-  }, 0);
-  return runtime;
+  return album;
 };
 
-/// HELPER FUNCTIONS ///
-
-// clean query string
-const cleanString = (query, string) => {
-  const cleanedQuery = query.toString().replace(/\s+/g, string).trim();
-  return cleanedQuery;
-};
-
-// encode query string
-const encodeQuery = (query) => {
-  const cleanQuery = cleanQuery(query, "+").toLowerCase();
-  return encodeURIComponent(cleanQuery);
-};
-// checks for errors in the API response
-const checkForErrors = (data) => {
-  // Return a 400 status code and an error message if the API returns an error message
-  if (data.message) {
-    return res.status(400).json({ message: "Invalid input" });
-  }
-
-  // Return a 400 status code and an error message if the API returns no results
-  if (data.results.length === 0) {
-    return res.status(400).json({ message: "No results found" });
-  }
-};
-
-// makes a request to the Discogs API and returns the data
-const requestDiscogsData = async (params) => {
-  const { query, type, format, perPage, page, url } = params;
-  const { data } = await axios.get(url, {
-    params: {
-      q: query, // search query
-      anv: query, // search for artist name variations as well
-      type: type, // only return master releases
-      format: format, // filter by format
-      per_page: perPage, // number of results per page
-      page: page,
-    },
-    headers: {
-      Authorization: `Discogs key=${process.env.DISCOGS_API_KEY}, secret=${process.env.DISCOGS_SECRET}`,
-    },
-  });
-
-  return data;
-};
-
+/// ALBUM OBJECT BUILDING FUNCTIONS ///
 // processes album data from the Discogs API
 const processAlbumData = (data, query) => {
-  return data.buildAlbumList(data).filterAlbums(data, query);
+  // return data.buildAlbumList(data).filterAlbums(data, query);
+  const list = buildAlbumList(data);
+  const filtered = filterAlbums(list, query);
+  return filtered;
 };
 
 // builds list of albums from discogs data
 const buildAlbumList = (data) => {
-  return data.map((album) => {
+  const albums = data.map((album) => {
     const [artist, title] = album.title.split(" - ");
     const cleanedTitle = cleanString(title, " ");
     const cleanedArtist = cleanString(artist, " ");
-
-    const trackList = getTrackList(album.id);
-    let runtime = 0;
-    if (trackList.length !== 0) {
-      runtime = getRuntime(trackList.duration); // runtime in seconds
-    }
 
     return {
       title: cleanedTitle,
@@ -192,8 +160,8 @@ const buildAlbumList = (data) => {
       genre: album.genre[0],
       style: album.style, // subgenre
       year: album.year,
-      trackList: trackList,
-      runtime: runtime,
+      trackList: [],
+      runtime: 0,
       image: album.cover_image,
       thumb: album.thumb,
       format: album.format,
@@ -201,6 +169,7 @@ const buildAlbumList = (data) => {
       discogsId: album.id,
     };
   });
+  return albums;
 };
 
 // filters an album list by the query
@@ -220,12 +189,48 @@ const filterAlbums = (data, query) => {
 
 // removes duplicate albums from an album list
 const removeDuplicates = (data) => {
-  data.reduce((acc, cur) => {
+  return data.reduce((acc, cur) => {
     if (!acc.find((album) => album.masterId === cur.masterId)) {
       acc.push(cur);
     }
     return acc;
   }, []);
+};
+
+/// ALBUM TRACK lIST FUNCTIONS ///
+const getTrackList = async (id) => {
+  const album = await searchAlbumById(id);
+
+  if (!album || album.tracklist.length === 0) {
+    return []; // return empty array if no album is found
+  }
+  const tracklist = album.tracklist.map((track) => {
+    let dur = track.duration;
+    if (!track.duration) dur = "00:00";
+    return {
+      position: track.position,
+      trackTitle: track.title,
+      duration: dur,
+    };
+  });
+
+  return tracklist;
+};
+
+// returns runtime in seconds. Expects tracklist to be in the format of "mm:ss"
+const getRuntime = (trackList) => {
+  if (!trackList) return 0;
+
+  const runtime = trackList.reduce((acc, track) => {
+    let [min, sec] = track.duration
+      .toString()
+      .split(/[\s:]+/)
+      .map((part) => parseInt(part));
+    if (!sec) sec = 0;
+    if (!min) min = 0;
+    return acc + min * 60 + sec;
+  }, 0);
+  return runtime;
 };
 
 // create an array of objects with only the data we need
@@ -235,6 +240,20 @@ function createAlbumList(data, query) {
     .filterAlbums(data, query)
     .removeDuplicates(data);
 }
+
+// /// HELPER FUNCTIONS ///
+
+// clean query string
+const cleanString = (query, string) => {
+  const cleanedQuery = query.toString().replace(/\s+/g, string).trim();
+  return cleanedQuery;
+};
+
+// encode query string
+const encodeQuery = (query) => {
+  const cleanQuery = cleanString(query, "+").toLowerCase();
+  return encodeURIComponent(cleanQuery);
+};
 
 module.exports = {
   searchAlbums,

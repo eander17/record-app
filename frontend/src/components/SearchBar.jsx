@@ -8,6 +8,7 @@ const SearchBar = ({ placeholder, onSubmit, onChange }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     onSubmit(query)
+    setQuery('')
   }
 
   const handleChange = (e) => {
@@ -28,11 +29,11 @@ const SearchBar = ({ placeholder, onSubmit, onChange }) => {
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className='input join-item input-bordered input-primary'
+          className='input-bordered input-primary input join-item'
         />
         <button
           type='submit'
-          className='btn btn-secondary join-item '
+          className='btn-secondary join-item btn '
           disabled={!query}
         >
           <FaSearch className='' />

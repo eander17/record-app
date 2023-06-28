@@ -6,13 +6,11 @@ import collectionService from './collectionService'
 // TODO: separate custom fields from album object.
 const initialState = {
   collection: [],
-  album: {
-    customFields: {},
-  },
+  album: {}, // create a separate album reducer?
   isError: false,
   isSuccess: false,
   isLoading: false,
-  isEdit: false,
+  isEdit: false, // do I need this?
   message: '',
 }
 
