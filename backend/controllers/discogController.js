@@ -103,9 +103,6 @@ const searchAlbums = asyncHandler(async (req, res) => {
       console.log(`error: ${err}`);
       return res.status(500).json({ message: "something went wrong here" });
     });
-
-  // console.log(`escaped the loop`);
-  // console.log(`albumdata: ${JSON.stringify(albumData)}`);
 });
 
 // gets specific album and returns tracklist

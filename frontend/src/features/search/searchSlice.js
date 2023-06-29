@@ -17,14 +17,12 @@ const initialState = {
 }
 
 // Search for albums
+//! RETURNS: searchResults, requestPage, totalPages, totalResults
 export const searchAlbums = createAsyncThunk(
   'search/getAll',
   async (data, thunkAPI) => {
     try {
       const { query, requestPage } = data
-      console.log(
-        `searchSlice - query: ${query} page: ${requestPage}`
-      )
       return await searchService.searchAlbums(query, requestPage)
     } catch (error) {
       const message =
