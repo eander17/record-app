@@ -3,7 +3,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import collectionService from './collectionService'
 
-// TODO: separate custom fields from album object.
 const initialState = {
   collection: [],
   album: {}, // create a separate album reducer?
@@ -77,11 +76,7 @@ export const updateAlbum = createAsyncThunk(
   async (album, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token
-      return await collectionService.updateAlbum(
-        album._id,
-        album,
-        token
-      )
+      return await collectionService.updateAlbum(album._id, album, token)
     } catch (error) {
       const message =
         (error.response &&

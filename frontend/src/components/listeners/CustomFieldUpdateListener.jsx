@@ -34,9 +34,7 @@ const CustomFieldUpdateListener = () => {
       const { id, key, value } = data
       console.log('CLICK THAT TOAST')
       if (key && value) {
-        dispatch(
-          setCustomFields({ customKey: key, customValue: value })
-        )
+        dispatch(setCustomFields({ customKey: key, customValue: value }))
       }
       if (navigate && id) {
         console.log(`navigate is true`)
@@ -57,11 +55,9 @@ const CustomFieldUpdateListener = () => {
     draggable: true,
     onClick: handleToastClick,
     onClose: () => {
-      // TODO: Implement close logic
       console.log('CLOSE THAT TOAST')
     },
     onOpen: () => {
-      // TODO: Implement open logic
       console.log(`POP THAT TOAST`)
     },
   })
@@ -74,18 +70,17 @@ const CustomFieldUpdateListener = () => {
     (data) => {
       const { id, title, artist, key, value } = data
       const toastId = id
-      const message = `New custom field 
-      
-      Add ${key}: ${value} to 
-      ${title} by 
+      const message = `New custom field
+
+      Add ${key}: ${value} to
+      ${title} by
       ${artist}?`
 
       toast(message, {
         ...toastProps.current,
         toastId,
         onRender: (node) => {
-          node.querySelector('.Toastify__toast-body').innerHTML =
-            message
+          node.querySelector('.Toastify__toast-body').innerHTML = message
         },
         onClick: () => handleToastClick({ id, key, value }),
       })

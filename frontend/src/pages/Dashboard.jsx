@@ -22,8 +22,6 @@ const Dashboard = () => {
 
   const [searchQuery, setSearchQuery] = useState('')
 
-    
-
   useEffect(() => {
     if (isError) {
       console.error(message)
@@ -51,26 +49,19 @@ const Dashboard = () => {
       )
     })
   }
- 
-  
 
-  const filteredCollection = handleSearch(searchQuery) // use state for this? 
+  const filteredCollection = handleSearch(searchQuery) // use state for this?
 
-  
-  
   if (isLoading) {
     return <Spinner />
   }
 
-  
-
   return (
     <div className='flex flex-col items-center justify-center'>
-      <div className='prose lg:prose-xl md:prose-lg dark:prose-invert text-center my-4 mt-12 mb-12'>
+      <div className='prose my-4 mb-12 mt-12 text-center dark:prose-invert md:prose-lg lg:prose-xl'>
         <h1 className=''>Welcome {user && user.name}</h1>
         <h3 className=''>Your Collection</h3>
       </div>
-
 
       <SearchBar
         placeholder={'Search Collection'}
@@ -80,7 +71,7 @@ const Dashboard = () => {
 
       <section className=''>
         {filteredCollection.length > 0 ? (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4'>
+          <div className='grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3'>
             {filteredCollection.map((album) => (
               <AlbumItem
                 key={album._id}
@@ -96,5 +87,19 @@ const Dashboard = () => {
     </div>
   )
 }
+// // // console.log(
+// // // '🚀 ~ file: Dashboard.jsx:99 ~ Dashboard ~ Dashboard:',
+// // // Dashboard
+// // // )
+// // // console.log(
+// // // '🚀 ~ file: Dashboard.jsx:99 ~ Dashboard ~ Dashboard:',
+// // // Dashboard
+// // // )
+// // // console.log(
+// // // '🚀 ~ file: Dashboard.jsx:99 ~ Dashboard ~ Dashboard:',
+// // // Dashboard
+// // // )
 
 export default Dashboard
+
+// testing settings changes
