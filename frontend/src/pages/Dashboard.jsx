@@ -22,6 +22,8 @@ const Dashboard = () => {
 
   const [searchQuery, setSearchQuery] = useState('')
 
+    
+
   useEffect(() => {
     if (isError) {
       console.error(message)
@@ -49,12 +51,18 @@ const Dashboard = () => {
       )
     })
   }
+ 
+  
 
-  const filteredCollection = handleSearch(searchQuery)
+  const filteredCollection = handleSearch(searchQuery) // use state for this? 
 
+  
+  
   if (isLoading) {
     return <Spinner />
   }
+
+  
 
   return (
     <div className='flex flex-col items-center justify-center'>
@@ -62,6 +70,7 @@ const Dashboard = () => {
         <h1 className=''>Welcome {user && user.name}</h1>
         <h3 className=''>Your Collection</h3>
       </div>
+
 
       <SearchBar
         placeholder={'Search Collection'}
