@@ -4,11 +4,8 @@ dist/
 /**/dist/
 /**/.gitignore
 /**/README.md
-/**/package.json
 /**/package-lock.json
 /**/.swc/
-/**/*.config.js
-/**/*.config.ts
 /**/.vscode/
 /**/.vite/
 /**/.husky/
@@ -17,5 +14,3 @@ dist/
 /**/test/
 /**/tests/
 /**/tests_e2e/
-/**/*.html
-/**/*.css

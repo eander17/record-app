@@ -11,9 +11,8 @@
     "sourceType": "module"
   },
   "extends": ["eslint:recommended", "airbnb", "airbnb/hooks", "prettier"],
-  "plugins": ["prettier"],
+  "plugins": [],
   "rules": {
-    "prettier/prettier": "error",
     "no-use-before-define": "off",
     "no-console": "off",
     "no-underscore-dangle": "off",
