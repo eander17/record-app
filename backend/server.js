@@ -3,6 +3,7 @@
 // ? This is the backend server for the record app
 /// packages to import ///
 const express = require('express')
+
 const app = express() // express app
 const server = require('http').createServer(app)
 
@@ -18,7 +19,7 @@ const io = require('socket.io')(server, {
 })
 
 const PORT = process.env.PORT || 5000 // Port number
-const fs = require('fs')
+// const fs = require('fs')  //! might break app?
 const path = require('path')
 const dotenv = require('dotenv')
 
@@ -26,12 +27,13 @@ const dotenv = require('dotenv')
 
 app.use(express.json()) // allows us to use json data
 app.use(express.urlencoded({ extended: false })) // allows us to use url encoded data
-// middleware requres
+// middleware requires
 const { errorHandler } = require('./middleware/errorMiddleware') // error handler
 // error handler
 
 /// Database Section ///
-const connectDB = require('./config/db') // connects to the database
+const connectDB = require('./config/db')
+// connects to the database
 dotenv.config() // loads the environment variables
 connectDB() // connects to the database
 
@@ -43,7 +45,7 @@ app.use('/api/users', require('./routes/userRoutes')) // routes for users
 app.use('/api/search', require('./routes/discogRoutes')) // routes for discogs search
 
 // register the error handler middleware.
-//!!! This must be registered last !!!
+//! !! This must be registered last !!!
 app.use(errorHandler)
 
 /// Socket IO Section ///
@@ -52,9 +54,9 @@ io.on('connection', (socket) => {
   console.log('client connected: ')
 
   //* joinAlbumRoom - Listens for a user to join a room
-  //? room === discogsId
-  //? id === userId
-  //? join room listener
+  // ? room === discogsId
+  // ? id === userId
+  // ? join room listener
   socket.on('joinAlbumRoom', (data) => {
     const { room, id } = data
     socket.join(room)
@@ -73,24 +75,24 @@ io.on('connection', (socket) => {
 
     const albumUsers = albumUserMap.get(room) || new Set() // get the set of users in the room
 
-    //? if the user is the only one in the room, don't send the update
+    // ? if the user is the only one in the room, don't send the update
     if (albumUsers.size === 1 && albumUsers.has(id)) return
 
-    //? emit the updated custom field data to all connected clients in the room
+    // ? emit the updated custom field data to all connected clients in the room
     albumUsers.forEach((userId) => {
       if (userId !== id) {
         io.to(userId).emit('notifyCustomFieldUpdate', {
           discogId: room,
-          key: key,
-          value: value,
+          key,
+          value,
         })
       }
     })
   })
 
   // disconnect listener
-  socket.on('disconnect', (reason) => {
-    console.log(`user disconnected`)
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
   })
 })
 
@@ -99,7 +101,7 @@ io.on('connection', (socket) => {
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, './dist')))
   app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, './dist', 'index.html'))
+    res.sendFile(path.resolve(__dirname, './dist', 'index.html')),
   )
 } else {
   app.get('/', (req, res) => res.send('please set to production'))

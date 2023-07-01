@@ -1,0 +1,17 @@
+# @format
+
+arrowParens: always
+bracketSameLine: false
+bracketSpacing: true
+htmlWhitespaceSensitivity: css
+insertPragma: true
+jsxSingleQuote: true
+parser: babel
+printWidth: 80
+requirePragma: false
+semi: false
+singleAttributePerLine: true
+singleQuote: true
+tabWidth: 2
+trailingComma: all
+useTabs: false

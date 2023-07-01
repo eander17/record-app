@@ -1,4 +1,4 @@
-/** @format */
+/* eslint-disable prettier/prettier */
 
 @tailwind base;
 @tailwind components;
@@ -15,7 +15,7 @@
 body {
   font-family: 'inter', sans-serif;
   height: 100vh;
-  @apply bg-white dark:bg-midnight-blue; 
+  @apply bg-white dark:bg-midnight-blue;
 }
 
 */

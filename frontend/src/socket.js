@@ -8,7 +8,7 @@ const socket = io('http://localhost:5000', {
 })
 
 socket.on('connect', () => {
-  console.log(`socket connected`)
+  console.log('socket connected')
 
   // Get the user's data from the local storage
   const userData = JSON.parse(localStorage.getItem('userData'))
@@ -31,7 +31,7 @@ const joinAlbumRoom = ({ discogId, user }) => {
   // Save the user's data in the local storage
   localStorage.setItem(
     'userData',
-    JSON.stringify({ room: discogId, id: user._id })
+    JSON.stringify({ room: discogId, id: user._id }),
   )
 }
 
@@ -40,8 +40,8 @@ const emitCustomFieldUpdate = ({ discogId, user, key, value }) => {
   socket.emit('emitCustomFieldUpdate', {
     room: discogId,
     id: user,
-    key: key,
-    value: value,
+    key,
+    value,
   })
 }
 

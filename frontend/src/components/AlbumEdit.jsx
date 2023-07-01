@@ -2,24 +2,26 @@
 
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types'
 import { toast } from 'react-toastify'
 import { updateAlbum } from '../features/collection/collectionSlice'
 import AlbumFormDefaults from './AlbumFormDefaults'
 import CustomFieldEdit from './CustomFieldEdit'
 
 // ANCHOR - AlbumEdit - Component
-//? details:
+// ? details:
 // allows user to edit an album object.
 //! manipulates the album object
-//? actions:
+// ? actions:
 // 1. delete custom field
 // 2. update album object
-//? Called in:
+// ? Called in:
 // 1. AlbumDetails.jsx
-//? Children:
+// ? Children:
 // 1. AlbumFormDefaults.jsx
 // 2. CustomFieldEdit.jsx
-//? States:
+// ? States:
 // 1. collection:
 // a. album: title, artist, genre, year, customFields
 function AlbumEdit({ notifyParent }) {
@@ -56,7 +58,7 @@ function AlbumEdit({ notifyParent }) {
     e.preventDefault()
     // filter out customField to be deleted.
     const newCustomFields = Object.fromEntries(
-      Object.entries(data.customFields).filter(([k]) => k !== key)
+      Object.entries(data.customFields).filter(([k]) => k !== key),
     )
     // update albumData state with new customFields object
     setData({ ...data, customFields: newCustomFields })
@@ -89,9 +91,7 @@ function AlbumEdit({ notifyParent }) {
   }
 
   const emptyFields = () => {
-    return Object.values(data).some(
-      (value) => value === '' || value === null
-    )
+    return Object.values(data).some((value) => value === '' || value === null)
   }
 
   return (
@@ -114,7 +114,7 @@ function AlbumEdit({ notifyParent }) {
             />
           )}
         </section>
-        <div className='flex flex-row justify-center my-2'>
+        <div className='my-2 flex flex-row justify-center'>
           <button
             className='btn btn-primary mx-2'
             type='submit'
@@ -122,6 +122,7 @@ function AlbumEdit({ notifyParent }) {
             Save
           </button>
           <button
+            type='button'
             className='btn hover:bg-fa-delete mx-2'
             onClick={handleCancel}
           >
@@ -131,6 +132,10 @@ function AlbumEdit({ notifyParent }) {
       </form>
     </section>
   )
+}
+
+AlbumEdit.propTypes = {
+  notifyParent: PropTypes.func.isRequired,
 }
 
 export default AlbumEdit

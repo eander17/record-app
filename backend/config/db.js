@@ -1,12 +1,18 @@
-const mongoose = require("mongoose");
+/**
+ *
+ * @format
+ */
+
+import { connect } from 'mongoose'
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    // eslint-disable-next-line no-unused-vars
+    const conn = await connect(process.env.MONGO_URI)
   } catch (error) {
-    console.log(error);
-    process.exit(1);
+    console.log(error)
+    process.exit(1)
   }
-};
+}
 
-module.exports = connectDB;
+export default connectDB

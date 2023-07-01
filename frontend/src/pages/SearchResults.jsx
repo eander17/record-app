@@ -13,14 +13,8 @@ function SearchResults() {
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.auth)
-  const {
-    searchResults,
-    query,
-    requestPage,
-    isLoading,
-    isError,
-    message,
-  } = useSelector((state) => state.search)
+  const { searchResults, query, requestPage, isLoading, isError, message } =
+    useSelector((state) => state.search)
 
   useEffect(() => {
     // if user is not logged in, redirect to login page
@@ -50,36 +44,31 @@ function SearchResults() {
 
   if (searchResults) {
     return (
-      <>
-        <section className='join-vertical join mt-12 flex flex-col items-center text-center'>
-          <div className='prose prose-xl text-center'>
-            <h1 className='join-item '>Search Results</h1>
-            <h3 className='join-item'>{query}</h3>
-          </div>
-          <section className='join-item'>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-              {searchResults.map((album) => (
-                <AlbumItem
-                  key={album.discogsId}
-                  album={album}
-                  page={'onSearch'}
-                />
-              ))}
-            </div>
-          </section>
-          <div className='join-item justify-end'>
-            <PageNav />
+      <section className='join-vertical join mt-12 flex flex-col items-center text-center'>
+        <div className='prose prose-xl text-center'>
+          <h1 className='join-item '>Search Results</h1>
+          <h3 className='join-item'>{query}</h3>
+        </div>
+        <section className='join-item'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            {searchResults.map((album) => (
+              <AlbumItem
+                key={album.discogsId}
+                album={album}
+                page='onSearch'
+              />
+            ))}
           </div>
         </section>
-      </>
-    )
-  } else {
-    return (
-      <h1 className='prose prose-xl mb-8 mt-8 text-center'>
-        No results found
-      </h1>
+        <div className='join-item justify-end'>
+          <PageNav />
+        </div>
+      </section>
     )
   }
+  return (
+    <h1 className='prose prose-xl mb-8 mt-8 text-center'>No results found</h1>
+  )
 }
 
 export default SearchResults

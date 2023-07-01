@@ -1,4 +1,5 @@
 /** @format */
+/* eslint-disable no-param-reassign */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authService from './authService'
@@ -7,7 +8,7 @@ import authService from './authService'
 const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
-  user: user ? user : null,
+  user: user || null,
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -17,9 +18,9 @@ const initialState = {
 // Register user
 export const register = createAsyncThunk(
   'auth/register',
-  async (user, thunkAPI) => {
+  async (registeringUser, thunkAPI) => {
     try {
-      return await authService.register(user)
+      return await authService.register(registeringUser)
     } catch (error) {
       const message =
         (error.response &&
@@ -29,15 +30,15 @@ export const register = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 // login user
 export const login = createAsyncThunk(
   'auth/login',
-  async (user, thunkAPI) => {
+  async (loggingInUser, thunkAPI) => {
     try {
-      return await authService.login(user)
+      return await authService.login(loggingInUser)
     } catch (error) {
       const message =
         (error.response &&
@@ -47,7 +48,7 @@ export const login = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 // log out user

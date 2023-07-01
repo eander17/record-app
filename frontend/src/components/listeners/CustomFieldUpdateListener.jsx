@@ -11,11 +11,12 @@ import { setCustomFields } from '../../features/custFields/fieldSlice'
 const closeButton = ({ closeToast, onClick }) => {
   const handleClick = async (e) => {
     e.stopPropagation()
-    onClick && (await onClick())
+    if (onClick) await onClick()
     closeToast()
   }
   return (
     <button
+      type='button'
       className='fa close del-toast'
       onClick={(e) => handleClick(e)}
     >
@@ -24,7 +25,7 @@ const closeButton = ({ closeToast, onClick }) => {
   )
 }
 
-const CustomFieldUpdateListener = () => {
+function CustomFieldUpdateListener() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { collection } = useSelector((state) => state.collection)
@@ -37,17 +38,17 @@ const CustomFieldUpdateListener = () => {
         dispatch(setCustomFields({ customKey: key, customValue: value }))
       }
       if (navigate && id) {
-        console.log(`navigate is true`)
+        console.log('navigate is true')
         navigate(`/edit/${id}`)
       }
     },
-    [dispatch, navigate]
+    [dispatch, navigate],
   )
 
   const toastProps = useRef({
     closeOnClick: true,
     icon: false,
-    closeButton: closeButton,
+    closeButton,
     type: toast.TYPE.INFO,
     position: toast.POSITION.TOP_RIGHT,
     pauseOnHover: true,
@@ -58,7 +59,7 @@ const CustomFieldUpdateListener = () => {
       console.log('CLOSE THAT TOAST')
     },
     onOpen: () => {
-      console.log(`POP THAT TOAST`)
+      console.log('POP THAT TOAST')
     },
   })
 
@@ -80,12 +81,13 @@ const CustomFieldUpdateListener = () => {
         ...toastProps.current,
         toastId,
         onRender: (node) => {
+          // eslint-disable-next-line no-param-reassign
           node.querySelector('.Toastify__toast-body').innerHTML = message
         },
         onClick: () => handleToastClick({ id, key, value }),
       })
     },
-    [handleToastClick, toastProps]
+    [handleToastClick, toastProps],
   )
 
   /// useEffect:
@@ -95,18 +97,18 @@ const CustomFieldUpdateListener = () => {
     const handleCustomFieldUpdate = (data) => {
       const { discogId, key, value } = data
       console.log(
-        `socket.js received notifyCustomFieldUpdate event with data: ${discogId}, ${key}, ${value}`
+        `socket.js received notifyCustomFieldUpdate event with data: ${discogId}, ${key}, ${value}`,
       )
 
       // if collection ref doesnt exist or is empty, return
       if (!collection || collection.length === 0) {
-        console.log(`collection is empty`)
+        console.log('collection is empty')
         return
       }
 
       // find currentUser album in collectionRef
       const currUserAlbum = collection.find(
-        (album) => album.discogsAlbumId === discogId
+        (album) => album.discogsAlbumId === discogId,
       )
 
       // calls notify function ONLY if current user's album exists

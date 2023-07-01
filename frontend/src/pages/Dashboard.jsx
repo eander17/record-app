@@ -3,21 +3,18 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  getCollection,
-  reset,
-} from '../features/collection/collectionSlice.js'
+import { getCollection, reset } from '../features/collection/collectionSlice'
 import AlbumItem from '../components/AlbumItem'
 import Spinner from '../components/Spinner'
 import SearchBar from '../components/SearchBar'
 
-const Dashboard = () => {
+function Dashboard() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.auth)
   const { collection, isLoading, isError, message } = useSelector(
-    (state) => state.collection
+    (state) => state.collection,
   )
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -58,13 +55,13 @@ const Dashboard = () => {
 
   return (
     <div className='flex flex-col items-center justify-center'>
-      <div className='prose my-4 mb-12 mt-12 text-center dark:prose-invert md:prose-lg lg:prose-xl'>
+      <div className='prose dark:prose-invert md:prose-lg lg:prose-xl my-4 mb-12 mt-12 text-center'>
         <h1 className=''>Welcome {user && user.name}</h1>
         <h3 className=''>Your Collection</h3>
       </div>
 
       <SearchBar
-        placeholder={'Search Collection'}
+        placeholder='Search Collection'
         onSubmit={handleSearch}
         onChange={(query) => setSearchQuery(query)}
       />
@@ -76,7 +73,7 @@ const Dashboard = () => {
               <AlbumItem
                 key={album._id}
                 album={album}
-                page={'onDash'}
+                page='onDash'
               />
             ))}
           </div>
@@ -87,18 +84,6 @@ const Dashboard = () => {
     </div>
   )
 }
-// // // console.log(
-// // // '🚀 ~ file: Dashboard.jsx:99 ~ Dashboard ~ Dashboard:',
-// // // Dashboard
-// // // )
-// // // console.log(
-// // // '🚀 ~ file: Dashboard.jsx:99 ~ Dashboard ~ Dashboard:',
-// // // Dashboard
-// // // )
-// // // console.log(
-// // // '🚀 ~ file: Dashboard.jsx:99 ~ Dashboard ~ Dashboard:',
-// // // Dashboard
-// // // )
 
 export default Dashboard
 

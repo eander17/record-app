@@ -1,4 +1,10 @@
-/** @format */
+/*
+ *
+ * @format
+ * eslint-disable no-param-reassign
+ */
+
+/* eslint-disable no-param-reassign */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import searchService from './searchService'
@@ -33,14 +39,14 @@ export const searchAlbums = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 export const searchResultsSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: () => initialState,
     // call this with the line: dispatch(setQuery(query)) in the search component
     setQueryReducer: (state, action) => {
       return {

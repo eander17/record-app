@@ -1,12 +1,11 @@
 /** @format */
 
 import { useDispatch, useSelector } from 'react-redux'
-import { updateAlbum } from '../features/collection/collectionSlice'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types'
 import { toast } from 'react-toastify'
-import {
-  resetFields,
-  setCustomFields,
-} from '../features/custFields/fieldSlice'
+import { updateAlbum } from '../features/collection/collectionSlice'
+import { resetFields, setCustomFields } from '../features/custFields/fieldSlice'
 import { emitCustomFieldUpdate } from '../socket'
 
 function CustomFieldForm({ notifyParent }) {
@@ -14,9 +13,7 @@ function CustomFieldForm({ notifyParent }) {
 
   const { album } = useSelector((state) => state.collection)
 
-  const { customKey, customValue } = useSelector(
-    (state) => state.custFields
-  )
+  const { customKey, customValue } = useSelector((state) => state.custFields)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -29,12 +26,12 @@ function CustomFieldForm({ notifyParent }) {
 
     // check if customKey already exists in album.customFields
     if (customKey in album.customFields) {
-      toast.error(`Custom key already exists`)
+      toast.error('Custom key already exists')
       return
     }
     // check if customKey or customValue is empty
     if (!customKey || !customValue) {
-      toast.error(`cannot submit empty fields`)
+      toast.error('cannot submit empty fields')
       return
     }
 
@@ -93,6 +90,7 @@ function CustomFieldForm({ notifyParent }) {
             Create Field
           </button>
           <button
+            type='button'
             className='btn hover:bg-fa-delete mx-2'
             onClick={handleCancel}
           >
@@ -102,6 +100,10 @@ function CustomFieldForm({ notifyParent }) {
       </div>
     </form>
   )
+}
+
+CustomFieldForm.propTypes = {
+  notifyParent: PropTypes.func.isRequired,
 }
 
 export default CustomFieldForm

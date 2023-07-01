@@ -1,4 +1,5 @@
 /** @format */
+/* eslint-disable no-param-reassign */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import collectionService from './collectionService'
@@ -18,7 +19,7 @@ export const createAlbum = createAsyncThunk(
   'collection/create',
   async (albumData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token
+      const { token } = thunkAPI.getState().auth.user
       return await collectionService.createAlbum(albumData, token)
     } catch (error) {
       const message =
@@ -29,7 +30,7 @@ export const createAlbum = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 // Get user Album Collection
@@ -37,7 +38,7 @@ export const getCollection = createAsyncThunk(
   'collection/getAll',
   async (_, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token
+      const { token } = thunkAPI.getState().auth.user
       return await collectionService.getCollection(token)
     } catch (error) {
       const message =
@@ -48,7 +49,7 @@ export const getCollection = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 // Get user Album by id
@@ -56,7 +57,7 @@ export const getAlbumById = createAsyncThunk(
   'collection/getById',
   async (id, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token
+      const { token } = thunkAPI.getState().auth.user
       return await collectionService.getAlbumById(id, token)
     } catch (error) {
       const message =
@@ -67,7 +68,7 @@ export const getAlbumById = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 // update user Album
@@ -75,7 +76,7 @@ export const updateAlbum = createAsyncThunk(
   'collection/update',
   async (album, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token
+      const { token } = thunkAPI.getState().auth.user
       return await collectionService.updateAlbum(album._id, album, token)
     } catch (error) {
       const message =
@@ -86,7 +87,7 @@ export const updateAlbum = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 // Delete user Album
@@ -94,7 +95,7 @@ export const deleteAlbum = createAsyncThunk(
   'collection/delete',
   async (id, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token
+      const { token } = thunkAPI.getState().auth.user
       return await collectionService.deleteAlbum(id, token)
     } catch (error) {
       const message =
@@ -105,14 +106,14 @@ export const deleteAlbum = createAsyncThunk(
         error.toString()
       return thunkAPI.rejectWithValue(message)
     }
-  }
+  },
 )
 
 export const collectionSlice = createSlice({
   name: 'collection',
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: () => initialState,
     setAlbum: (state, action) => {
       return {
         ...state,
@@ -177,7 +178,7 @@ export const collectionSlice = createSlice({
         state.isLoading = false
         state.isSuccess = true
         state.collection = state.collection.filter(
-          (album) => album._id !== action.payload.id
+          (album) => album._id !== action.payload.id,
         )
       })
       .addCase(deleteAlbum.rejected, (state, action) => {

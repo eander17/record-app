@@ -9,7 +9,7 @@ import SearchBar from './SearchBar'
 import DropdownMenu from './Dropdown'
 import { setQueryReducer } from '../features/search/searchSlice'
 
-const Navbar = () => {
+function Navbar() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
@@ -34,11 +34,12 @@ const Navbar = () => {
           <div className='form-control'>
             <SearchBar
               onSubmit={handleSearch}
-              placeholder={'Add a New Album'}
+              placeholder='Add a New Album'
             />
           </div>
           <div className='dropdown-end dropdown'>
             <label
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
               tabIndex={0}
               className='btn-ghost btn-circle avatar btn'
             >
@@ -47,8 +48,9 @@ const Navbar = () => {
               </div>
             </label>
             <ul
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
               tabIndex={0}
-              className='dropdown-content menu rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow'
+              className='dropdown-content menu rounded-box menu-sm bg-base-100 z-[1] mt-3 w-52 p-2 shadow'
             >
               <li>
                 <Link to='/profile'>Profile</Link>
@@ -57,7 +59,12 @@ const Navbar = () => {
                 <Link to='/settings'>Settings</Link>
               </li>
               <li>
-                <button onClick={onLogout}>Logout</button>
+                <button
+                  type='button'
+                  onClick={onLogout}
+                >
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
@@ -89,7 +96,7 @@ const Navbar = () => {
 }
 
 // Navbar logo component for DRYness.
-const NavLogo = () => {
+function NavLogo() {
   return (
     <div className='flex-1'>
       <Link

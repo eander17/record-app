@@ -1,14 +1,8 @@
 /** @format */
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useEffect, useState } from 'react'
-import { Theme } from 'daisyui'
 /// IMPORT PAGES
 import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'

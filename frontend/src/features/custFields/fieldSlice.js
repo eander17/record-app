@@ -14,7 +14,7 @@ export const fieldSlice = createSlice({
   name: 'custFields',
   initialState,
   reducers: {
-    resetFields: (state) => initialState,
+    resetFields: () => initialState,
     setCustomFields: (state, action) => {
       const { customKey, customValue } = action.payload
       return {

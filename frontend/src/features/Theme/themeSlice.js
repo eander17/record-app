@@ -5,9 +5,8 @@ import { createSlice } from '@reduxjs/toolkit'
 export const themeOnLoad = () => {
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'dark'
-  } else {
-    return 'light'
   }
+  return 'light'
 }
 
 const initialState = themeOnLoad()

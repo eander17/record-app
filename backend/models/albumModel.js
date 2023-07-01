@@ -1,13 +1,15 @@
+/** @format */
+
 // file to define the schema for albums
 
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const albumSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
     discogsId: {
       type: Number,
@@ -19,15 +21,15 @@ const albumSchema = mongoose.Schema(
     },
     title: {
       type: String,
-      required: [true, "Please add album title"],
+      required: [true, 'Please add album title'],
     },
     artist: {
       type: String,
-      required: [true, "Please add artist name"],
+      required: [true, 'Please add artist name'],
     },
     genre: {
       type: String,
-      required: [true, "Please add genre"],
+      required: [true, 'Please add genre'],
     },
     style: {
       type: String,
@@ -35,7 +37,7 @@ const albumSchema = mongoose.Schema(
     },
     year: {
       type: Number,
-      required: [true, "Please add release year"],
+      required: [true, 'Please add release year'],
     },
     image: {
       type: String, // url to image
@@ -52,8 +54,8 @@ const albumSchema = mongoose.Schema(
     dateAdded: {
       type: Date,
       required: true, // formatted as ISODate
-      default: function () {
-        return this.createdAt;
+      default() {
+        return this.createdAt
       },
     },
     trackList: {
@@ -63,14 +65,13 @@ const albumSchema = mongoose.Schema(
     runtime: {
       type: Number, // in seconds (integer)
       required: true,
-      default: function () {
+      default() {
         if (this.trackList && this.trackList.length > 0) {
           return this.trackList.reduce((acc, track) => {
-            return acc + (track.duration ?? 0);
-          }, 0);
-        } else {
-          return 0; // or any other default value you want to set
+            return acc + (track.duration ?? 0)
+          }, 0)
         }
+        return 0 // or any other default value you want to set
       },
     },
     customFields: {
@@ -81,7 +82,7 @@ const albumSchema = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
-);
+  },
+)
 
-module.exports = mongoose.model("Album", albumSchema);
+module.exports = mongoose.model('Album', albumSchema)

@@ -1,0 +1,44 @@
+{
+  "name": "record-app-vite",
+  "version": "1.0.0",
+  "description": "Record app",
+  "main": "./backend/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix .",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eander17/record-app.git"
+  },
+  "author": "Evan Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eander17/record-app/issues"
+  },
+  "homepage": "https://github.com/eander17/record-app#readme",
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.3",
+    "prettier": "^2.8.8",
+    "prettier-eslint": "^15.0.1",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier-plugin-sh": "^0.12.8",
+    "prettier-plugin-tailwindcss": "^0.3.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}

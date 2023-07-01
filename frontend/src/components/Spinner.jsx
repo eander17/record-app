@@ -2,8 +2,8 @@
 
 function Spinner() {
   return (
-    <div className='fixed top-0 right-0 bottom-0 left-0 bg-black z-50 flex justify-center items-center'>
-      <div className='w-64 h-64 border-8 border-solid border-black border-rounded-lg animate-spin'></div>
+    <div className='fixed bottom-0 left-0 right-0 top-0 z-50 flex items-center justify-center bg-black'>
+      <div className='border-rounded-lg h-64 w-64 animate-spin border-8 border-solid border-black' />
     </div>
   )
 }

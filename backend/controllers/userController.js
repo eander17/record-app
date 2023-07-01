@@ -1,3 +1,5 @@
+/** @format */
+
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
@@ -73,7 +75,6 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route GET /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-
   res.status(200).json(req.user)
 })
 

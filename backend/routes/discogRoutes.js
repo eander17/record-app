@@ -1,8 +1,11 @@
-const express = require("express");
-const router = express.Router();
+/** @format */
 
-const { searchAlbums } = require("../controllers/discogController");
+const express = require('express')
 
-router.route("/").get(searchAlbums);
+const router = express.Router()
 
-module.exports = router;
+const { searchAlbums } = require('../controllers/discogController')
+
+router.route('/').get(searchAlbums)
+
+module.exports = router

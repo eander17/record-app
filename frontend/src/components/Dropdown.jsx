@@ -3,13 +3,13 @@
 import { useEffect } from 'react'
 import { themeChange } from 'theme-change'
 
-const Dropdown = ({ user }) => {
+function Dropdown() {
   useEffect(() => {
     themeChange(false)
   }, [])
 
   return (
-    <div className='dropdown drowpdown-end mx-4 mb-4'>
+    <div className='dropdown dropdown-end mx-4 mb-4'>
       <label
         tabIndex={0}
         className='btn m-1'
@@ -18,10 +18,11 @@ const Dropdown = ({ user }) => {
       </label>
       <ul
         tabIndex={0}
-        className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'
+        className='dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow'
       >
         <li>
           <button
+            type='button'
             data-set-theme='cupcake'
             data-act-class='ACTIVECLASS'
           >
@@ -30,6 +31,7 @@ const Dropdown = ({ user }) => {
         </li>
         <li>
           <button
+            type='button'
             data-set-theme='dark'
             data-act-class='ACTIVECLASS'
           >
@@ -38,6 +40,7 @@ const Dropdown = ({ user }) => {
         </li>
         <li>
           <button
+            type='button'
             data-set-theme='coffee'
             data-act-class='ACTIVECLASS'
           >
@@ -46,6 +49,7 @@ const Dropdown = ({ user }) => {
         </li>
         <li>
           <button
+            type='button'
             data-set-theme='dracula'
             data-act-class='ACTIVECLASS'
           >
@@ -54,6 +58,7 @@ const Dropdown = ({ user }) => {
         </li>
         <li>
           <button
+            type='button'
             data-set-theme='luxury'
             data-act-class='ACTIVECLASS'
           >
@@ -62,6 +67,7 @@ const Dropdown = ({ user }) => {
         </li>{' '}
         <li>
           <button
+            type='button'
             data-set-theme='retro'
             data-act-class='ACTIVECLASS'
           >
@@ -70,6 +76,7 @@ const Dropdown = ({ user }) => {
         </li>{' '}
         <li>
           <button
+            type='button'
             data-set-theme='business'
             data-act-class='ACTIVECLASS'
           >
@@ -78,6 +85,7 @@ const Dropdown = ({ user }) => {
         </li>{' '}
         <li>
           <button
+            type='button'
             data-set-theme='halloween'
             data-act-class='ACTIVECLASS'
           >
@@ -86,6 +94,7 @@ const Dropdown = ({ user }) => {
         </li>
         <li>
           <button
+            type='button'
             data-set-theme='aqua'
             data-act-class='ACTIVECLASS'
           >
@@ -94,6 +103,7 @@ const Dropdown = ({ user }) => {
         </li>{' '}
         <li>
           <button
+            type='button'
             data-set-theme='cyberpunk'
             data-act-class='ACTIVECLASS'
           >
@@ -102,6 +112,7 @@ const Dropdown = ({ user }) => {
         </li>{' '}
         <li>
           <button
+            type='button'
             data-set-theme='night'
             data-act-class='ACTIVECLASS'
           >

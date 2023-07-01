@@ -1,35 +1,37 @@
-const asyncHandler = require("express-async-handler");
+/** @format */
 
-const Album = require("../models/albumModel");
-const User = require("../models/userModel");
+const asyncHandler = require('express-async-handler')
+
+const Album = require('../models/albumModel')
+const User = require('../models/userModel')
 
 // @desc    Fetch all albums
 // @route   GET /api/albums
 // @access  Public
 const getAlbums = asyncHandler(async (req, res) => {
   try {
-    const collection = await Album.find({ user: req.user.id });
-    res.status(200).json(collection);
+    const collection = await Album.find({ user: req.user.id })
+    res.status(200).json(collection)
   } catch {
-    res.status(400);
-    throw new Error("Albums not found");
+    res.status(400)
+    throw new Error('Albums not found')
   }
-});
+})
 
 // @desc    Fetch single album
 // @route   GET /api/albums/:id
 // @access  Public
 const getAlbum = asyncHandler(async (req, res) => {
-  const album = await Album.findById(req.params.id); // uses the id from the url
+  const album = await Album.findById(req.params.id) // uses the id from the url
 
   // if album exists, send it back
   if (album) {
-    res.status(200).json(album);
+    res.status(200).json(album)
   } else {
-    res.status(400);
-    throw new Error("Album not found");
+    res.status(400)
+    throw new Error('Album not found')
   }
-});
+})
 
 // @desc    Create an album
 // @route   POST /api/albums
@@ -43,8 +45,8 @@ const createAlbum = asyncHandler(async (req, res) => {
     !req.body.discogsId ||
     !req.body.masterId
   ) {
-    res.status(400);
-    throw new Error("missing required fields");
+    res.status(400)
+    throw new Error('missing required fields')
   }
 
   // create the album
@@ -64,68 +66,68 @@ const createAlbum = asyncHandler(async (req, res) => {
     trackList: req.body.trackList,
     runtime: req.body.runtime,
     user: req.user.id, // this is the user id
-  });
+  })
   // add the album to the user's collection
-  res.status(201).json(album);
-});
+  res.status(201).json(album)
+})
 
 // @desc    Update an album
 // @route   PUT /api/albums/:id
 // @access  Private
 const updateAlbum = asyncHandler(async (req, res) => {
-  const album = await Album.findById(req.params.id);
+  const album = await Album.findById(req.params.id)
 
   if (!album) {
-    res.status(400);
-    throw new Error("Album not found");
+    res.status(400)
+    throw new Error('Album not found')
   }
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user.id)
   // verify user exists and is the owner of the album
-  validateUser(album, user, res);
+  validateUser(album, user, res)
 
   const updatedAlbum = await Album.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // return the updated album
-  });
+  })
 
-  res.status(200).json(updatedAlbum);
-});
+  res.status(200).json(updatedAlbum)
+})
 
 // @desc    Delete an album
 // @route   DELETE /api/albums/:id
 // @access  Private
 const deleteAlbum = asyncHandler(async (req, res) => {
-  const album = await Album.findById(req.params.id);
+  const album = await Album.findById(req.params.id)
 
   if (!album) {
-    res.status(400);
-    throw new Error("Album not found");
+    res.status(400)
+    throw new Error('Album not found')
   }
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user.id)
 
-  validateUser(album, user, res);
+  validateUser(album, user, res)
 
-  await album.deleteOne(); // delete the album
+  await album.deleteOne() // delete the album
 
-  res.status(200).json({ id: req.params.id }); // id of deleted album
-});
+  res.status(200).json({ id: req.params.id }) // id of deleted album
+})
 
 /// HELPER FUNCTIONS ///
 // helper function to validate user
 const validateUser = (album, user, res) => {
   // verify user exists
   if (!user) {
-    res.status(401);
-    throw new Error("User not found");
+    res.status(401)
+    throw new Error('User not found')
   }
 
   // verify user is authorized
   if (album.user.toString() !== user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
+    res.status(401)
+    throw new Error('User not authorized')
   }
-};
+}
 
 module.exports = {
   getAlbums,
@@ -133,4 +135,4 @@ module.exports = {
   createAlbum,
   updateAlbum,
   deleteAlbum,
-};
+}

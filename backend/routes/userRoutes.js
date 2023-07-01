@@ -1,9 +1,13 @@
+/** @format */
+
 const express = require('express')
+
 const router = express.Router()
 const {
   registerUser,
   loginUser,
   getMe,
+  // eslint-disable-next-line import/extensions
 } = require('../controllers/userController.js')
 const { protect } = require('../middleware/authMiddleware')
 
