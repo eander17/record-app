@@ -48,18 +48,14 @@ export const searchResultsSlice = createSlice({
   reducers: {
     reset: () => initialState,
     // call this with the line: dispatch(setQuery(query)) in the search component
-    setQueryReducer: (state, action) => {
-      return {
-        ...state,
-        query: action.payload,
-      }
-    },
-    setLocalPage: (state, action) => {
-      return {
-        ...state,
-        localPage: action.payload,
-      }
-    },
+    setQueryReducer: (state, action) => ({
+      ...state,
+      query: action.payload,
+    }),
+    setLocalPage: (state, action) => ({
+      ...state,
+      localPage: action.payload,
+    }),
   },
   extraReducers: (builder) => {
     builder

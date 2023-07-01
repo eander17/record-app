@@ -18,3 +18,7 @@ dist/
 /**/test/
 /**/tests/
 /**/tests_e2e/
+
+# App files to ignore until reimplemented
+
+/frontend/src/socket.js

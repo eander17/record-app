@@ -185,29 +185,21 @@ const buildAlbumList = (data) => {
 }
 
 // filters an album list by the query
-const filterAlbums = (data, query) => {
-  return data.filter((album) => {
-    return [
-      album.artist,
-      album.title,
-      album.genre,
-      album.style,
-      album.year,
-    ].some((field) =>
-      field.toString().toLowerCase().includes(query.toLowerCase()),
-    )
-  })
-}
+const filterAlbums = (data, query) =>
+  data.filter((album) =>
+    [album.artist, album.title, album.genre, album.style, album.year].some(
+      (field) => field.toString().toLowerCase().includes(query.toLowerCase()),
+    ),
+  )
 
 // removes duplicate albums from an album list
-const removeDuplicates = (data) => {
-  return data.reduce((acc, cur) => {
+const removeDuplicates = (data) =>
+  data.reduce((acc, cur) => {
     if (!acc.find((album) => album.masterId === cur.masterId)) {
       acc.push(cur)
     }
     return acc
   }, [])
-}
 
 /// ALBUM TRACK lIST FUNCTIONS ///
 const getTrackList = async (id) => {

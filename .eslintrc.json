@@ -1,47 +1,23 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
-    "jest": true
+    "node": true,
+    "es6": true,
+    "es2023": true,
+    "mongo": true
   },
-  "extends": [
-    "eslint:recommended",
-    "airbnb",
-    "plugin:react/recommended",
-    // ***********
-    "plugin:prettier/recommended"
-  ],
   "parserOptions": {
-    "ecmaVersion": "latest",
+    "ecmaVersion": 2023,
     "sourceType": "module"
   },
-  //! prettier must be last in list
-  "plugins": [
-        "react",
-         "import",
-         "react-hooks",
-         "prettier"
-        ],
+  "extends": ["eslint:recommended", "airbnb", "airbnb/hooks", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
-    "quotes": ["error", "single"],
-    "semi": ["error", "never"],
-    "linebreak-style": ["error", "unix"],
-    "indent": ["error", 2],
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-props-no-spreading": "off",
+    "prettier/prettier": "error",
+    "no-use-before-define": "off",
     "no-console": "off",
-    "no-underscore-dangle": "off", // for mongoDB _id
-    "react/jsx-indent": "off",
-    "no-use-before-define": ["error", {
-        "functions": false,
-        "classes": true,
-        "variables": false
-        }],
-    "no-plusplus": "off",
-    "no-unused-expressions": "off",
-    "jsx-a11y/label-has-associated-control": "off",
-    "jsx-a11y/no-noninteractive-tabindex": "off",
-    "react/jsx-boolean-value": "off"
+    "no-underscore-dangle": "off",
+    "no-undef": "off",
+    "no-plusplus": "off"
   }
 }

@@ -20,6 +20,9 @@ const io = require('socket.io')(server, {
   },
 })
 
+// td: prettier isn't changing quotes in this clg for some reason
+console.log('testing')
+
 const PORT = process.env.PORT || 5000 // Port number
 // const fs = require('fs')  //! might break app?
 const path = require('path')

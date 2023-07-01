@@ -2,6 +2,7 @@
   "name": "record-app-vite",
   "version": "1.0.0",
   "description": "Record app",
+  "type": "module",
   "main": "./backend/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -36,7 +37,7 @@
     "prettier-plugin-tailwindcss": "^0.3.0"
   },
   "lint-staged": {
-    "/**/*.{js,jsx}": [
+    "./**/*.{js,jsx}": [
       "prettier --write",
       "eslint",
       "eslint --fix"

@@ -114,12 +114,10 @@ export const collectionSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    setAlbum: (state, action) => {
-      return {
-        ...state,
-        album: action.payload,
-      }
-    },
+    setAlbum: (state, action) => ({
+      ...state,
+      album: action.payload,
+    }),
   },
   extraReducers: (builder) => {
     builder

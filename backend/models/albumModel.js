@@ -67,9 +67,10 @@ const albumSchema = mongoose.Schema(
       required: true,
       default() {
         if (this.trackList && this.trackList.length > 0) {
-          return this.trackList.reduce((acc, track) => {
-            return acc + (track.duration ?? 0)
-          }, 0)
+          return this.trackList.reduce(
+            (acc, track) => acc + (track.duration ?? 0),
+            0,
+          )
         }
         return 0 // or any other default value you want to set
       },

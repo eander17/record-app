@@ -12,7 +12,6 @@ dist/
 /**/.vscode/
 /**/.vite/
 /**/.husky/
-/**/.*
 /**/build/
 /**/coverage/
 /**/test/
