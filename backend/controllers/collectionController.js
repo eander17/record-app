@@ -54,7 +54,7 @@ const createAlbum = asyncHandler(async (req, res) => {
     title: req.body.title,
     artist: req.body.artist,
     genre: req.body.genre,
-    style: req.body.style,
+    styles: req.body.style,
     format: req.body.format,
     dateAdded: Date.now(),
     year: req.body.year,

@@ -31,8 +31,8 @@ const albumSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add genre'],
     },
-    style: {
-      type: String,
+    styles: {
+      type: [String],
       required: false,
     },
     year: {
@@ -48,7 +48,7 @@ const albumSchema = mongoose.Schema(
       required: false,
     },
     format: {
-      type: String,
+      type: [String],
       required: false,
     },
     dateAdded: {

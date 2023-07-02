@@ -113,7 +113,7 @@ export const collectionSlice = createSlice({
   name: 'collection',
   initialState,
   reducers: {
-    reset: () => initialState,
+    resetCollection: () => initialState,
     setAlbum: (state, action) => ({
       ...state,
       album: action.payload,
@@ -200,6 +200,6 @@ export const collectionSlice = createSlice({
   },
 })
 
-export const { reset } = collectionSlice.actions
+export const { resetCollection } = collectionSlice.actions
 
 export default collectionSlice.reducer

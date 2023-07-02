@@ -10,13 +10,21 @@
     "ecmaVersion": 2023,
     "sourceType": "module"
   },
-  "extends": ["eslint:recommended", "airbnb", "airbnb/hooks", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/jsx-runtime",
+    "airbnb",
+    "airbnb/hooks",
+    "prettier"
+  ],
   "plugins": [],
   "rules": {
     "no-use-before-define": "off",
     "no-console": "off",
     "no-underscore-dangle": "off",
     "no-undef": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "react/react-in-jsx-scope": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }

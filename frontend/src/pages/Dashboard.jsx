@@ -3,10 +3,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { getCollection, reset } from '../features/collection/collectionSlice'
-import AlbumItem from '../components/AlbumItem'
+import { FaSearch } from 'react-icons/fa'
+import {
+  getCollection,
+  resetCollection,
+} from '../features/collection/collectionSlice'
+import DashAlbumItem from '../components/DashAlbumItem'
 import Spinner from '../components/Spinner'
-import SearchBar from '../components/SearchBar'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -18,6 +21,7 @@ function Dashboard() {
   )
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [filteredCollection, setFilteredCollection] = useState([])
 
   useEffect(() => {
     if (isError) {
@@ -33,21 +37,20 @@ function Dashboard() {
 
     // triggered when component unmounts
     return () => {
-      dispatch(reset())
+      dispatch(resetCollection())
     }
   }, [user, navigate, isError, message, dispatch])
 
-  const handleSearch = (query) => {
-    return collection.filter((album) => {
-      return (
-        album.title.toLowerCase().includes(query.toLowerCase()) ||
-        album.artist.toLowerCase().includes(query.toLowerCase()) ||
-        album.genre.toLowerCase().includes(query.toLowerCase())
-      )
-    })
-  }
-
-  const filteredCollection = handleSearch(searchQuery) // use state for this?
+  useEffect(() => {
+    setFilteredCollection(
+      collection.filter(
+        (album) =>
+          album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          album.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          album.genre.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    )
+  }, [searchQuery, collection])
 
   if (isLoading) {
     return <Spinner />
@@ -60,20 +63,31 @@ function Dashboard() {
         <h3 className=''>Your Collection</h3>
       </div>
 
-      <SearchBar
-        placeholder='Search Collection'
-        onSubmit={handleSearch}
-        onChange={(query) => setSearchQuery(query)}
-      />
+      <form>
+        <div className='join'>
+          <input
+            type='search'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder='Search Collection'
+            className='input-bordered input-primary input join-item'
+          />
+          <button
+            type='button'
+            className='btn btn-secondary join-item'
+          >
+            <FaSearch />
+          </button>
+        </div>
+      </form>
 
       <section className=''>
         {filteredCollection.length > 0 ? (
           <div className='grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3'>
             {filteredCollection.map((album) => (
-              <AlbumItem
+              <DashAlbumItem
                 key={album._id}
                 album={album}
-                page='onDash'
               />
             ))}
           </div>
@@ -86,5 +100,3 @@ function Dashboard() {
 }
 
 export default Dashboard
-
-// testing settings changes

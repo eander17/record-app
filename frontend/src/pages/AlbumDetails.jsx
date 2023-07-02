@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   getAlbumById,
-  reset,
+  resetCollection,
   deleteAlbum,
   updateAlbum,
 } from '../features/collection/collectionSlice'
@@ -60,6 +60,7 @@ function AlbumDetails() {
     return () => {
       // cleanup
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [album, anyCustomFields])
 
   /// handleAddCustomField: toggles the add custom field form
@@ -152,7 +153,7 @@ function AlbumDetails() {
 
     // dispatches reset for collectionSlice
     return () => {
-      dispatch(reset())
+      dispatch(resetCollection())
     }
   }, [dispatch, id, navigate, user, isError, message])
 

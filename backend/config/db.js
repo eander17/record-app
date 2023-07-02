@@ -1,18 +1,14 @@
-/**
- *
- * @format
- */
-
-import { connect } from 'mongoose'
+// eslint-disable-next-line
+const mongoose = require('mongoose')
 
 const connectDB = async () => {
   try {
     // eslint-disable-next-line no-unused-vars
-    const conn = await connect(process.env.MONGO_URI)
+    const conn = await mongoose.connect(process.env.MONGO_URI)
   } catch (error) {
     console.log(error)
     process.exit(1)
   }
 }
 
-export default connectDB
+module.exports = connectDB

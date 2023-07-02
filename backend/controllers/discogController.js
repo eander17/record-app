@@ -23,6 +23,8 @@ const asyncHandler = require('express-async-handler')
 const searchAlbums = asyncHandler(async (req, res) => {
   const { query, page } = req.query
 
+  console.log(`discog controller: query: ${query}, page: ${page}`)
+
   // check if query exists
   if (!query || !page) {
     return res.status(400).json({ message: 'Invalid query' })
@@ -104,11 +106,12 @@ const searchAlbums = asyncHandler(async (req, res) => {
     }),
   )
     .then(() => {
+      console.log(`AlbumData: ${JSON.stringify(albumData)}`)
       console.log('all promises resolved successfully')
       //* SUCCESS: return the albums and the page data
-      return res
-        .status(200)
-        .json({ albumData, currentPage, totalPages, totalResults })
+      // return res
+      //   .status(200)
+      //   .json({ albumData, currentPage, totalPages, totalResults })
     })
     .catch((err) => {
       console.log(`error: ${err}`)

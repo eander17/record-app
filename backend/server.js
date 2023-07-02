@@ -19,7 +19,7 @@ const io = require('socket.io')(server, {
     credentials: true, // Allow cookies to be sent with requests
   },
 })
-
+// todo
 // td: prettier isn't changing quotes in this clg for some reason
 console.log('testing')
 

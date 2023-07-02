@@ -28,8 +28,11 @@ export const searchAlbums = createAsyncThunk(
   'search/getAll',
   async (data, thunkAPI) => {
     try {
-      const { query, requestPage } = data
-      return await searchService.searchAlbums(query, requestPage)
+      const { searchQuery, requestPage } = data
+      console.log(
+        `searchSlice: searchQuery: ${searchQuery} requestPage: ${requestPage}`,
+      )
+      return await searchService.searchAlbums(searchQuery, requestPage)
     } catch (error) {
       const message =
         (error.response &&
