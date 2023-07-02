@@ -1,67 +1,48 @@
 /** @format */
 
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  getAlbumById,
-  resetCollection,
   deleteAlbum,
   updateAlbum,
 } from '../features/collection/collectionSlice'
-import {
-  MainAlbumDetails,
-  AdditionalFields,
-} from '../components/AlbumDetailsComponents/MainAlbumDetails'
+import Spinner from '../components/Spinner'
+
+// ~~ todo - correctly build local state for album details~~
+// todo - build hero title with album title, artist, runtime, song count
+// todo - build stats panel: add listen, num listens, favorite btn, date added
+// todo - add edit and delete buttons
+// todo - build form to edit album details
 
 function AlbumDetails() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { id } = useParams() //! need to do because store doesn't have album yet.
   const { user } = useSelector((state) => state.auth)
-  const { album, isError, message } = useSelector((state) => state.collection)
+  const { album, isLoading, isError, message } = useSelector(
+    (state) => state.collection,
+  )
 
-  // eslint-disable-next-line no-unused-vars
-  const { title, artist, genre, year, image, customFields, _id } = album
+  console.log(`album in albumDetails: ${JSON.stringify(album)}`)
+
+  useEffect(() => {
+    if (isError) {
+      console.error(message)
+    }
+
+    if (!user) navigate('/login')
+  }, [dispatch, navigate, user, isError, message])
+
   // set to true if album has customFields
-  const [anyCustomFields, setAnyCustomFields] = useState(false)
+  // const [anyCustomFields, setAnyCustomFields] = useState(false)
 
   // ? BOOL: state variables to control form visibility
   // eslint-disable-next-line no-unused-vars
   const [showEditFields, setShowEditFields] = useState(false)
-  const [data, setData] = useState({
-    title: '',
-    artist: '',
-    genre: '',
-    year: '',
-  })
+  const [data, setData] = useState(JSON.parse(JSON.stringify(album)))
 
-  const [customData, setCustomData] = useState([])
-
-  useEffect(() => {
-    if (album) {
-      setData((prevData) => ({
-        ...prevData,
-        title: album.title,
-        artist: album.artist,
-        genre: album.genre,
-        year: album.year,
-      }))
-
-      // if album has custom fields, set state to true
-      setAnyCustomFields(
-        album.customFields && Object.values(album.customFields).length > 0,
-      )
-
-      // if AnyCustomFields is true, set customData state
-      rebuildCustomFields()
-    }
-    return () => {
-      // cleanup
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [album, anyCustomFields])
+  // const [customData, setCustomData] = useState([])
 
   /// handleAddCustomField: toggles the add custom field form
   // eslint-disable-next-line no-unused-vars
@@ -71,8 +52,8 @@ function AlbumDetails() {
 
   /// handleDelete: deletes album from user's collection
   // eslint-disable-next-line no-unused-vars
-  const handleDelete = () => {
-    dispatch(deleteAlbum(_id)) // id === album's id
+  const handleDelete = (itemId) => {
+    dispatch(deleteAlbum(itemId)) // id === album's id
     navigate('/')
   }
 
@@ -140,35 +121,80 @@ function AlbumDetails() {
     }
   }
 
-  useEffect(() => {
-    if (isError) {
-      console.error(message)
-    }
-    // if user is not logged in, redirect to login page
-    if (!user) {
-      navigate('/login')
-    } else {
-      dispatch(getAlbumById(id))
-    }
-
-    // dispatches reset for collectionSlice
-    return () => {
-      dispatch(resetCollection())
-    }
-  }, [dispatch, id, navigate, user, isError, message])
+  if (isLoading) return <Spinner />
 
   // ? if album is null, returns album not found.
   if (!album) {
     return <h1>Album not found</h1>
   }
-
-  return (
-    <>
-      <MainAlbumDetails album={album} />
-      <AdditionalFields album={album} />
-    </>
-  )
+  if (album) {
+    return <h1>{album.title}</h1>
+  }
 }
+
+// function AlbumTitle({ album }) {
+//   const { title, artist, genre, year, image } = album
+//   return (
+//     <div className='hero bg-base-200 min-h-screen'>
+//       <div className='hero-content flex-col lg:flex-row'>
+//         <img
+//           src={image}
+//           alt={title}
+//           className='max-w-sm rounded-lg shadow-2xl'
+//         />
+//         <div>
+//           <h1 className='text-5xl font-bold'>{title}</h1>
+//           <h3 className='py-6'>
+//             {artist} - {genre} - {year}
+//           </h3>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
+
+// // eslint-disable-next-line react/prop-types
+// function AdditionalFields() {
+//   // eslint-disable-next-line react/prop-types
+//   // td const { runtime, format, style } = album
+//   return (
+//     <div>
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>Additional Fields</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           <tr>
+//             <td>runtime</td>
+//             <td>ttt</td>
+//           </tr>
+//           <tr>
+//             <td>format</td>
+//             <td>ttt</td>
+//           </tr>
+//           <tr>
+//             <td>Sub Genre</td>
+//             <td>333</td>
+//           </tr>
+//         </tbody>
+//       </table>
+//     </div>
+//   )
+// }
+
+// AlbumTitle.propTypes = {
+//   album: PropTypes.shape({
+//     title: PropTypes.string.isRequired,
+//     artist: PropTypes.string.isRequired,
+//     genre: PropTypes.string.isRequired,
+//     year: PropTypes.number.isRequired,
+//     image: PropTypes.string.isRequired,
+//   }).isRequired,
+// }
+
+export default AlbumDetails
 
 //   if (!showEditFields) {
 //     return (
@@ -371,5 +397,3 @@ function AlbumDetails() {
 //     )
 //   }
 // }
-
-export default AlbumDetails

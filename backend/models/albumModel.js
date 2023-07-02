@@ -4,6 +4,12 @@
 
 const mongoose = require('mongoose')
 
+const trackSchema = new mongoose.Schema({
+  position: { type: String, required: true },
+  title: { type: String, required: true },
+  duration: { type: String, required: true },
+})
+
 const albumSchema = mongoose.Schema(
   {
     user: {
@@ -59,7 +65,7 @@ const albumSchema = mongoose.Schema(
       },
     },
     trackList: {
-      type: Array,
+      type: [trackSchema],
       required: false,
     },
     runtime: {
@@ -86,4 +92,10 @@ const albumSchema = mongoose.Schema(
   },
 )
 
-module.exports = mongoose.model('Album', albumSchema)
+const Album = mongoose.model('Album', albumSchema)
+const Track = mongoose.model('Track', trackSchema)
+
+module.exports = {
+  Album,
+  Track,
+}

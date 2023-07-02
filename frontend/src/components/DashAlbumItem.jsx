@@ -1,10 +1,13 @@
 /** @format */
 
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
+import { setAlbum } from '../features/collection/collectionSlice'
 
 function DashAlbumItem({ album }) {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   // eslint-disable-next-line no-unused-vars
   const { title, artist, genre, year, image, _id } = album
@@ -12,6 +15,7 @@ function DashAlbumItem({ album }) {
   /// handleEdit: navigates to albumDetails page
   const handleEdit = () => {
     try {
+      dispatch(setAlbum(album)) // set album in collectionSlice
       navigate(`/edit/${_id}`) // navigate to user's album details page.
     } catch {
       console.error('error')

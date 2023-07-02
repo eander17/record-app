@@ -23,8 +23,6 @@ const asyncHandler = require('express-async-handler')
 const searchAlbums = asyncHandler(async (req, res) => {
   const { query, page } = req.query
 
-  console.log(`discog controller: query: ${query}, page: ${page}`)
-
   // check if query exists
   if (!query || !page) {
     return res.status(400).json({ message: 'Invalid query' })
@@ -106,8 +104,6 @@ const searchAlbums = asyncHandler(async (req, res) => {
     }),
   )
     .then(() => {
-      console.log(`AlbumData: ${JSON.stringify(albumData)}`)
-      console.log('all promises resolved successfully')
       //* SUCCESS: return the albums and the page data
       // return res
       //   .status(200)
@@ -216,12 +212,12 @@ const getTrackList = async (id) => {
     if (!track.duration) dur = '00:00'
     return {
       position: track.position,
-      trackTitle: track.title,
+      title: track.title,
       duration: dur,
     }
   })
 
-  return tracklist
+  return tracklist.flat()
 }
 
 // returns runtime in seconds. Expects tracklist to be in the format of "mm:ss"

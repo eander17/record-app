@@ -52,6 +52,7 @@ function SearchResults() {
 
   /// handleAdd: add album to user's collection
   const handleAdd = (album) => {
+    console.log(`album title: ${JSON.stringify(album)}`)
     dispatch(createAlbum(album))
     toast.success('Album added to collection')
   }
@@ -99,6 +100,9 @@ function SearchResultsItem({ album, onAdd }) {
   const { collection } = useSelector((state) => state.collection)
 
   const [owned, setOwned] = useState(false)
+
+  // eslint-disable-next-line react/prop-types
+  console.log(`tracklist: ${JSON.stringify(album.trackList.flat())}`)
 
   useEffect(() => {
     if (collection) {

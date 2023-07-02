@@ -10,7 +10,7 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  isEdit: false, // do I need this?
+  isEdit: false, // todo - do I need this?
   message: '',
 }
 
@@ -57,6 +57,7 @@ export const getAlbumById = createAsyncThunk(
   'collection/getById',
   async (id, thunkAPI) => {
     try {
+      console.log(`getAlbumById: ${id}`)
       const { token } = thunkAPI.getState().auth.user
       return await collectionService.getAlbumById(id, token)
     } catch (error) {
@@ -114,6 +115,18 @@ export const collectionSlice = createSlice({
   initialState,
   reducers: {
     resetCollection: () => initialState,
+    resetCollectionBools: (state) => ({
+      ...state,
+      isError: false,
+      isSuccess: false,
+      isLoading: false,
+      isEdit: false,
+      message: '',
+    }),
+    resetAlbum: (state) => ({
+      ...resetCollectionBools(state),
+      album: {},
+    }),
     setAlbum: (state, action) => ({
       ...state,
       album: action.payload,
@@ -127,6 +140,7 @@ export const collectionSlice = createSlice({
       .addCase(createAlbum.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
+        console.log(`createAlbum.fulfilled: ${JSON.stringify(action.payload)}`)
         state.collection.push(action.payload)
       })
       .addCase(createAlbum.rejected, (state, action) => {
@@ -200,6 +214,7 @@ export const collectionSlice = createSlice({
   },
 })
 
-export const { resetCollection } = collectionSlice.actions
+export const { resetCollection, setAlbum, resetAlbum, resetCollectionBools } =
+  collectionSlice.actions
 
 export default collectionSlice.reducer

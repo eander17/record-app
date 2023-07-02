@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FaSearch } from 'react-icons/fa'
 import {
   getCollection,
-  resetCollection,
+  resetCollectionBools,
 } from '../features/collection/collectionSlice'
 import DashAlbumItem from '../components/DashAlbumItem'
 import Spinner from '../components/Spinner'
@@ -37,9 +37,10 @@ function Dashboard() {
 
     // triggered when component unmounts
     return () => {
-      dispatch(resetCollection())
+      dispatch(resetCollectionBools())
     }
-  }, [user, navigate, isError, message, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   useEffect(() => {
     setFilteredCollection(

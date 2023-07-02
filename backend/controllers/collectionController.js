@@ -1,8 +1,10 @@
 /** @format */
 
 const asyncHandler = require('express-async-handler')
-
-const Album = require('../models/albumModel')
+// eslint-disable-next-line prefer-destructuring
+const { Album } = require('../models/albumModel')
+// eslint-disable-next-line prefer-destructuring
+const { Track } = require('../models/albumModel')
 const User = require('../models/userModel')
 
 // @desc    Fetch all albums
@@ -49,6 +51,10 @@ const createAlbum = asyncHandler(async (req, res) => {
     throw new Error('missing required fields')
   }
 
+  const flatTrackList = req.body.trackList.flat()
+  console.log(`collectionController: flatTrackList: ${flatTrackList}`)
+  const tracks = await Track.insertMany(flatTrackList)
+
   // create the album
   const album = await Album.create({
     title: req.body.title,
@@ -63,7 +69,7 @@ const createAlbum = asyncHandler(async (req, res) => {
     customFields: {}, // td - replace/remove?
     discogsId: req.body.discogsId,
     masterId: req.body.masterId,
-    trackList: req.body.trackList,
+    trackList: tracks,
     runtime: req.body.runtime,
     user: req.user.id, // this is the user id
   })

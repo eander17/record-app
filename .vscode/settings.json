@@ -13,5 +13,6 @@
     "reduxjs",
     "tabindex",
     "tracklist"
-  ]
+  ],
+  "todo-tree.tree.showBadges": true
 }
