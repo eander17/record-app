@@ -1,12 +1,11 @@
 /** @format */
 /* eslint-disable no-param-reassign */
 
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import collectionService from './collectionService'
 
 const initialState = {
   collection: [],
-  album: {}, // create a separate album reducer?
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -78,6 +77,7 @@ export const updateAlbum = createAsyncThunk(
   async (album, thunkAPI) => {
     try {
       const { token } = thunkAPI.getState().auth.user
+      console.log(`triggered update album - album: ${JSON.stringify(album)}`)
       return await collectionService.updateAlbum(album._id, album, token)
     } catch (error) {
       const message =
@@ -122,14 +122,6 @@ export const collectionSlice = createSlice({
       isLoading: false,
       isEdit: false,
       message: '',
-    }),
-    resetAlbum: (state) => ({
-      ...resetCollectionBools(state),
-      album: {},
-    }),
-    setAlbum: (state, action) => ({
-      ...state,
-      album: action.payload,
     }),
   },
   extraReducers: (builder) => {
@@ -214,7 +206,6 @@ export const collectionSlice = createSlice({
   },
 })
 
-export const { resetCollection, setAlbum, resetAlbum, resetCollectionBools } =
-  collectionSlice.actions
+export const { resetCollection, resetCollectionBools } = collectionSlice.actions
 
 export default collectionSlice.reducer

@@ -66,7 +66,6 @@ const createAlbum = asyncHandler(async (req, res) => {
     year: req.body.year,
     image: req.body.image,
     thumb: req.body.thumb,
-    customFields: {}, // td - replace/remove?
     discogsId: req.body.discogsId,
     masterId: req.body.masterId,
     trackList: tracks,

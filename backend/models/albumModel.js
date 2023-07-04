@@ -10,6 +10,20 @@ const trackSchema = new mongoose.Schema({
   duration: { type: String, required: true },
 })
 
+const listenSchema = new mongoose.Schema({
+  timestamp: {
+    type: Date,
+    required: true,
+    default: Date.now,
+    validate: {
+      validator(v) {
+        return v <= new Date()
+      },
+      message: (props) => `${props.value} is not a valid timestamp!`,
+    },
+  },
+})
+
 const albumSchema = mongoose.Schema(
   {
     user: {
@@ -81,6 +95,11 @@ const albumSchema = mongoose.Schema(
         return 0 // or any other default value you want to set
       },
     },
+    listens: {
+      type: [listenSchema],
+      required: true,
+      default: [],
+    },
     customFields: {
       type: Map, // allows for any key/value pair
       of: mongoose.Schema.Types.Mixed, // allows for any type of value
@@ -94,8 +113,10 @@ const albumSchema = mongoose.Schema(
 
 const Album = mongoose.model('Album', albumSchema)
 const Track = mongoose.model('Track', trackSchema)
+const Listen = mongoose.model('Listen', listenSchema)
 
 module.exports = {
   Album,
   Track,
+  Listen,
 }

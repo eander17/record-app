@@ -15,9 +15,10 @@
     "plugin:react/jsx-runtime",
     "airbnb",
     "airbnb/hooks",
+    "plugin:react/recommended",
     "prettier"
   ],
-  "plugins": [],
+  "plugins": ["react"],
   "rules": {
     "no-use-before-define": "off",
     "no-console": "off",
@@ -25,6 +26,9 @@
     "no-undef": "off",
     "no-plusplus": "off",
     "react/react-in-jsx-scope": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "react/jsx-boolean-value": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "no-unused-expressions": "off"
   }
 }

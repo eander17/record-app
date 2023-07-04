@@ -1,9 +1,10 @@
 /** @format */
 
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setAlbum } from '../features/collection/collectionSlice'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { setAlbum } from '../features/collection/albumSlice'
 
 function DashAlbumItem({ album }) {
   const navigate = useNavigate()
@@ -13,10 +14,14 @@ function DashAlbumItem({ album }) {
   const { title, artist, genre, year, image, _id } = album
 
   /// handleEdit: navigates to albumDetails page
-  const handleEdit = () => {
+  const handleAlbumClick = () => {
     try {
-      dispatch(setAlbum(album)) // set album in collectionSlice
-      navigate(`/edit/${_id}`) // navigate to user's album details page.
+      console.log(
+        `dispatching setAlbum from dashAlbumItem: ${JSON.stringify(album)}`,
+      )
+      dispatch(setAlbum(album))
+      const urlTitle = title.replace(/\s+/g, '-').toLowerCase()
+      navigate(`/albums/${urlTitle}`) // navigate to user's album details page.
     } catch {
       console.error('error')
       toast.error('Error loading album details')
@@ -28,8 +33,8 @@ function DashAlbumItem({ album }) {
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className='card bg-primary mx-4 my-12 shadow-xl md:mx-8'
-      onClick={handleEdit}
-      onKeyDown={handleEdit}
+      onClick={handleAlbumClick}
+      onKeyDown={handleAlbumClick}
     >
       <figure className=''>
         <img

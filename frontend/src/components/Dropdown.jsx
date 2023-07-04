@@ -1,7 +1,12 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 /** @format */
 
 import { useEffect } from 'react'
 import { themeChange } from 'theme-change'
+
+// todo - set theme on button hover for each button in dropdown
+
+// TEST - is theme persistent?
 
 function Dropdown() {
   useEffect(() => {
@@ -10,12 +15,12 @@ function Dropdown() {
 
   return (
     <div className='dropdown dropdown-end mx-4 mb-4'>
-      <label
+      <span
         tabIndex={0}
         className='btn m-1'
       >
         Themes
-      </label>
+      </span>
       <ul
         tabIndex={0}
         className='dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow'

@@ -1,48 +1,83 @@
 /** @format */
 
 import { useEffect, useState } from 'react'
+import { FaPlus } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
+import {
+  clearAllLocalStorage,
+  emptyObject,
+  retrieveFromLocalStorage,
+  setLocalStorage,
+} from '../components/hooks/utilityHooks'
+import {
+  getHoursMinSec,
+  getMinSec,
+  getThisMonth,
+  getThisMonthAndYearListens,
+  getThisYear,
+} from '../features/collection/albumService'
+import { resetAlbum, setAlbum } from '../features/collection/albumSlice'
 import {
   deleteAlbum,
   updateAlbum,
 } from '../features/collection/collectionSlice'
-import Spinner from '../components/Spinner'
 
-// ~~ todo - correctly build local state for album details~~
-// todo - build hero title with album title, artist, runtime, song count
+// todo - getListens import currently only used for testing, remove when done
 // todo - build stats panel: add listen, num listens, favorite btn, date added
+// todo - get album to update to database
+// todo - correct loading so that listens are accurate
 // todo - add edit and delete buttons
 // todo - build form to edit album details
+
+// fix - album is lost to state when user refreshes page
+
+const KEY = 'albumData'
 
 function AlbumDetails() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.auth)
-  const { album, isLoading, isError, message } = useSelector(
-    (state) => state.collection,
-  )
-
-  console.log(`album in albumDetails: ${JSON.stringify(album)}`)
+  const { album } = useSelector((state) => state.album)
 
   useEffect(() => {
-    if (isError) {
-      console.error(message)
+    const handleBeforeUnload = () => {
+      console.log('page unloading, calling dispatch updateAlbum')
+      setLocalStorage(KEY, album)
+      dispatch(updateAlbum(album))
     }
 
-    if (!user) navigate('/login')
-  }, [dispatch, navigate, user, isError, message])
+    window.addEventListener('beforeunload', handleBeforeUnload)
 
-  // set to true if album has customFields
-  // const [anyCustomFields, setAnyCustomFields] = useState(false)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
 
-  // ? BOOL: state variables to control form visibility
-  // eslint-disable-next-line no-unused-vars
-  const [showEditFields, setShowEditFields] = useState(false)
-  const [data, setData] = useState(JSON.parse(JSON.stringify(album)))
+  useEffect(() => {
+    console.log(
+      `album updated in AlbumData useEffect: ${JSON.stringify(album)}`,
+    )
+  }, [album])
 
-  // const [customData, setCustomData] = useState([])
+  useEffect(() => {
+    if (!user) {
+      toast.error('You must be logged in to view this page')
+      clearAllLocalStorage()
+      dispatch(resetAlbum())
+      navigate('/login')
+    }
+
+    // if (emptyObject(album)) dispatch(setAlbum(retrieveFromLocalStorage(KEY)))
+
+    return () => {
+      console.log(`dispatching updateAlbum- album: ${JSON.stringify(album)}`)
+      dispatch(updateAlbum(album))
+    }
+  }, [user, dispatch, navigate])
 
   /// handleAddCustomField: toggles the add custom field form
   // eslint-disable-next-line no-unused-vars
@@ -54,6 +89,7 @@ function AlbumDetails() {
   // eslint-disable-next-line no-unused-vars
   const handleDelete = (itemId) => {
     dispatch(deleteAlbum(itemId)) // id === album's id
+    dispatch(resetAlbum())
     navigate('/')
   }
 
@@ -70,330 +106,237 @@ function AlbumDetails() {
     }
 
     dispatch(updateAlbum(updatedAlbum))
-    setShowEditFields(false)
+    setShowEditField(false)
   }
 
-  // eslint-disable-next-line no-unused-vars
-  const handleCancelEdit = () => {
-    rebuildCustomFields()
-    setShowEditFields(false)
+  if (emptyObject(album)) return <Spinner />
+
+  return (
+    <div className='flex flex-col'>
+      <AlbumTitle />
+      <StatPane />
+      <ExtendedDetails />
+      <TrackListTable />
+    </div>
+  )
+}
+
+function AlbumTitle() {
+  const dispatch = useDispatch()
+
+  const { album } = useSelector((state) => state.album)
+
+  checkStorageForAlbum(album, dispatch)
+
+  const { title, artist, genre, year, image, format, styles, runtime } = album
+
+  const { minutes, seconds } = getMinSec(runtime)
+
+  return (
+    <div className='hero bg-base-200 py-12 lg:py-24'>
+      <div className='hero-content flex-col lg:flex-row'>
+        <img
+          src={image}
+          alt={title}
+          className='max-w-sm rounded-lg shadow-2xl'
+        />
+        <div className='mt-8 flex flex-auto flex-col lg:mx-8 lg:mt-0'>
+          <h1 className='text-5xl font-bold'>{title}</h1>
+          <div className='flex flex-grow flex-row justify-between py-6'>
+            <h3>{artist}</h3>
+            <h3>{genre}</h3>
+            <h3>{year}</h3>
+          </div>
+          <div className=' flex-grow flex-row justify-between py-2'>
+            <span className='pr-2'>{'Format: '}</span>
+            <span>{format.join(', \u00A0 ')}</span>
+          </div>{' '}
+          <div className='flex-grow flex-row justify-between py-2'>
+            <span className='pr-4'>{'Styles: '} </span>
+            <span>{styles.join(', \u00A0 ')}</span>
+          </div>
+          <div className='flex-grow flex-row py-2'>
+            <span className='pr-4'>{'Runtime: '}</span>
+            <span>{`${minutes}:${seconds}`}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function StatPane() {
+  const dispatch = useDispatch()
+
+  const { album, totalListens, totalTime, hasListens } = useSelector(
+    (state) => state.album,
+  )
+
+  // ? renaming hours minutes seconds to correspond with measure of time.
+  const {
+    hours: totalHours,
+    minutes: totalMin,
+    seconds: totalSec,
+  } = getHoursMinSec(totalTime)
+
+  const [curMonthListens, setCurMonthListens] = useState(
+    () => getThisMonth(album.listens) || 0,
+  )
+  const [curYearListens, setCurYearListens] = useState(
+    () => getThisYear(album.listens) || 0,
+  )
+
+  function updateListens(listens) {
+    const { thisMonthListens, thisYearListens } =
+      getThisMonthAndYearListens(listens) || 0
+    setCurMonthListens(thisMonthListens)
+    setCurYearListens(thisYearListens)
   }
 
-  // eslint-disable-next-line no-unused-vars
-  const handleDefaultsChange = (e, key) => {
-    const { value } = e.target
-    // update albumData state with new value
-    setData((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  const handleCustomChange = (e, index) => {
-    const { name, value } = e.target
-    setCustomData((prev) =>
-      prev.map((field, i) =>
-        i === index ? { ...field, [name]: value } : field,
-      ),
+  const handleListenClick = () => {
+    // album update logic. adding new listen to listens array
+    const updatedListens = [...album.listens, Date.now()]
+    const updatedAlbum = { ...album, listens: updatedListens }
+    console.log(
+      `adding new listen - updatedAlbum: ${JSON.stringify(updatedAlbum)}`,
     )
+    updateListens(updatedListens)
+    dispatch(setAlbum(updatedAlbum))
   }
 
-  const rebuildCustomFields = () => {
-    if (anyCustomFields) {
-      const customFieldsArray = Object.entries(album.customFields).map(
-        ([key, value]) => ({ key, value }),
-      )
-      setCustomData(customFieldsArray)
-    }
-  }
+  return (
+    <div className='flex flex-row items-center justify-around'>
+      <div
+        className='tooltip tooltip-success'
+        data-tip='Listen!'
+      >
+        <button
+          type='button'
+          className='btn btn-square hover:text-success mt-1'
+          onClick={handleListenClick}
+        >
+          <FaPlus />
+        </button>
+      </div>
+      <div className='stats shadow'>
+        <div className='stat place-items-center'>
+          <div className='stat-title'>Total Listens</div>
+          <div className='stat-value'>{totalListens}</div>
+          <div className='stat-desc'>
+            {hasListens
+              ? `${totalHours} hours ${totalMin} minutes ${totalSec} seconds`
+              : null}
+          </div>
+        </div>
+        <div className='stat place-items-center'>
+          <div className='stat-title'>Listens this Year</div>
+          <div className='stat-value text-secondary'>{curYearListens}</div>
+          <div className='stat-desc text-secondary'>{}</div>
+        </div>
+        <div className='stat place-items-center'>
+          <div className='stat-title'>Listens This Month</div>
+          <div className='stat-value text-secondary'>{curMonthListens}</div>
+          <div className='stat-desc text-secondary'>desc</div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
-  // only allow numbers to be entered into year field
-  // this might be problematic.
-  // eslint-disable-next-line no-unused-vars
-  const handleYearChange = (e) => {
-    const { value } = e.target
-    const yearRegex = /^[0-9\b]+$/
+function ExtendedDetails() {
+  // const album = retrieveFromLocalStorage('albumData')
 
-    if (value === '' || yearRegex.test(value)) {
-      // onChange(e, 'year')
-      console.log('year changed')
-    }
-  }
+  return <h1 className='py-4'>Extended Details</h1>
+}
 
-  if (isLoading) return <Spinner />
+function TrackListTable() {
+  const album = retrieveFromLocalStorage(KEY)
+  const { trackList } = album
+  return (
+    <>
+      <h2 className='prose prose-xl '>Track List</h2>
+      <div className='overflow-x-auto'>
+        <table className='table'>
+          <thead>
+            <tr>
+              <th> </th>
+              <th>Track Title</th>
+              <th>Favorite</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            {trackList.map((track) => {
+              const { position, title, duration } = track
+              return (
+                <tr key={track._id}>
+                  <td>{position}</td>
+                  <td>{title}</td>
+                  <td>Favorite?</td>
+                  <td>{duration}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}
 
-  // ? if album is null, returns album not found.
-  if (!album) {
-    return <h1>Album not found</h1>
-  }
-  if (album) {
-    return <h1>{album.title}</h1>
+function checkStorageForAlbum(album, dispatch) {
+  if (emptyObject(album)) {
+    const stored = retrieveFromLocalStorage(KEY)
+    dispatch(setAlbum(stored))
   }
 }
 
-// function AlbumTitle({ album }) {
-//   const { title, artist, genre, year, image } = album
-//   return (
-//     <div className='hero bg-base-200 min-h-screen'>
-//       <div className='hero-content flex-col lg:flex-row'>
-//         <img
-//           src={image}
-//           alt={title}
-//           className='max-w-sm rounded-lg shadow-2xl'
-//         />
-//         <div>
-//           <h1 className='text-5xl font-bold'>{title}</h1>
-//           <h3 className='py-6'>
-//             {artist} - {genre} - {year}
-//           </h3>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// // eslint-disable-next-line react/prop-types
-// function AdditionalFields() {
-//   // eslint-disable-next-line react/prop-types
-//   // td const { runtime, format, style } = album
-//   return (
-//     <div>
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>Additional Fields</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           <tr>
-//             <td>runtime</td>
-//             <td>ttt</td>
-//           </tr>
-//           <tr>
-//             <td>format</td>
-//             <td>ttt</td>
-//           </tr>
-//           <tr>
-//             <td>Sub Genre</td>
-//             <td>333</td>
-//           </tr>
-//         </tbody>
-//       </table>
-//     </div>
-//   )
-// }
-
-// AlbumTitle.propTypes = {
-//   album: PropTypes.shape({
-//     title: PropTypes.string.isRequired,
-//     artist: PropTypes.string.isRequired,
-//     genre: PropTypes.string.isRequired,
-//     year: PropTypes.number.isRequired,
-//     image: PropTypes.string.isRequired,
-//   }).isRequired,
-// }
-
 export default AlbumDetails
 
-//   if (!showEditFields) {
-//     return (
-//       <div className='mx-8 mt-4 md:mx-48 md:mt-24'>
-//         <div className='card card-side card-compact bg-primary max-h-fit max-w-fit shadow-xl'>
-//           <div className='card-body max-w-fit  flex-row'>
-//             <div className='flex flex-col justify-start'>
-//               <figure className='max-h-lg max-w-fit shrink-0 grow'>
-//                 <img
-//                   src={image}
-//                   alt={title}
-//                   className='object-content'
-//                 />
-//               </figure>
-//               <div className='flex flex-col'>
-//                 <h2 className='card-title prose text-primary-content '>
-//                   {title}
-//                 </h2>
-//                 <p className='text-primary-content'>{artist}</p>
-//                 <p className='text-primary-content'>{genre}</p>
-//                 <p className='text-primary-content'>{year}</p>
-//                 <p className='text-primary-content'>
-//                   Date Added:
-//                   {new Date(album.createdAt).toLocaleDateString('en-US')}
-//                 </p>
-//               </div>
-//             </div>
-//             <div className='flex flex-col justify-between'>
-//               {anyCustomFields && (
-//                 <div className='flex flex-col'>
-//                   <table className='table'>
-//                     <thead className='items-center'>
-//                       <tr className='prose text-accent text-center'>
-//                         <th>Custom Fields</th>
-//                       </tr>
-//                     </thead>
-//                     <tbody>
-//                       {customData.map((field, index) => {
-//                         return (
-//                           <tr
-//                             key={index}
-//                             className='prose text-primary-content hover:bg-primary'
-//                           >
-//                             <th>{field.key}</th>
-//                             <td>{field.value}</td>
-//                           </tr>
-//                         )
-//                       })}
-//                     </tbody>
-//                   </table>
-//                 </div>
-//               )}
-//               <div className='card-actions place-items-end items-end justify-end'>
-//                 <button
-//                   className='btn '
-//                   onClick={() => setShowEditFields(true)}
-//                 >
-//                   edit album
-//                 </button>
-//                 <button
-//                   className='btn-error btn'
-//                   onClick={handleDelete}
-//                 >
-//                   delete album
-//                 </button>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
+// eslint-disable-next-line no-unused-vars
+// const handleCancelEdit = () => {
+//   rebuildCustomFields()
+//   setShowEditFields(false)
+// }
+
+// // eslint-disable-next-line no-unused-vars
+// const handleDefaultsChange = (e, key) => {
+//   const { value } = e.target
+//   // update albumData state with new value
+//   setData((prev) => ({
+//     ...prev,
+//     [key]: value,
+//   }))
+// }
+
+// // eslint-disable-next-line no-unused-vars
+// const handleCustomChange = (e, index) => {
+//   const { name, value } = e.target
+//   setCustomData((prev) =>
+//     prev.map((field, i) =>
+//       i === index ? { ...field, [name]: value } : field,
+//     ),
+//   )
+// }
+
+// const rebuildCustomFields = () => {
+//   if (anyCustomFields) {
+//     const customFieldsArray = Object.entries(album.customFields).map(
+//       ([key, value]) => ({ key, value }),
 //     )
+//     setCustomData(customFieldsArray)
 //   }
+// }
 
-//   if (showEditFields) {
-//     return (
-//       <div className='mx-8 mt-4 flex-none md:mx-48 md:mt-24  '>
-//         <div className='card-compact card card-side bg-primary max-h-fit min-w-fit max-w-fit items-start shadow-xl'>
-//           <figure className='max-h-lg max-w-fit shrink-0 grow '>
-//             <img
-//               src={image}
-//               alt={title}
-//               className=' object-content'
-//             />
-//           </figure>
-//           <div className='card-body  max-w-fit flex-row items-start'>
-//             <table className='prose text-primary-content table'>
-//               <tbody>
-//                 <tr className='text-primary-content'>
-//                   <th>Album Title</th>
-//                   <td>
-//                     <input
-//                       required
-//                       onChange={(e) => handleDefaultsChange(e, 'title')}
-//                       type='text'
-//                       value={data.title}
-//                       placeholder='Album Title'
-//                       className='input-ghost input w-full'
-//                     />
-//                   </td>
-//                 </tr>
-//                 <tr className='text-primary-content'>
-//                   <th>Artist</th>
-//                   <td>
-//                     <input
-//                       required
-//                       onChange={(e) => handleDefaultsChange(e, 'artist')}
-//                       type='text'
-//                       value={data.artist}
-//                       placeholder='artist'
-//                       className='input-ghost input w-full'
-//                     />
-//                   </td>
-//                 </tr>
-//                 <tr className=' text-primary-content'>
-//                   <th>Genre</th>
-//                   <td>
-//                     <input
-//                       required
-//                       onChange={(e) => handleDefaultsChange(e, 'genre')}
-//                       type='text'
-//                       value={data.genre}
-//                       placeholder='genre'
-//                       className='input-ghost input w-full'
-//                     />
-//                   </td>
-//                 </tr>
-//                 <tr className='text-primary-content'>
-//                   <th>Release Year</th>
-//                   <td>
-//                     <input
-//                       required
-//                       onChange={(e) => handleYearChange(e)}
-//                       type='text'
-//                       value={data.year}
-//                       placeholder='Enter Year'
-//                       className='input-ghost input w-full'
-//                     />
-//                   </td>
-//                 </tr>
-//               </tbody>
-//             </table>
+// only allow numbers to be entered into year field
+// this might be problematic.
+// eslint-disable-next-line no-unused-vars
+// const handleYearChange = (e) => {
+//   const { value } = e.target
+//   const yearRegex = /^[0-9\b]+$/
 
-//             {anyCustomFields && (
-//               <div className='mt-4 grow'>
-//                 <h4 className='card-title prose text-primary-content ml-6 font-bold'>
-//                   Custom Fields:
-//                 </h4>
-//                 <table className='prose text-primary-content table'>
-//                   <tbody>
-//                     {customData.map((field, index) => {
-//                       return (
-//                         <tr
-//                           key={index}
-//                           className='text-primary-content'
-//                         >
-//                           <th>
-//                             <input
-//                               type='text'
-//                               name='key'
-//                               value={field.key}
-//                               placeholder='Edit Key'
-//                               className='input-ghost input w-full'
-//                               onChange={(e) => handleCustomChange(e, index)}
-//                             />
-//                           </th>
-//                           <td>
-//                             <input
-//                               type='text'
-//                               name='value'
-//                               value={field.value}
-//                               placeholder='Edit Value'
-//                               className='input-ghost input w-full'
-//                               onChange={(e) => handleCustomChange(e, index)}
-//                             />
-//                           </td>
-//                         </tr>
-//                       )
-//                     })}
-//                   </tbody>
-//                 </table>
-//               </div>
-//             )}
-//             <div className='card-actions ml-1 self-end'>
-//               <button
-//                 className='btn '
-//                 onClick={handleSave}
-//               >
-//                 Save Changes
-//               </button>
-//               <button
-//                 className='btn-secondary btn hover:bg-fa-delete px-10 hover:text-black'
-//                 onClick={handleCancelEdit}
-//               >
-//                 Cancel
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     )
+//   if (value === '' || yearRegex.test(value)) {
+//     // onChange(e, 'year')
+//     console.log('year changed')
 //   }
 // }

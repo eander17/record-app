@@ -1,13 +1,13 @@
 /** @format */
 
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import { FaSearch, FaUser } from 'react-icons/fa'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
 import { logout, reset } from '../features/auth/authSlice'
+import { searchAlbums, setQueryReducer } from '../features/search/searchSlice'
 import vinylImage from '../media/flaminRecord.jpeg'
 import DropdownMenu from './Dropdown'
-import { setQueryReducer, searchAlbums } from '../features/search/searchSlice'
 
 function Navbar() {
   const navigate = useNavigate()
@@ -34,10 +34,14 @@ function Navbar() {
     setSearchQuery('')
   }
 
+  const onHome = () => {
+    setSearchQuery('')
+  }
+
   if (user) {
     return (
       <div className='navbar bg-base-100'>
-        <NavLogo onHome={() => setSearchQuery('')} />
+        <NavLogo onHome={onHome} />
         <div className='flex-none gap-2'>
           <div className='form-control'>
             <form onSubmit={handleSubmit}>

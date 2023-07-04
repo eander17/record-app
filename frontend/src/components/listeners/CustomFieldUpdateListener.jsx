@@ -112,6 +112,7 @@ function CustomFieldUpdateListener() {
       )
 
       // calls notify function ONLY if current user's album exists
+      // eslint-disable-next-line no-unused-expressions
       currUserAlbum &&
         notify({
           id: currUserAlbum._id,
