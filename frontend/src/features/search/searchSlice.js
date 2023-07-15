@@ -6,16 +6,18 @@
 
 /* eslint-disable no-param-reassign */
 
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import searchService from './searchService'
 
 const initialState = {
   searchResults: [],
+  pagination: {
+    page: 1,
+    pages: 0,
+    per_page: 0,
+  },
   query: '', // search query
   localPage: 1, // results page for number for app
-  requestPage: 1, // discog api page
-  totalPages: 1,
-  totalResults: 0, // total number of results for query
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -26,13 +28,16 @@ const initialState = {
 //! RETURNS: searchResults, requestPage, totalPages, totalResults
 export const searchAlbums = createAsyncThunk(
   'search/getAll',
-  async (data, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      const { searchQuery, requestPage } = data
-      console.log(
-        `searchSlice: searchQuery: ${searchQuery} requestPage: ${requestPage}`,
-      )
-      return await searchService.searchAlbums(searchQuery, requestPage)
+      const {
+        query,
+        pagination: { page },
+      } = thunkAPI.getState().search
+
+      console.log(`triggered searchAlbums - query: ${query}, page: ${page}`)
+
+      return await searchService.searchAlbums(query, page)
     } catch (error) {
       const message =
         (error.response &&
@@ -49,13 +54,20 @@ export const searchResultsSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    reset: () => initialState,
+    resetSearch: () => initialState,
     // call this with the line: dispatch(setQuery(query)) in the search component
-    setQueryReducer: (state, action) => ({
+    updateSearchQuery: (state, action) => ({
       ...state,
       query: action.payload,
     }),
-    setLocalPage: (state, action) => ({
+    updatePagination: (state, action) => ({
+      ...state,
+      pagination: {
+        ...state.pagination,
+        ...action.payload,
+      },
+    }),
+    updateLocalPage: (state, action) => ({
       ...state,
       localPage: action.payload,
     }),
@@ -68,10 +80,8 @@ export const searchResultsSlice = createSlice({
       .addCase(searchAlbums.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.searchResults = action.payload.albumData
-        state.requestPage = action.payload.currentPage
-        state.totalPages = action.payload.totalPages
-        state.totalResults = action.payload.totalResults
+        state.searchResults = action.payload.results
+        state.pagination = action.payload.pagination
       })
       .addCase(searchAlbums.rejected, (state, action) => {
         state.isLoading = false
@@ -81,7 +91,11 @@ export const searchResultsSlice = createSlice({
   },
 })
 
-export const { reset, setQueryReducer, setLocalPage } =
-  searchResultsSlice.actions
+export const {
+  resetSearch,
+  updateSearchQuery,
+  updateLocalPage,
+  updatePagination,
+} = searchResultsSlice.actions
 
 export default searchResultsSlice.reducer
