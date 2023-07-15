@@ -3,9 +3,6 @@ const Album = require('../../models/albumModel')
 
 // todo - make this work lol
 
-const MONGO_URI =
-  'mongodb+srv://eander17:eander17@mystudentcluster.mi5ugmj.mongodb.net/recordApp?retryWrites=true&w=majority'
-
 async function updateAlbums() {
   try {
     await mongoose.connect(MONGO_URI, {
