@@ -1,41 +1,50 @@
 /** @format */
 
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { FaSearch, FaUser } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { logout, reset } from '../features/auth/authSlice'
-import { searchAlbums, setQueryReducer } from '../features/search/searchSlice'
+import { updateAlbum } from '../features/collection/albumSlice'
+import {
+  resetSearch,
+  searchAlbums,
+  updateSearchQuery,
+} from '../features/search/searchSlice'
 import vinylImage from '../media/flaminRecord.jpeg'
 import DropdownMenu from './Dropdown'
+import { clearAllLocalStorage } from './hooks/utilityHooks'
 
 function Navbar() {
+  const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
-  const { requestPage } = useSelector((state) => state.search)
+  const { query } = useSelector((state) => state.search)
 
+  useLeaveAlbumPage(location.pathname, () => {
+    console.log('callback triggered, leaving page')
+    dispatch(updateAlbum())
+  })
+
+  // todo - clean logout function
   const onLogout = () => {
-    setSearchQuery('')
+    clearAllLocalStorage()
+    dispatch(resetSearch())
     dispatch(logout())
     dispatch(reset())
     navigate('/login')
     console.log('logout')
   }
 
-  const [searchQuery, setSearchQuery] = useState('')
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(`request page: ${requestPage}`)
-    dispatch(setQueryReducer(searchQuery)) // todo - remove this?
-    dispatch(searchAlbums({ searchQuery, requestPage }))
-    navigate(`/search/${searchQuery}`)
-    setSearchQuery('')
+    dispatch(searchAlbums())
+    navigate(`/search/${query}`)
   }
 
   const onHome = () => {
-    setSearchQuery('')
+    resetSearch()
   }
 
   if (user) {
@@ -48,8 +57,8 @@ function Navbar() {
               <div className='join'>
                 <input
                   type='search'
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={query}
+                  onChange={(e) => dispatch(updateSearchQuery(e.target.value))}
                   placeholder='Add a New Album'
                   className='input-bordered input-primary input join-item'
                 />
@@ -146,6 +155,17 @@ function NavLogo({ onHome }) {
       </article>
     </div>
   )
+}
+
+const useLeaveAlbumPage = (pathname, callback) => {
+  console.log()
+  const prevPathname = useRef()
+  useEffect(() => {
+    if (prevPathname.current && prevPathname.current.includes('/album')) {
+      callback()
+    }
+    prevPathname.current = pathname
+  }, [pathname, callback])
 }
 
 export default Navbar

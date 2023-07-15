@@ -71,45 +71,6 @@ export const getAlbumById = createAsyncThunk(
   },
 )
 
-// update user Album
-export const updateAlbum = createAsyncThunk(
-  'collection/update',
-  async (album, thunkAPI) => {
-    try {
-      const { token } = thunkAPI.getState().auth.user
-      console.log(`triggered update album - album: ${JSON.stringify(album)}`)
-      return await collectionService.updateAlbum(album._id, album, token)
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString()
-      return thunkAPI.rejectWithValue(message)
-    }
-  },
-)
-
-// Delete user Album
-export const deleteAlbum = createAsyncThunk(
-  'collection/delete',
-  async (id, thunkAPI) => {
-    try {
-      const { token } = thunkAPI.getState().auth.user
-      return await collectionService.deleteAlbum(id, token)
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString()
-      return thunkAPI.rejectWithValue(message)
-    }
-  },
-)
-
 export const collectionSlice = createSlice({
   name: 'collection',
   initialState,
@@ -153,43 +114,7 @@ export const collectionSlice = createSlice({
         state.isError = true
         state.message = action.payload
       })
-      .addCase(updateAlbum.pending, (state) => {
-        state.isLoading = true
-        state.isEdit = true // set to true to prevent user from creating new album while editing
-      })
-      .addCase(updateAlbum.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isEdit = false // set to false to allow user to create new album
-        state.collection = state.collection.map((album) => {
-          if (album._id === action.payload.id) {
-            return action.payload
-          }
-          return album
-        })
-        state.album = action.payload
-        state.isSuccess = true
-      })
-      .addCase(updateAlbum.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.isEdit = false
-        state.message = action.payload
-      })
-      .addCase(deleteAlbum.pending, (state) => {
-        state.isLoading = true
-      })
-      .addCase(deleteAlbum.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = true
-        state.collection = state.collection.filter(
-          (album) => album._id !== action.payload.id,
-        )
-      })
-      .addCase(deleteAlbum.rejected, (state, action) => {
-        state.isLoading = false
-        state.isError = true
-        state.message = action.payload
-      })
+
       .addCase(getAlbumById.pending, (state) => {
         state.isLoading = true
       })

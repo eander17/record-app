@@ -11,14 +11,11 @@ function DashAlbumItem({ album }) {
   const dispatch = useDispatch()
 
   // eslint-disable-next-line no-unused-vars
-  const { title, artist, genre, year, image, _id } = album
+  const { title, artist, genres, year, image } = album
 
   /// handleEdit: navigates to albumDetails page
   const handleAlbumClick = () => {
     try {
-      console.log(
-        `dispatching setAlbum from dashAlbumItem: ${JSON.stringify(album)}`,
-      )
       dispatch(setAlbum(album))
       const urlTitle = title.replace(/\s+/g, '-').toLowerCase()
       navigate(`/albums/${urlTitle}`) // navigate to user's album details page.
@@ -46,7 +43,7 @@ function DashAlbumItem({ album }) {
       <div className='card-body justify-between text-justify'>
         <h2 className='card-title text-primary-content'>{title}</h2>
         <p className='text-primary-content'>{artist}</p>
-        <p className='text-primary-content'>{genre}</p>
+        <p className='text-primary-content'>{genres}</p>
         <p className='text-primary-content'>{year}</p>
       </div>
     </div>
@@ -57,10 +54,9 @@ DashAlbumItem.propTypes = {
   album: PropTypes.shape({
     title: PropTypes.string.isRequired,
     artist: PropTypes.string.isRequired,
-    genre: PropTypes.string.isRequired,
+    genres: PropTypes.arrayOf(PropTypes.string).isRequired,
     year: PropTypes.number.isRequired,
     image: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
     discogsId: PropTypes.number.isRequired,
   }).isRequired,
 }

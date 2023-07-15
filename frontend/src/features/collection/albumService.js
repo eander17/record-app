@@ -1,4 +1,4 @@
-import { checkEquality } from '../../components/hooks/utilityHooks'
+import { checkEquality } from '../../components/hooks/utilityFunctions'
 
 export const getListens = (listens) => {
   if (!listens) return 0
@@ -63,22 +63,21 @@ export const extractDate = (timestamp) => {
   return { day, month, year, time }
 }
 
-// return time listened in hours, minutes, seconds.
-export const getHoursMinSec = (time) => ({
-  hours: getHours(time),
-  minutes: getMinutes(time),
-  seconds: getSeconds(time),
-})
+export const getRuntimeInSeconds = (runtimeString) => {
+  if (!runtimeString) return 0
+  let runtimeNumber = runtimeString
+  if (runtimeNumber.split(':').length === 2)
+    runtimeNumber = `0:${runtimeNumber}`
+  const [hours, minutes, seconds] = runtimeNumber.split(':')
+  return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds)
+}
 
-export const getHours = (time) => Math.floor(time / 3600)
+/// takes runtime in seconds and returns formatted runtime in hours, minutes, seconds
+export const getFormattedRuntime = (runtime) => {
+  if (!runtime || runtime === 0) return { hours: 0, minutes: 0, seconds: 0 }
+  const hours = Math.floor(runtime / 3600) || 0
+  const minutes = Math.floor((runtime % 3600) / 60) || 0
+  const seconds = Math.floor((runtime % 3600) % 60) || 0
 
-export const getMinutes = (time) =>
-  Math.floor((time - getHours(time) * 3600) / 60)
-
-export const getSeconds = (time) =>
-  Math.floor(time - getHours(time) * 3600 - getMinutes(time) * 60)
-
-export const getMinSec = (runtime) => ({
-  minutes: Math.floor(runtime / 60),
-  seconds: runtime % 60,
-})
+  return { hours, minutes, seconds }
+}

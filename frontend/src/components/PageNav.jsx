@@ -1,8 +1,8 @@
 /** @format */
 
 import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa'
-import { useSelector, useDispatch } from 'react-redux'
-import { setLocalPage } from '../features/search/searchSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateLocalPage } from '../features/search/searchSlice'
 
 function PageNav() {
   const dispatch = useDispatch()
@@ -19,7 +19,7 @@ function PageNav() {
           {Number(localPage) > 1 ? (
             <FaChevronCircleLeft
               className='fa prev-btn'
-              onClick={() => dispatch(setLocalPage(Number(localPage) - 1))}
+              onClick={() => dispatch(updateLocalPage(Number(localPage) - 1))}
             />
           ) : null}
         </button>
@@ -29,7 +29,7 @@ function PageNav() {
         >
           <FaChevronCircleRight
             className='text-lg'
-            onClick={() => dispatch(setLocalPage(Number(localPage) + 1))}
+            onClick={() => dispatch(updateLocalPage(Number(localPage) + 1))}
           />
         </button>
       </div>
