@@ -1,15 +1,15 @@
 /** @format */
 
 import { useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import DashAlbumItem from '../components/DashAlbumItem'
-import Spinner from '../components/Spinner'
+import { useSelector, useDispatch } from 'react-redux'
+import { FaSearch } from 'react-icons/fa'
 import {
   getCollection,
   resetCollectionBools,
 } from '../features/collection/collectionSlice'
+import DashAlbumItem from '../components/DashAlbumItem'
+import Spinner from '../components/Spinner'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -19,8 +19,6 @@ function Dashboard() {
   const { collection, isLoading, isError, message } = useSelector(
     (state) => state.collection,
   )
-
-  const { album: stateAlbum } = useSelector((state) => state.album)
 
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredCollection, setFilteredCollection] = useState([])
@@ -42,7 +40,7 @@ function Dashboard() {
       dispatch(resetCollectionBools())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, stateAlbum])
+  }, [user])
 
   useEffect(() => {
     setFilteredCollection(
@@ -50,7 +48,7 @@ function Dashboard() {
         (album) =>
           album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           album.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          album.genres.toLowerCase().includes(searchQuery.toLowerCase()),
+          album.genre.toLowerCase().includes(searchQuery.toLowerCase()),
       ),
     )
   }, [searchQuery, collection])

@@ -1,14 +1,14 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import AlbumDetails from '../pages/AlbumDetails'
-import Dashboard from '../pages/Dashboard'
-import EditAlbum from '../pages/EditAlbum'
-import Login from '../pages/Login'
-import NotFoundPage from '../pages/NotFoundPage'
-import Register from '../pages/Register'
-import SearchResults from '../pages/SearchResults'
-import UserProfilePage from '../pages/UserProfilePage'
 import Navbar from './Navbar'
+import Dashboard from '../pages/Dashboard'
+import Register from '../pages/Register'
+import Login from '../pages/Login'
+import SearchResults from '../pages/SearchResults'
+import AlbumDetails from '../pages/AlbumDetails'
+import EditAlbum from '../pages/EditAlbum'
+import UserProfilePage from '../pages/UserProfilePage'
+import NotFoundPage from '../pages/NotFoundPage'
 
 function PageRoutes() {
   return (
@@ -34,7 +34,7 @@ function PageRoutes() {
               element={<SearchResults />}
             />
             <Route
-              path='/albums/:item'
+              path='/albums/:id'
               element={<AlbumDetails />}
             />
             <Route

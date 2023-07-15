@@ -2,19 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 
 export const LOCAL_STORAGE_KEY = 'record-app-'
 
-/// HOOK: uses state to manage items in local storage.
-// info: use to set a value in local storage, and return the value and a function to set the value
-// info: use to manage a value with local storage.
-// @param: key: string, key to name localStorage item
-// @param: initialValue: any, value to set localStorage item to if it doesn't exist
-// @return: [value, setValue]: array, value is the value of the localStorage item, setValue is a function to set the value of the localStorage item
-export function useLocalStorage(key, initialValue) {
+/// stores and manages state of item matching key in local storage
+export const useLocalStorage = (key, initialValue) => {
   const prefixedKey = `${LOCAL_STORAGE_KEY}${key}`
-  const [value, setValue] = useState(() => getSavedValue(key, initialValue))
+
+  const [value, setValue] = useState(() => {
+    const storedValue = localStorage.getItem(prefixedKey)
+    return storedValue ? JSON.parse(storedValue) : initialValue
+  })
 
   useEffect(() => {
     localStorage.setItem(prefixedKey, JSON.stringify(value))
-  }, [value])
+  }, [prefixedKey, value])
   return [value, setValue]
 }
 
@@ -22,8 +21,7 @@ export function useLocalStorage(key, initialValue) {
 export const retrieveFromLocalStorage = (key) => {
   const prefixedKey = LOCAL_STORAGE_KEY + key
   const storedValue = localStorage.getItem(prefixedKey)
-  if (!storedValue) return null
-  return JSON.parse(storedValue)
+  return storedValue !== null ? JSON.parse(storedValue) : null
 }
 
 export const setLocalStorage = (key, value) => {
@@ -65,3 +63,7 @@ export const useValueLogger = (value, name) => {
     }
   }, [value, name])
 }
+
+export const checkEquality = (a, b) => JSON.stringify(a) === JSON.stringify(b)
+
+export const emptyObject = (obj) => Object.keys(obj).length === 0

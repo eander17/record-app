@@ -1,8 +1,10 @@
 /** @format */
 
 const asyncHandler = require('express-async-handler')
-const albumController = require('./albumController')
+// eslint-disable-next-line prefer-destructuring
 const { Album } = require('../models/albumModel')
+// eslint-disable-next-line prefer-destructuring
+const { Track } = require('../models/albumModel')
 const User = require('../models/userModel')
 
 // @desc    Fetch all albums
@@ -40,59 +42,36 @@ const createAlbum = asyncHandler(async (req, res) => {
   if (
     !req.body.title ||
     !req.body.artist ||
-    !req.body.genres ||
+    !req.body.genre ||
     !req.body.year ||
-    !req.body.discogsId
+    !req.body.discogsId ||
+    !req.body.masterId
   ) {
     res.status(400)
     throw new Error('missing required fields')
   }
 
-  console.log('in createAlbum, past error check')
-
-  const { styles, tracklist } = await albumController.searchAlbumByDiscogs(
-    req.body.discogsId,
-  )
-
-  console.log(
-    `past searchByDiscogs: tracks: ${JSON.stringify(
-      tracklist,
-    )} styles: ${JSON.stringify(styles)}`,
-  )
-
-  const trackList = await albumController.getTrackList(tracklist)
-
-  console.log(
-    '🚀 ~ file: collectionController.js:66 ~ createAlbum ~ trackList:',
-    trackList,
-  )
-
-  const runtime = albumController.getRuntime(trackList)
-
-  console.log(
-    '🚀 ~ file: collectionController.js:72 ~ createAlbum ~ runtime:',
-    runtime,
-  )
+  const flatTrackList = req.body.trackList.flat()
+  console.log(`collectionController: flatTrackList: ${flatTrackList}`)
+  const tracks = await Track.insertMany(flatTrackList)
 
   // create the album
   const album = await Album.create({
     title: req.body.title,
     artist: req.body.artist,
-    genres: req.body.genres,
-    styles,
+    genre: req.body.genre,
+    styles: req.body.style,
     format: req.body.format,
-    dateAdded: new Date(),
+    dateAdded: Date.now(),
     year: req.body.year,
     image: req.body.image,
     thumb: req.body.thumb,
     discogsId: req.body.discogsId,
     masterId: req.body.masterId,
-    trackList,
-    runtime,
+    trackList: tracks,
+    runtime: req.body.runtime,
     user: req.user.id, // this is the user id
   })
-
-  console.log(`created album: ${JSON.stringify(album)}`)
   // add the album to the user's collection
   res.status(201).json(album)
 })

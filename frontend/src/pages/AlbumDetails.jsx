@@ -1,90 +1,136 @@
 /** @format */
 
-import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import useBeforeUnload from '../components/hooks/useBeforeUnload'
-import { emptyObject } from '../components/hooks/utilityFunctions'
-import { setLocalStorage } from '../components/hooks/utilityHooks'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
 import {
-  getFormattedRuntime,
+  clearAllLocalStorage,
+  emptyObject,
+  retrieveFromLocalStorage,
+  setLocalStorage,
+} from '../components/hooks/utilityHooks'
+import {
+  getHoursMinSec,
+  getMinSec,
   getThisMonth,
+  getThisMonthAndYearListens,
   getThisYear,
 } from '../features/collection/albumService'
-import { addListen, updateAlbum } from '../features/collection/albumSlice'
+import { resetAlbum, setAlbum } from '../features/collection/albumSlice'
+import {
+  deleteAlbum,
+  updateAlbum,
+} from '../features/collection/collectionSlice'
 
-// info: used for local storage, might not need.
-//  const KEY = 'albumData'
+// todo - getListens import currently only used for testing, remove when done
+// todo - build stats panel: add listen, num listens, favorite btn, date added
+// todo - get album to update to database
+// todo - correct loading so that listens are accurate
+// todo - add edit and delete buttons
+// todo - build form to edit album details
+
+// fix - album is lost to state when user refreshes page
+
+const KEY = 'albumData'
 
 function AlbumDetails() {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  // const location = useLocation()
 
-  const { album, totalTime } = useSelector((state) => state.album)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const { user } = useSelector((state) => state.auth)
+  const { album } = useSelector((state) => state.album)
 
-  useBeforeUnload(() => {
-    setLocalStorage('albumData', album)
-    if (hasUnsavedChanges) {
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      console.log('page unloading, calling dispatch updateAlbum')
+      setLocalStorage(KEY, album)
       dispatch(updateAlbum(album))
-      console.log('callback triggered, leaving page')
     }
-    setHasUnsavedChanges(false)
-  })
 
-  const [curMonthListens, setCurMonthListens] = useState(
-    () => getThisMonth(album.listens) || 0,
-  )
-  const [curYearListens, setCurYearListens] = useState(
-    () => getThisYear(album.listens) || 0,
-  )
+    window.addEventListener('beforeunload', handleBeforeUnload)
 
-  function updateListens() {
-    setCurMonthListens((prev) => prev + 1)
-    setCurYearListens((prev) => prev + 1)
-  }
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [])
 
-  const handleListenClick = () => {
-    // album update logic. adding new listen to listens array
-    console.log(`handleListenClick adding new listen`)
-    setHasUnsavedChanges(true)
-    updateListens()
-    dispatch(addListen())
-  }
-
-  /// RETURNS for JSX ///
-
-  // if (loading) return <Spinner />
-
-  if (!emptyObject(album)) {
-    return (
-      <div className='flex flex-col'>
-        <AlbumTitle />
-        <StatPane
-          listens={album.listens}
-          totalTime={totalTime}
-          curMonthListens={curMonthListens}
-          curYearListens={curYearListens}
-          onListen={handleListenClick}
-        />
-        <ExtendedDetails />
-        <TrackListTable />
-      </div>
+  useEffect(() => {
+    console.log(
+      `album updated in AlbumData useEffect: ${JSON.stringify(album)}`,
     )
+  }, [album])
+
+  useEffect(() => {
+    if (!user) {
+      toast.error('You must be logged in to view this page')
+      clearAllLocalStorage()
+      dispatch(resetAlbum())
+      navigate('/login')
+    }
+
+    // if (emptyObject(album)) dispatch(setAlbum(retrieveFromLocalStorage(KEY)))
+
+    return () => {
+      console.log(`dispatching updateAlbum- album: ${JSON.stringify(album)}`)
+      dispatch(updateAlbum(album))
+    }
+  }, [user, dispatch, navigate])
+
+  /// handleAddCustomField: toggles the add custom field form
+  // eslint-disable-next-line no-unused-vars
+  const handleAddCustomField = () => {
+    console.log('Clicked Add Custom Field')
   }
+
+  /// handleDelete: deletes album from user's collection
+  // eslint-disable-next-line no-unused-vars
+  const handleDelete = (itemId) => {
+    dispatch(deleteAlbum(itemId)) // id === album's id
+    dispatch(resetAlbum())
+    navigate('/')
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  const handleSave = () => {
+    const customFieldsObject = customData.reduce(
+      (obj, field) => ({ ...obj, [field.key]: field.value }),
+      {},
+    )
+    const updatedAlbum = {
+      ...album,
+      ...data,
+      customFields: customFieldsObject,
+    }
+
+    dispatch(updateAlbum(updatedAlbum))
+    setShowEditField(false)
+  }
+
+  if (emptyObject(album)) return <Spinner />
+
+  return (
+    <div className='flex flex-col'>
+      <AlbumTitle />
+      <StatPane />
+      <ExtendedDetails />
+      <TrackListTable />
+    </div>
+  )
 }
 
 function AlbumTitle() {
+  const dispatch = useDispatch()
+
   const { album } = useSelector((state) => state.album)
+
+  checkStorageForAlbum(album, dispatch)
 
   const { title, artist, genre, year, image, format, styles, runtime } = album
 
-  const { hours, minutes, seconds } = getFormattedRuntime(runtime)
-
-  const displayRuntime = `${hours}:${minutes}:${seconds}`
-
-  if (hours === 0) displayRuntime.slice(3) // remove leading 0 if hours === 0
+  const { minutes, seconds } = getMinSec(runtime)
 
   return (
     <div className='hero bg-base-200 py-12 lg:py-24'>
@@ -111,11 +157,7 @@ function AlbumTitle() {
           </div>
           <div className='flex-grow flex-row py-2'>
             <span className='pr-4'>{'Runtime: '}</span>
-            <span>
-              {runtime === 0
-                ? 'no runtime set for this album'
-                : `${displayRuntime}`}
-            </span>
+            <span>{`${minutes}:${seconds}`}</span>
           </div>
         </div>
       </div>
@@ -123,14 +165,44 @@ function AlbumTitle() {
   )
 }
 
-function StatPane({
-  listens,
-  totalTime,
-  curMonthListens,
-  curYearListens,
-  onListen,
-}) {
-  const totalTimeDate = new Date(totalTime)
+function StatPane() {
+  const dispatch = useDispatch()
+
+  const { album, totalListens, totalTime, hasListens } = useSelector(
+    (state) => state.album,
+  )
+
+  // ? renaming hours minutes seconds to correspond with measure of time.
+  const {
+    hours: totalHours,
+    minutes: totalMin,
+    seconds: totalSec,
+  } = getHoursMinSec(totalTime)
+
+  const [curMonthListens, setCurMonthListens] = useState(
+    () => getThisMonth(album.listens) || 0,
+  )
+  const [curYearListens, setCurYearListens] = useState(
+    () => getThisYear(album.listens) || 0,
+  )
+
+  function updateListens(listens) {
+    const { thisMonthListens, thisYearListens } =
+      getThisMonthAndYearListens(listens) || 0
+    setCurMonthListens(thisMonthListens)
+    setCurYearListens(thisYearListens)
+  }
+
+  const handleListenClick = () => {
+    // album update logic. adding new listen to listens array
+    const updatedListens = [...album.listens, Date.now()]
+    const updatedAlbum = { ...album, listens: updatedListens }
+    console.log(
+      `adding new listen - updatedAlbum: ${JSON.stringify(updatedAlbum)}`,
+    )
+    updateListens(updatedListens)
+    dispatch(setAlbum(updatedAlbum))
+  }
 
   return (
     <div className='flex flex-row items-center justify-around'>
@@ -141,7 +213,7 @@ function StatPane({
         <button
           type='button'
           className='btn btn-square hover:text-success mt-1'
-          onClick={onListen}
+          onClick={handleListenClick}
         >
           <FaPlus />
         </button>
@@ -149,12 +221,10 @@ function StatPane({
       <div className='stats shadow'>
         <div className='stat place-items-center'>
           <div className='stat-title'>Total Listens</div>
-          <div className='stat-value'>{listens.length || 0}</div>
+          <div className='stat-value'>{totalListens}</div>
           <div className='stat-desc'>
-            {listens > 0
-              ? `${totalTimeDate.getHours()} hours
-              ${totalTimeDate.getMinutes()} minutes
-              ${totalTimeDate.getSeconds()} seconds`
+            {hasListens
+              ? `${totalHours} hours ${totalMin} minutes ${totalSec} seconds`
               : null}
           </div>
         </div>
@@ -173,14 +243,6 @@ function StatPane({
   )
 }
 
-StatPane.propTypes = {
-  listens: PropTypes.arrayOf(PropTypes.string).isRequired,
-  totalTime: PropTypes.number.isRequired,
-  curMonthListens: PropTypes.number.isRequired,
-  curYearListens: PropTypes.number.isRequired,
-  onListen: PropTypes.func.isRequired,
-}
-
 function ExtendedDetails() {
   // const album = retrieveFromLocalStorage('albumData')
 
@@ -188,7 +250,7 @@ function ExtendedDetails() {
 }
 
 function TrackListTable() {
-  const { album } = useSelector((state) => state.album)
+  const album = retrieveFromLocalStorage(KEY)
   const { trackList } = album
   return (
     <>
@@ -222,41 +284,59 @@ function TrackListTable() {
   )
 }
 
-// function checkStorageForAlbum(album, dispatch) {
-//   if (emptyObject(album)) {
-//     const stored = retrieveFromLocalStorage(KEY)
-//     dispatch(setAlbum(stored))
-//   }
-// }
+function checkStorageForAlbum(album, dispatch) {
+  if (emptyObject(album)) {
+    const stored = retrieveFromLocalStorage(KEY)
+    dispatch(setAlbum(stored))
+  }
+}
 
 export default AlbumDetails
 
-// /// handleAddCustomField: toggles the add custom field form
-// // eslint-disable-next-line no-unused-vars
-// const handleAddCustomField = () => {
-//   console.log('Clicked Add Custom Field')
-// }
-
-// /// handleDelete: deletes album from user's collection
-// // eslint-disable-next-line no-unused-vars
-// const handleDelete = (itemId) => {
-//   dispatch(deleteAlbum(itemId)) // id === album's id
-//   dispatch(resetAlbum())
-//   navigate('/')
+// eslint-disable-next-line no-unused-vars
+// const handleCancelEdit = () => {
+//   rebuildCustomFields()
+//   setShowEditFields(false)
 // }
 
 // // eslint-disable-next-line no-unused-vars
-// const handleSave = () => {
-//   const customFieldsObject = customData.reduce(
-//     (obj, field) => ({ ...obj, [field.key]: field.value }),
-//     {},
+// const handleDefaultsChange = (e, key) => {
+//   const { value } = e.target
+//   // update albumData state with new value
+//   setData((prev) => ({
+//     ...prev,
+//     [key]: value,
+//   }))
+// }
+
+// // eslint-disable-next-line no-unused-vars
+// const handleCustomChange = (e, index) => {
+//   const { name, value } = e.target
+//   setCustomData((prev) =>
+//     prev.map((field, i) =>
+//       i === index ? { ...field, [name]: value } : field,
+//     ),
 //   )
-//   const updatedAlbum = {
-//     ...album,
-//     ...data,
-//     customFields: customFieldsObject,
-//   }
+// }
 
-//   dispatch(updateAlbum(updatedAlbum))
-//   setShowEditField(false)
+// const rebuildCustomFields = () => {
+//   if (anyCustomFields) {
+//     const customFieldsArray = Object.entries(album.customFields).map(
+//       ([key, value]) => ({ key, value }),
+//     )
+//     setCustomData(customFieldsArray)
+//   }
+// }
+
+// only allow numbers to be entered into year field
+// this might be problematic.
+// eslint-disable-next-line no-unused-vars
+// const handleYearChange = (e) => {
+//   const { value } = e.target
+//   const yearRegex = /^[0-9\b]+$/
+
+//   if (value === '' || yearRegex.test(value)) {
+//     // onChange(e, 'year')
+//     console.log('year changed')
+//   }
 // }
