@@ -8,6 +8,7 @@ const trackSchema = new mongoose.Schema({
   position: { type: String, required: true },
   title: { type: String, required: true },
   duration: { type: Number, required: true, default: 0 },
+  favorite: { type: Boolean, required: true, default: false },
 })
 
 const albumSchema = mongoose.Schema(

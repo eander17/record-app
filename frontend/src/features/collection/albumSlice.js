@@ -29,9 +29,7 @@ export const updateAlbum = createAsyncThunk(
       if (!album) return thunkAPI.rejectWithValue('No album data found')
       const { token } = thunkAPI.getState().auth.user
       console.log(
-        `updateAlbum contacting api - album: ${JSON.stringify(
-          album.listens.length,
-        )}`,
+        `updateAlbum contacting api - album: ${JSON.stringify(album)}`,
       )
       const returnItem = await albumApiService.updateAlbum(
         album._id,
@@ -99,6 +97,25 @@ export const albumSlice = createSlice({
         totalTime: newAlbum.listens.length * newAlbum.runtime,
       }
     },
+    addFavoriteTrack: (state, action) => {
+      const { album: oldAlbum } = state
+      const trackId = action.payload
+      const { trackList } = oldAlbum
+      const newTrackList = trackList.map((track) => {
+        if (track._id === trackId) {
+          return { ...track, favorite: !track.favorite }
+        }
+        return track
+      })
+      const newAlbum = {
+        ...oldAlbum,
+        trackList: newTrackList,
+      }
+      return {
+        ...state,
+        album: newAlbum,
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -140,6 +157,7 @@ export const albumSlice = createSlice({
   },
 })
 
-export const { resetAlbum, setAlbum, addListen } = albumSlice.actions
+export const { resetAlbum, setAlbum, addListen, addFavoriteTrack } =
+  albumSlice.actions
 
 export default albumSlice.reducer

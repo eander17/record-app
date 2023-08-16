@@ -29,22 +29,26 @@ function DashAlbumItem({ album }) {
     // todo - change to edit button instead of div click for accessibility
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className='card bg-primary mx-4 my-12 shadow-xl md:mx-8'
+      className='card bg-primary mx-4 my-12 h-min w-auto shadow-xl md:mx-8'
       onClick={handleAlbumClick}
       onKeyDown={handleAlbumClick}
     >
-      <figure className=''>
+      <figure className='h-5/12 w-auto object-scale-down'>
         <img
           src={image}
           alt={title}
-          className='h-full w-full'
+          className='h-5/12 '
         />
       </figure>
-      <div className='card-body justify-between text-justify'>
-        <h2 className='card-title text-primary-content'>{title}</h2>
-        <p className='text-primary-content'>{artist}</p>
-        <p className='text-primary-content'>{genres}</p>
-        <p className='text-primary-content'>{year}</p>
+      <div className='card-body whitespace-pre-line px-4 text-left tracking-tight'>
+        <div>
+          <h2 className='card-title text-primary-content mb-1 text-base font-bold'>
+            {title}
+          </h2>
+          <p className='text-primary-content my-0 py-0 '>{artist}</p>
+          <p className='text-primary-content my-0 py-0 '>{genres}</p>
+          <p className='text-primary-content my-0 py-0 '>{year}</p>
+        </div>
       </div>
     </div>
   )

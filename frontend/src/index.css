@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.input-edit {
+  @apply border-none focus:outline-none;
+}
+
 /*
 
 * {

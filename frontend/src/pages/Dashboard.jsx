@@ -60,7 +60,7 @@ function Dashboard() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className='mx-24 flex flex-col items-center justify-center'>
       <div className='prose dark:prose-invert md:prose-lg lg:prose-xl my-4 mb-12 mt-12 text-center'>
         <h1 className=''>Welcome {user && user.name}</h1>
         <h3 className=''>Your Collection</h3>
@@ -84,9 +84,9 @@ function Dashboard() {
         </div>
       </form>
 
-      <section className=''>
+      <section className='my-12'>
         {filteredCollection.length > 0 ? (
-          <div className='grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3'>
+          <div className='grid h-min w-auto grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3'>
             {filteredCollection.map((album) => (
               <DashAlbumItem
                 key={album._id}

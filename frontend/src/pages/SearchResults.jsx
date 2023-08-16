@@ -57,12 +57,12 @@ function SearchResults() {
   }
 
   return (
-    <section className='join-vertical join mt-12 flex flex-col items-center text-center'>
+    <section className='join-vertical join mx-24 mt-12 flex flex-col items-center text-center'>
       <div className='prose prose-xl text-center'>
         <h1 className='join-item '>Search Results</h1>
         <h3 className='join-item'>{query}</h3>
       </div>
-      <section className='join-item'>
+      <section className='join-item '>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
           {searchResults.map((album) => (
             <SearchResultsItem
@@ -100,21 +100,24 @@ function SearchResultsItem({ album, onAdd }) {
   }, [collection])
 
   return (
-    <div className='card bg-primary mx-4 my-12 shadow-xl md:mx-8'>
+    <div className='card bg-primary h-6/12 mx-4 my-12 shadow-xl md:mx-8'>
       <figure className=''>
         <img
           src={image}
           alt={title}
-          className='h-full w-full'
+          // className='h-full w-full'
         />
       </figure>
-      {/* // todo - make a table? */}
-      <div className='card-body justify-between text-justify '>
-        <h2 className='card-title text-primary-content'>{title}</h2>
-        <p className='text-primary-content'>{artist}</p>
-        <p className='text-primary-content'>{genres}</p>
-        <p className='text-primary-content'>{year}</p>
-        <div className='card-actions justify-end'>
+      <div className='card-body whitespace-pre-line px-4 text-left tracking-tight'>
+        <div className='mb-1 mt-1'>
+          <h2 className='card-title text-primary-content mb-1 text-sm font-bold'>
+            {title}
+          </h2>
+          <p className='text-primary-content text-sm'>{artist}</p>
+          <p className='text-primary-content text-sm'>{genres}</p>
+          <p className='text-primary-content text-sm'>{year}</p>
+        </div>
+        <div className='card-actions'>
           {owned ? (
             <div className='badge badge-secondary badge-lg text-secondary-content gap-2'>
               In Collection
